@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     Tanggal_Pengajuan: DataTypes.DATE,
     Tanggal_Izin: DataTypes.DATE,
     Class_Schedule_ID: DataTypes.INTEGER,
-    Jenis_Izin: DataTypes.ENUM,
-    Status_Pengajuan: DataTypes.ENUM,
+    Jenis_Izin: DataTypes.ENUM('Sakit', 'Izin'),
+    Status_Pengajuan: DataTypes.ENUM('Drafted', 'Delivered', 'On Progress', 'Accepted', 'Rejected'),
     ID_Mahasiswa: DataTypes.INTEGER
   }, {
     sequelize,

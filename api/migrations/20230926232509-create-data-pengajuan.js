@@ -22,10 +22,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       Jenis_Izin: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM('Sakit', 'Izin'),
       },
       Status_Pengajuan: {
-        type: Sequelize.ENUM
+        type: Sequelize.ENUM('Drafted', 'Delivered', 'On Progress', 'Accepted', 'Rejected'),
       },
       ID_Mahasiswa: {
         type: Sequelize.INTEGER
