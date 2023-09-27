@@ -24,8 +24,14 @@ module.exports = {
       Email: {
         type: Sequelize.STRING
       },
-      ID_Kelas: {
-        type: Sequelize.INTEGER
+      ID_Kelas: { // foreign key
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Data_Kelas',
+          key: 'id',
+          as: 'ID_Kelas',
+        }
       },
       createdAt: {
         allowNull: false,
