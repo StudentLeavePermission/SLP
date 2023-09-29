@@ -18,8 +18,15 @@ module.exports = {
       Password: {
         type: Sequelize.STRING
       },
-      Adviser_For_Dosen_ID: {
-        type: Sequelize.INTEGER
+      ID_Dosen_Wali: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Data_Kelas',
+          key: 'id',
+          as: 'ID_Dosen',
+        }
+
       },
       createdAt: {
         allowNull: false,

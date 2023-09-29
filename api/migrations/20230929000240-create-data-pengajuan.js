@@ -18,8 +18,14 @@ module.exports = {
       Tanggal_Izin: {
         type: Sequelize.DATE
       },
-      Class_Schedule_ID: {
-        type: Sequelize.INTEGER
+      ID_Jadwal_Kelas: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Jadwal_Kelas',
+          key: 'id',
+          as: 'ID_Jadwal_Kelas'
+        }
       },
       Jenis_Izin: {
         type: Sequelize.ENUM('Sakit', 'Izin'),
@@ -28,7 +34,13 @@ module.exports = {
         type: Sequelize.ENUM('Drafted', 'Delivered', 'On Progress', 'Accepted', 'Rejected'),
       },
       ID_Mahasiswa: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Data_Mahasiswa',
+          key: 'id',
+          as: 'ID_Mahasiswa'
+        }
       },
       createdAt: {
         allowNull: false,
