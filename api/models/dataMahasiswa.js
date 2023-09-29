@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Data_Mahasiswa.belongsTo(models.Data_Kelas, {
         foreignKey: 'ID_Kelas',
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
       });
     }
   }
