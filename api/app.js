@@ -12,6 +12,10 @@ const jadwalKelasRoutes = require('./routes/jadwalKelasRoutes');
 const app = express();
 app.use(bodyParser.json());
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the main page!');
+});
+
 // Use your routes here
 app.use('/class-schedules', jadwalKelasRoutes);
 app.use('/leave-requests', dataPengajuanRoutes);
