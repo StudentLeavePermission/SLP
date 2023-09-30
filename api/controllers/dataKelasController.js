@@ -1,4 +1,4 @@
-const Data_Kelas = require('../models/dataKelas');
+const Data_Kelas = require('../models/dataKelas')(sequelize, DataTypes);
 
 // Get all classes
 exports.getAllClasses = async (req, res) => {
