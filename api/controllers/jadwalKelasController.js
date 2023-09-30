@@ -1,4 +1,4 @@
-const Jadwal_Kelas = require('../models/jadwalKelas');
+const Jadwal_Kelas = require('../models/jadwalKelas')(sequelize, DataTypes);
 
 // Get all class schedules
 exports.getAllClassSchedules = async (req, res) => {

@@ -1,4 +1,4 @@
-const Data_Jam_Pelajaran = require('../models/dataJamPelajaran');
+const Data_Jam_Pelajaran = require('../models/dataJamPelajaran')(sequelize, DataTypes);
 
 // Get all class hours
 exports.getAllClassHours = async (req, res) => {
