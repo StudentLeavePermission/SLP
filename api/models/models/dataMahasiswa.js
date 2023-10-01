@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Data_Mahasiswa.belongsTo(models.Data_Kelas, {
-        foreignKey: 'ID_Kelas',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      });
+      // Data_Mahasiswa.belongsTo(models.Data_Kelas, {
+      //   foreignKey: 'ID_Kelas',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE'
+      // });
     }
   }
   Data_Mahasiswa.init({

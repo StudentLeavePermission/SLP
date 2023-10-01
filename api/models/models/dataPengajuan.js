@@ -11,12 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Data_Pengajuan.belongsTo(models.Jadwal_Kelas, {
-        foreignKey: 'ID_Jadwal_Kelas'
-      });
-      Data_Pengajuan.belongsTo(models.Mahasiswa, {
-        foreignKey: 'ID_Mahasiswa'
-      });
+      // Data_Pengajuan.belongsTo(models.Jadwal_Kelas, {
+      //   foreignKey: 'ID_Jadwal_Kelas'
+      // });
+      // Data_Pengajuan.belongsTo(models.Mahasiswa, {
+      //   foreignKey: 'ID_Mahasiswa'
+      // });
     }
   }
   Data_Pengajuan.init({

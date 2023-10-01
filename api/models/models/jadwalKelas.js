@@ -9,26 +9,26 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Jadwal_Kelas.belongsTo(models.Data_Jam_Pelajaran, {
-        foreignKey: 'ID_Jam_Pelajaran',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      });
-      Jadwal_Kelas.belongsTo(models.Data_Matkul, {
-        foreignKey: 'ID_Matkul',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      });
-      Jadwal_Kelas.belongsTo(models.Data_Dosen, {
-        foreignKey: 'ID_Dosen',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      });
-      Jadwal_Kelas.belongsTo(models.Data_Kelas, {
-        foreignKey: 'ID_Kelas',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      });
+      // Jadwal_Kelas.belongsTo(models.Data_Jam_Pelajaran, {
+      //   foreignKey: 'ID_Jam_Pelajaran',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE'
+      // });
+      // Jadwal_Kelas.belongsTo(models.Data_Matkul, {
+      //   foreignKey: 'ID_Matkul',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE'
+      // });
+      // Jadwal_Kelas.belongsTo(models.Data_Dosen, {
+      //   foreignKey: 'ID_Dosen',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE'
+      // });
+      // Jadwal_Kelas.belongsTo(models.Data_Kelas, {
+      //   foreignKey: 'ID_Kelas',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE'
+      // });
     }
   }
 

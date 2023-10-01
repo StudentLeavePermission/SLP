@@ -1,7 +1,7 @@
 'use strict';
 const { Sequelize, DataTypes, Model } = require('sequelize');
-const {mainModel} = require('../../common/models');
-const Jadwal_Kelas = new mainModel('jadwalKelas');
+// const {mainModel} = require('../../common/models');
+// const Jadwal_Kelas = new mainModel('jadwalKelas');
 module.exports = (sequelize, DataTypes) => {
   class Data_Jam_Pelajaran extends Model {
     /**
@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Data_Jam_Pelajaran',
   });
-  Data_Jam_Pelajaran.hasMany(Jadwal_Kelas, {
-    foreignKey: 'ID_Jam_Pelajaran'
-  });
+  // Data_Jam_Pelajaran.hasMany(Jadwal_Kelas, {
+  //   foreignKey: 'ID_Jam_Pelajaran'
+  // });
   return Data_Jam_Pelajaran;
 };
