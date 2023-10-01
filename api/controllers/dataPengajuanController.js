@@ -1,4 +1,4 @@
-const Data_Pengajuan = require('../models/dataPengajuan')(sequelize, DataTypes);
+const Data_Pengajuan = require('../models/models/dataPengajuan');
 
 // Get all leave requests
 exports.getAllLeaveRequests = async (req, res) => {

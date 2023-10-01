@@ -1,4 +1,4 @@
-const Data_Dosen = require('../models/dataDosen')(sequelize, DataTypes);
+const Data_Dosen = require('../models/models/dataDosen');
 
 // Get all lecturers
 exports.getAllLecturers = async (req, res) => {
