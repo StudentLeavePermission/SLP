@@ -1,4 +1,4 @@
-const Data_Mahasiswa = require('../models/dataMahasiswa')(sequelize, DataTypes);
+const Data_Mahasiswa = require('../models/models/dataMahasiswa');
 
 // Get all students
 exports.getAllStudents = async (req, res) => {
