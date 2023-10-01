@@ -1,11 +1,36 @@
+//lib that loaded
 const express = require('express');
+// const logging = require('morgan');
+const fs = require('fs');
 const bodyParser = require('body-parser');
-const routesIndex = require('./routes');
+//express as a function
+const app = express();
 const path_main = require('path');
 const winston = require('winston');
-const app = express();
+const routesIndex = require('./routes');
+
 
 app.use(bodyParser.json());
+
+const path = path_main.join(__dirname, "./logapi");
+const fileName = '/access.log';
+try {
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path);
+    }
+} catch (err) {
+    console.error(err);
+}
+var writeFile = fs.createWriteStream(path + fileName, { flags: 'a' });
+// app.use(logging('combined', { stream: writeFile }));
+
+const logger = winston.createLogger({
+    format:winston.format.json(),
+    transports:[
+        new winston.transports.File({filename:path+"/error.log", level:"error"}),
+        new winston.transports.File({filename:path+"/info.log", level:"info"}),
+    ]
+})
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
