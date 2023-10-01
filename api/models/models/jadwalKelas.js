@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model, where } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Jadwal_Kelas extends Model {
     /**
@@ -33,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   Jadwal_Kelas.init({
     Hari_Jadwal: DataTypes.STRING,
     ID_Jam_Pelajaran: DataTypes.STRING,
@@ -43,5 +42,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'jadwalKelas',
   });
+
   return Jadwal_Kelas;
 };
