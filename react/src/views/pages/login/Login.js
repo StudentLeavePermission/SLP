@@ -15,7 +15,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser, cilPhone, cilEnvelopeOpen } from '@coreui/icons'
 import '../../../scss/_variables.scss'
-import './style.css'
+import '../../../scss/style.css'
 
 const Login = () => {
   const loginRef = useRef(null)
@@ -44,7 +44,7 @@ const Login = () => {
       <div ref={loginRef} className="page">
         <CContainer style={{ width: '100%', maxWidth: '500px' }}>
           <CCardGroup>
-            <CCard className="p-2">
+            <CCard>
               <CCardBody style={{ textAlign: 'center' }}>
                 <CForm>
                   <h1>Welcome</h1>
@@ -107,15 +107,15 @@ const Login = () => {
         <CContainer className="contact-cont">
           <CRow style={{ margin: '80px' }}>
             <CCol className="d-flex justify-content-center">
-              <div className="lingkaran">
+              <CCard className="lingkaran">
                 <CIcon icon={cilPhone} size="xl" />
-              </div>
+              </CCard>
               <CCard className="card-contact"> 087735580889 </CCard>
             </CCol>
             <CCol className="d-flex justify-content-center">
-              <div className="lingkaran">
+              <CCard className="lingkaran">
                 <CIcon icon={cilEnvelopeOpen} size="xl" />
-              </div>
+              </CCard>
               <CCard className="card-contact"> fauza.naylassana.tif22@polban.ac.id </CCard>
             </CCol>
           </CRow>
