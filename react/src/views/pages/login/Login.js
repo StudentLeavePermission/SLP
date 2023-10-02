@@ -15,7 +15,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser, cilPhone, cilEnvelopeOpen } from '@coreui/icons'
 import '../../../scss/_variables.scss'
-import '../../../scss/style.scss'
+
 
 const Login = () => {
   const loginRef = useRef(null)
