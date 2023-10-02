@@ -34,7 +34,7 @@ class App extends Component {
             <Route exact path="/detail-dosen/:key" name="DetailDosen" element={<DetailDosen />} />
             <Route exact path="/tu/mahasiswa/edit" name="EditMahasiswa" element={<EditMahasiswa />} />
             <Route exact path="/formPengajuan" name="form pengajuan" element={<FormPengajuan />} />
-            <Route path="*" name="Home" element={<LayoutSLP/>} />
+            <Route path="*" name="Home" element={<LayoutSLP />} />
           </Routes>
         </Suspense>
       </HashRouter>
