@@ -4,9 +4,11 @@ const sequelize = require('./models');
 class mainModel {
     constructor(model_name=""){
         this.models = sequelize[model_name];
+        // console.log("this.models = " + sequelize["Jadwal_Kelas"]);
+        // console.log(sequelize[model_name]);
     }
 
-    get(where={}, attr=this.models.rawAttributes){
+    get(where={}, attr={}){
         return this.models.findOne({
             where:where,
             attributes:attr
@@ -15,7 +17,7 @@ class mainModel {
         })
     }
 
-    getAll(where={}, attr=this.models.rawAttributes){
+    getAll(where={}, attr={}){
         return this.models.findAll({
             where:where,
             attributes:attr
