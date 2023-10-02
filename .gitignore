@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 # From SLP
-./api/config/config.json
+**/config.json
