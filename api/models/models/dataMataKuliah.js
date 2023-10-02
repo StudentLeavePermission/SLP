@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Data_Mata_Kuliah.hasMany(models.Jadwal_Kelas, {
-        foreignKey: 'ID_Mata_Kuliah'
-      });
+      // Data_Mata_Kuliah.hasMany(models.Jadwal_Kelas, {
+      //   foreignKey: 'ID_Mata_Kuliah'
+      // });
     }
   }
   Data_Mata_Kuliah.init({
@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Data_Mata_Kuliah',
+    freezeTableName: true
   });
   return Data_Mata_Kuliah;
 };

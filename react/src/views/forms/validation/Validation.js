@@ -413,7 +413,7 @@ const Validation = () => {
               <CForm validated={true}>
                 <div className="mb-3">
                   <CFormLabel htmlFor="validationTextarea" className="form-label">
-                    Textarea
+                    Textareaa
                   </CFormLabel>
                   <CFormTextarea
                     id="validationTextarea"
