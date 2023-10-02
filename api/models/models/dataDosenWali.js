@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Data_Dosen_Wali.init({
-    Nama_Dosen: DataTypes.STRING,
-    Email_Dosen: DataTypes.STRING,
+    // Nama_Dosen: DataTypes.STRING,
+    // Email_Dosen: DataTypes.STRING,
     Password: DataTypes.STRING,
     ID_Dosen: DataTypes.INTEGER,
   }, {

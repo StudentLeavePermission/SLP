@@ -9,16 +9,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      Nama_Dosen: {
-        type: Sequelize.STRING
-      },
-      Email_Dosen: {
-        type: Sequelize.STRING
-      },
+      // Nama_Dosen: {
+      //   type: Sequelize.STRING
+      // },
+      // Email_Dosen: {
+      //   type: Sequelize.STRING
+      // },
       Password: {
         type: Sequelize.STRING
       },
-      ID_Dosen_Wali: {
+      ID_Dosen: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         references: {
