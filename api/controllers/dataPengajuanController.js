@@ -1,4 +1,8 @@
-const Data_Pengajuan = require('../models/dataPengajuan')(sequelize, DataTypes);
+// const Data_Pengajuan = require('../models/models/dataPengajuan');
+const path = require('path');
+const basename = path.basename(__filename);
+const {mainModel} = require('../common/models');
+const Data_Pengajuan = new mainModel("Data_Pengajuan");
 
 // Get all leave requests
 exports.getAllLeaveRequests = async (req, res) => {

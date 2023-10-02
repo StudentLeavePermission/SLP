@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Data_Kelas.hasMany(models.Data_Mahasiswa, {
-        foreignKey: 'ID_Kelas'
-      });
+      // Data_Kelas.hasMany(models.Data_Mahasiswa, {
+      //   foreignKey: 'ID_Kelas'
+      // });
     }
   }
   Data_Kelas.init({
@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Data_Kelas',
+    freezeTableName: true
   });
   return Data_Kelas;
 };

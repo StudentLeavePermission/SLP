@@ -1,4 +1,8 @@
-const Data_Mata_Kuliah = require('../models/dataMataKuliah')(sequelize, DataTypes);
+// const Data_Mata_Kuliah = require('../models/models/dataMataKuliah');
+const path = require('path');
+const basename = path.basename(__filename);
+const {mainModel} = require('../common/models');
+const Data_Mata_Kuliah = new mainModel("Data_Mata_Kuliah");
 
 // Get all subjects
 exports.getAllSubjects = async (req, res) => {

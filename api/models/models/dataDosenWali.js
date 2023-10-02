@@ -11,21 +11,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Data_Dosen_Wali.belongsTo(models.Data_Dosen, {
-        foreignKey: 'ID_Dosen',
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-      });
+      // Data_Dosen_Wali.belongsTo(models.Data_Dosen, {
+      //   foreignKey: 'ID_Dosen',
+      //   onDelete: 'CASCADE',
+      //   onUpdate: 'CASCADE'
+      // });
     }
   }
   Data_Dosen_Wali.init({
     Nama_Dosen: DataTypes.STRING,
     Email_Dosen: DataTypes.STRING,
     Password: DataTypes.STRING,
-    ID_Dosen: DataTypes.INTEGER
+    ID_Dosen: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Data_Dosen_Wali',
+    freezeTableName: true
   });
   return Data_Dosen_Wali;
 };
