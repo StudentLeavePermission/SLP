@@ -40,7 +40,8 @@ module.exports = (sequelize, DataTypes) => {
     ID_Kelas: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'jadwalKelas',
+    modelName: 'Jadwal_Kelas',
+    freezeTableName: true
   });
 
   return Jadwal_Kelas;

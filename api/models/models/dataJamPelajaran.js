@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Data_Jam_Pelajaran',
+    freezeTableName: true
   });
   // Data_Jam_Pelajaran.hasMany(Jadwal_Kelas, {
   //   foreignKey: 'ID_Jam_Pelajaran'

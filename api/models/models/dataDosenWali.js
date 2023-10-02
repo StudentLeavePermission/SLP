@@ -22,10 +22,11 @@ module.exports = (sequelize, DataTypes) => {
     Nama_Dosen: DataTypes.STRING,
     Email_Dosen: DataTypes.STRING,
     Password: DataTypes.STRING,
-    ID_Dosen: DataTypes.INTEGER
+    ID_Dosen: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Data_Dosen_Wali',
+    freezeTableName: true
   });
   return Data_Dosen_Wali;
 };
