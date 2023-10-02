@@ -1,21 +1,21 @@
 {
   "development": {
     "username": "postgres",
-    "password": "jacky",
+    "password": "postgresqlnisrina",
     "database": "SLP",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
-    "password": "admin",
+    "password": "postgresqlnisrina",
     "database": "SLP_test",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
-    "password": "admin",
+    "password": "postgresqlnisrina",
     "database": "SLP_release",
     "host": "127.0.0.1",
     "dialect": "postgres"

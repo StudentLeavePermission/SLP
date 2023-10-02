@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler } from '@coreui/react'
+import { CSidebar, CSidebarBrand, CSidebarNav, CSidebarToggler, CImage } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
@@ -13,29 +13,44 @@ import SimpleBar from 'simplebar-react'
 import 'simplebar/dist/simplebar.min.css'
 
 // sidebar nav config
-import navigation from '../_nav'
+import navMahasiswa from '../_navMahasiswa'
+import navDosen from '../_navDosen'
+import navAdmin from '../_navAdmin'
+import logo from '../assets/images/logo.png'
+import "../scss/style.scss"
 
-const AppSidebar = () => {
+const AppSidebar = ({ role }) => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
+  let navigation = [];
+
+  if (role === 'mahasiswa') {
+    navigation = navMahasiswa;
+  } else if (role === 'dosen') {
+    navigation = navDosen;
+  }else if (role === 'admin'){
+    navigation = navAdmin;
+  }
 
   return (
     <CSidebar
       position="fixed"
       unfoldable={unfoldable}
       visible={sidebarShow}
+      className='backgroud-blue'
       onVisibleChange={(visible) => {
         dispatch({ type: 'set', sidebarShow: visible })
       }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
-        <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
-        <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
+        <div className="text-center">
+          <CImage src={logo} height={100} />
+        </div>
       </CSidebarBrand>
       <CSidebarNav>
-        <SimpleBar>
-          <AppSidebarNav items={navigation} />
+        <SimpleBar >
+          <AppSidebarNav items={navigation}  />
         </SimpleBar>
       </CSidebarNav>
       <CSidebarToggler
