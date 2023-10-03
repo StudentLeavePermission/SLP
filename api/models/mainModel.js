@@ -8,19 +8,19 @@ class mainModel {
         // console.log(sequelize[model_name]);
     }
 
-    get(where={}, attr={}){
+    get({where={}}){
         return this.models.findOne({
             where:where,
-            attributes:attr
+            // attributes:attr
         },{
             sequelize
         })
     }
 
-    getAll(where={}, attr={}){
+    getAll({where={}}){
         return this.models.findAll({
             where:where,
-            attributes:attr
+            // attributes:attr
         },{
             sequelize
         })
