@@ -7,7 +7,7 @@ const Data_Kelas = new mainModel("Data_Kelas");
 // Get all classes
 exports.getAllClasses = async (req, res) => {
   try {
-    const classes = await Data_Kelas.findAll();
+    const classes = await Data_Kelas.getAll();
     // res.json(classes);
     res.send({
       message: "Lecturers sent successfully",

@@ -36,3 +36,18 @@ exports.loginAdviserLecturer = async (req, res) => {
     console.error(error);
   }
 };
+
+exports.registerAdviserLecturer = async (req, res) => {
+  try {
+    const {Email_Dosen, Password} = req.body;
+    const dosenWali = await Data_Dosen_Wali.get(Email_Dosen);
+    const passwordMatch = await bcrypt.compare(Password, dosenWali.Password);
+    if (!dosenWali || !passwordMatch) {
+      return res.status(401).json({message: 'Invalid username or password'});
+    }
+    const token = jwt.sign({userId: dosenWali.Email_Dosen}, 'secretKey', { expiresIn: '1h' });
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error(error);
+  }
+};

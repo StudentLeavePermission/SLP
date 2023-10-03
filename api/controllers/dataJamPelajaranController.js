@@ -7,7 +7,7 @@ const Data_Jam_Pelajaran = new mainModel("Data_Jam_Pelajaran");
 // Get all class hours
 exports.getAllClassHours = async (req, res) => {
   try {
-    const classHours = await Data_Jam_Pelajaran.findAll();
+    const classHours = await Data_Jam_Pelajaran.getAll();
     // res.json(classHours);
     res.send({
       message: "Class Hours sent successfully",
