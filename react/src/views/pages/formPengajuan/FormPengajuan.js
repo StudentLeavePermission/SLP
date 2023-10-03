@@ -17,15 +17,80 @@ import { DocsExample } from 'src/components'
 import './Style.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import axios from "axios"
+import {useNavigate} from 'react-router-dom'
 
 const CustomCheckboxTable = () => {
+  const [keterangan, setKeterangan] = useState("")
+  const [tanggalPengajuan, setTanggalPengajuan] = useState("")
+  const [tanggalAbsen, setTanggalAbsen] = useState("")
+  const [idJadwalKelas, setIdJadwalKelas] = useState("")
+  const [jenisIzin, setJenisIzin] = useState("")
+  const [statusPengajuan, setStatusPengajuan] = useState("")
+  const [idMahasiswa, setIdMahasiswa] = useState("")
+  const [fileBukti, setFileBukti] = useState("")
   const [tableData, setTableData] = useState([]) // State untuk data tabel
   const [selectedDate, setSelectedDate] = useState(new Date()) // State untuk menyimpan tanggal yang dipilih
   const [selectedDates, setSelectedDates] = useState([]) // State untuk menyimpan tanggal-tanggal yang dipilih
   const [selectAll, setSelectAll] = useState(false) // State untuk checkbox "Pilih Semua Jadwal"
   const [expandedDates, setExpandedDates] = useState([]) // State untuk tanggal yang sedang diperluas
   const selectedDatesExist = selectedDates.length > 0
+  const navigate = useNavigate()
   // Fungsi untuk mendapatkan nama hari dari tanggal
+  const handleJenisChange = (event) => {
+    setJenisIzin(event.target.value);
+  };
+
+  const handleketeranganChange = (event) => {
+    setKeterangan(event.target.value);
+  };
+
+  useEffect(() => {
+    // Fungsi untuk mendapatkan tanggal hari ini
+    const getTanggalHariIni = () => {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0'); // Januari dimulai dari 0
+      const yyyy = today.getFullYear();
+
+      const tanggalHariIni = `${yyyy}-${mm}-${dd}`;
+      setTanggalAbsen(tanggalHariIni);
+      setTanggalPengajuan(tanggalHariIni);
+    };
+
+    // Panggil fungsi getTanggalHariIni saat komponen pertama kali dirender
+    getTanggalHariIni();
+    setStatusPengajuan('Delivered');
+    setIdMahasiswa(1);
+    setIdJadwalKelas(1);
+    setFileBukti('lala.pdf');
+    setKeterangan(''); // Inisialisasi keterangan dengan string kosong
+    setJenisIzin(''); // Inisialisasi jenisIzin dengan string kosong
+    setTanggalPengajuan(''); // Inisialisasi tanggalPengajuan dengan string kosong
+    setTanggalAbsen('');
+  }, []);
+
+  
+  const sendDataToAPI = async (e) => {
+    e.preventDefault();
+    console.log(idMahasiswa);
+    try {
+       axios.post('http://localhost:3000/data-pengajuan/', {
+        idMahasiswa,
+        keterangan,
+        jenisIzin,
+        idJadwalKelas,
+        tanggalPengajuan,
+        tanggalAbsen,
+        fileBukti,
+        statusPengajuan,
+        });
+        console.log('berhasul');
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+    }
+  };
+
   const getDayName = (date) => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
     const dayIndex = date.getDay()
@@ -232,7 +297,12 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom04" className="table-font">
           Jenis Surat
         </CFormLabel>
-        <CFormSelect id="validationCustom04" defaultValue="" required>
+        <CFormSelect
+          id="validationCustom04"
+          value={jenisIzin}
+          onChange={(event) => setJenisIzin(event.target.value)}
+          required
+        >
           <option value="">Pilih Jenis Surat</option>
           <option value="izin">Izin</option>
           <option value="sakit">Sakit</option>
@@ -287,11 +357,14 @@ const CustomCheckboxTable = () => {
             Alasan
           </CFormLabel>
           <CFormTextarea
-            id="validationTextarea"
-            placeholder="Ketikkan alasan Anda"
-            rows={7}
-            required
-          ></CFormTextarea>
+          id="validationTextarea"
+          placeholder="Ketikkan alasan Anda"
+          value={keterangan}
+          onChange={handleketeranganChange}
+          rows={7}
+          required
+          >
+          </CFormTextarea>
           <CFormFeedback valid>Alasan sudah diisi</CFormFeedback>
           <CFormFeedback invalid>Mohon Alasan diisi</CFormFeedback>
         </div>
@@ -373,7 +446,7 @@ const CustomCheckboxTable = () => {
         <CFormFeedback invalid>You must agree before submitting.</CFormFeedback>
       </CCol>
       <CCol xs={12}>
-        <CButton color="primary" type="submit">
+        <CButton color="primary" type="submit" onClick={sendDataToAPI}>
           Kirim
         </CButton>
       </CCol>

@@ -16,20 +16,33 @@ exports.getAllLeaveRequests = async (req, res) => {
 };
 
 // Create a new leave request
+// exports.createLeaveRequest = async (req, res) => {
+//   try {
+//     const { Keterangan, Tanggal_Pengajuan, Tanggal_Izin, ID_Jadwal_Kelas, Jenis_Izin, ID_Mahasiswa, Status_Pengajuan } = req.body;
+//     const newRequest = await Data_Pengajuan.create({
+//       Keterangan,
+//       Tanggal_Pengajuan,
+//       Tanggal_Izin,
+//       ID_Jadwal_Kelas,
+//       Jenis_Izin,
+//       ID_Mahasiswa,
+//       Status_Pengajuan,
+//     });
+//     res.status(201).json(newRequest);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
+
 exports.createLeaveRequest = async (req, res) => {
   try {
-    const { ID_Mahasiswa, Keterangan, Jenis_Izin, ID_Jadwal_Kelas, Tanggal_Pengajuan, Tanggal_Izin, File_Pengajuan, Status_Pengajuan } = req.body;
-    const newRequest = await Data_Pengajuan.post({
-      ID_Mahasiswa,
-      Keterangan,
-      Jenis_Izin,
-      ID_Jadwal_Kelas,
-      Tanggal_Pengajuan,
-      Tanggal_Izin,
-      File_Pengajuan,
-      Status_Pengajuan,
-    });
-    res.status(201).json(newRequest);
+    const mhs = await Data_Pengajuan.post(req.body);
+    if (mhs) {
+      return res.status(201).send(mhs); 
+    } else {
+      return res.status(409).send('Incorrect details');
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
