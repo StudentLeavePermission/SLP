@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   CButton,
   CCard,
@@ -10,55 +10,62 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilPhone, cilEnvelopeOpen } from '@coreui/icons';
 import '../../../scss/_variables.scss';
-import './LandingPage.css';
+import './landingPage.css';
 import Lingkaran from './image/lingkaran.png';
 import Student from './image/student.png';
-import { FaBars, FaTimes } from 'react-icons/fa'; // Perhatikan penggunaan 'react-icons/fa' di sini
+import { FaBars, FaTimes } from 'react-icons/fa'; 
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const LandingPage = () => {
   const homeRef = useRef(null);
   const aboutUsRef = useRef(null);
   const contactRef = useRef(null);
-  const navRef = useRef(null); // Tambahkan referensi untuk elemen navbar
-  const [showSidebar, setShowSidebar] = useState(false); // State untuk mengontrol tampilan sidebar
+  const navRef = useRef(null);
 
   const scrollToSection = (id) => {
     id.current.scrollIntoView({ behavior: 'smooth' });
-    setShowSidebar(false); // Tutup sidebar setelah mengklik item menu
-  };
+  }
 
-  const toggleSidebar = () => {
-    setShowSidebar(!showSidebar); // Toggle tampilan sidebar ketika tombol hamburger atau close diklik
-  };
+  const showNavbar = () => {
+    navRef.current.classList.toggle("responsive_nav");
+  }
+
+  useEffect(() => {
+    AOS.init();
+  }, []);
 
   return (
     <div>
         <header className="fixed-bar">
-        <nav ref={navRef} className={`sidebar ${showSidebar ? 'active' : ''}`}>
-          <button onClick={toggleSidebar} className="toggle-sidebar">
-            {showSidebar ? <FaTimes /> : <FaBars />}
-          </button>
-          <button onClick={() => scrollToSection(homeRef)}>Home</button>
-          <button onClick={() => scrollToSection(aboutUsRef)}>About Us</button>
-          <button onClick={() => scrollToSection(contactRef)}>Contact</button>
-        </nav>
-      </header>
-
-
+            <nav ref={navRef}>
+            <button onClick={() => scrollToSection(homeRef)}>Home</button>
+            <button onClick={() => scrollToSection(aboutUsRef)}>About Us</button>
+            <button onClick={() => scrollToSection(contactRef)}>Contact</button>
+            <CButton className='login' href="#">Log In</CButton>
+            <button className='nav-btn nav-close-btn' onClick={showNavbar}>
+                <FaTimes />
+            </button>
+            </nav>
+            <button className='nav-btn' onClick={showNavbar}>
+            <FaBars />
+            </button>
+        </header>
+      
         <div ref={homeRef} className="landing-page">
             <CContainer className="d-flex justify-content-center position-relative">
                 <img src={Lingkaran} alt="Lingkaran" className="landing-image1" />
                 <img src={Student} alt="Student" className="landing-image2" />
                 <div className="landing-content">
-                    <h1>STUDENT LEAVE PERMISION</h1>
-                    <p>Simplify Absence Notifications for Students</p>
-                    <CButton href="#">LOGIN</CButton>
+                    <h1 style={{ fontWeight: 'bold' }}>STUDENT LEAVE PERMISION</h1>
+                    <p style={{ textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' }}>Simplify Absence Notifications for Students</p>
                 </div>
             </CContainer>
         </div>
-        <div ref={aboutUsRef} className="page">
-            <CContainer className="about-us-cont">
-            <CCard className="card-judul"> About Us </CCard>
+
+        <div ref={aboutUsRef} className='page'>
+            <CContainer className="about-us-cont" data-aos="zoom-in" data-aos-duration="1000">
+            <CCard className="card-judul" style={{ fontWeight: 'bold' }}> About Us </CCard>
             <CCard>
                 <CCardBody>
                 <p className="paragraf">
@@ -78,20 +85,21 @@ const LandingPage = () => {
             </CCard>
             </CContainer>
         </div>
+
         <div ref={contactRef} className="page">
             <CContainer className="contact-cont">
             <CRow style={{ margin: '80px' }}>
-                <CCol className="d-flex justify-content-center">
-                <CCard className="lingkaran">
-                    <CIcon icon={cilPhone} size="xl" />
-                </CCard>
-                <CCard className="card-contact"> 087735580889 </CCard>
+                <CCol className="d-flex justify-content-center" data-aos="fade-right" data-aos-offset="400" data-aos-easing="ease-in-sine"> 
+                    <CCard className="lingkaran">
+                        <CIcon icon={cilPhone} size="xl" />
+                    </CCard>
+                    <CCard className="card-contact"> 087735580889 </CCard>
                 </CCol>
-                <CCol className="d-flex justify-content-center">
-                <CCard className="lingkaran">
-                    <CIcon icon={cilEnvelopeOpen} size="xl" />
-                </CCard>
-                <CCard className="card-contact"> fauza.naylassana.tif22@polban.ac.id </CCard>
+                <CCol className="d-flex justify-content-center" data-aos="fade-left" data-aos-offset="400" data-aos-easing="ease-in-sine"> 
+                    <CCard className="lingkaran">
+                        <CIcon icon={cilEnvelopeOpen} size="xl" />
+                    </CCard>
+                    <CCard className="card-contact"> fauza.naylassana.tif22@polban.ac.id </CCard>
                 </CCol>
             </CRow>
             </CContainer>

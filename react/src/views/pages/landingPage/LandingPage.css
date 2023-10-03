@@ -2,15 +2,47 @@
     position: fixed;
     width: 100%;
     z-index: 500;
-    text-align: right;
+}
+header {
+    display: flex;
+    align-items: center;
+    height: 80px;
+    padding: 0 2rem;
+    justify-content: right;
+}
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: right; 
+}
+nav button {
+    margin-right: 25px;
+    color: #324567;
+    border: 0;
+    text-decoration: none;
+    background-color: transparent;
+}
+nav button:hover {
+    color: blue;
+}
+header .nav-btn {
+    padding: 5px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #324567;
+    visibility: hidden;
+    opacity: 0;
+    font-size: 1.8rem;
 }
 
 .landing-image1 {
     position: absolute;
     z-index: 1;
-    width: 100%;
+    width: 115%;
     height: auto;
-    margin-top: -200px;
+    margin-top: -270px;
     overflow: hidden;
 }
 
@@ -31,7 +63,6 @@
   z-index: 3;
   text-align: center;
 }
-
 .page {
     height: 100vh;
     width: 100%;
@@ -56,8 +87,8 @@
     align-items: center;
     justify-content: center;
     z-index: 3;
+    height: 100vh; 
 }
-
 .card-judul {
     color: white;
     background-color: #324567;
@@ -69,13 +100,11 @@
     justify-content: center;
     margin-bottom: 30px;
 }
-
 .paragraf {
     font-family: 'Montserrat', sans-serif;
     text-align: justify;
     margin: 5%;
 }
-
 .contact-cont {
     width: 80%;
     max-width: 1000px;
@@ -85,7 +114,6 @@
     align-items: center;
     justify-content: center;
 }
-
 .card-contact {
     width: 300px;
     height: 250px;
@@ -96,7 +124,6 @@
     margin-bottom: 5%;
     position: relative;
 }
-
 .lingkaran {
     width: 50px;
     height: 50px;
@@ -107,4 +134,41 @@
     justify-content: center;
     align-items: center;
     position: relative;
+}
+
+@media only screen and (max-width: 1024px){
+    header .nav-btn{
+        visibility: visible;
+        opacity: 1;
+    }
+    header nav{
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        background-color: rgb(255, 255, 255);
+        transition: 1s;
+        transform: translateY(-100vh);
+    }
+    header .responsive_nav{
+        transform: none;
+    }
+    nav .nav-close-btn{
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+    }
+    nav button{
+        font-size: 1.5rem;
+    }
+    .login{
+        margin-left: -25px;
+    }
+    
 }
