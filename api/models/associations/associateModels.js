@@ -46,7 +46,7 @@ module.exports = (models) => {
   });
 
   Data_Mata_Kuliah.hasMany(Jadwal_Kelas, {
-    foreignKey: 'ID_Mata_Kuliah'
+    foreignKey: 'ID_Matkul'
   });
 
   Data_Pengajuan.belongsTo(Jadwal_Kelas, {
