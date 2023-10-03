@@ -41,4 +41,6 @@ setupAssociations(db);
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+console.log(db.Data_Mahasiswa);
+
 module.exports = db;
