@@ -1,5 +1,7 @@
 // const Data_Mahasiswa = require('../models/models/dataMahasiswa');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const basename = path.basename(__filename);
 const {mainModel} = require('../common/models');
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
@@ -22,20 +24,20 @@ exports.getAllStudents = async (req, res) => {
 
 exports.loginStudent = async (req, res) => {
   try {
-    const {NIM, Password} = req.body;
+    // const {NIM, Password} = req.body;
     const mhs = await Data_Mahasiswa.get({
       where: {
-        NIM: NIM
+        NIM: req.body.NIM
       }
     });
     
     if (mhs) {
-      const isSame = await bcrypt.compare(Password, mhs.Password);
+      const isSame = await bcrypt.compare(req.body.Password, mhs.Password);
 
       if (isSame) {
         let token = jwt.sign({ id: mhs.id }, 'secretKey', { expiresIn: '1h' });
 
-        res.cookie("jwt", token, { maxAge: '1h', httpOnly: true });
+        res.cookie("jwt", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
         console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
         console.log(token);
         return res.status(201).send(mhs);
@@ -61,8 +63,8 @@ exports.registerStudent = async (req, res) => {
     if (mhs) {
       let token = jwt.sign({ id: mhs.id }, 'secretKey', { expiresIn: '1h' });
 
-      res.cookie('jwt', token, { maxAge: '1h', httpOnly: true });
-      console.log("Mahasiswa: ", JSON.stringify(user, null, 2));
+      res.cookie('jwt', token, { maxAge: 2*60*60*1000, httpOnly: true });
+      console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
       console.log(token);
       return res.status(201).send(mhs); 
     } else {
