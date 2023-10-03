@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState, useEffect  } from 'react'
 import {
   CButton,
   CCard,
@@ -12,29 +12,49 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+import { cilLockLocked, cilUser, cilPhone, cilEnvelopeOpen } from '@coreui/icons'
+import '../../../scss/_variables.scss'
 import './style.css'
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 
 const Login = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState(''); 
   const baseURL = 'http://localhost:3000/data-mahasiswa/login';
 
+  const isEmail = (username) => {
+    const emailPattern = /^[a-zA-Z0-9._-]+@polban.ac.id$/;
+  
+    return emailPattern.test(username);
+  }
+  // useEffect(() => {
+  //   // Jika role berubah, navigasikan ke halaman dengan role yang baru
+  //   if (role) {
+  //     navigate(`/${role}`);
+  //   }
+  // }, [role, navigate]);
+
 function handleLogin() {
-  axios
-    .post(baseURL, {
-      NIM: username,
-      Password: password,
-    });
+    try {
+      axios
+      .post(baseURL, {
+        NIM: username,
+        Password: password,
+      });
+      // if (isEmail(username)) {
+      //   setRole('dosen');
+      // } else if(username === 'admin'){
+      //   setRole('admin');
+      // }else {
+      //   setRole('mahasiswa');
+      // }
+    } catch (error) {
+      console.error(error);
+    }
 }
-
-const isEmail = (username) => {
-  const emailPattern = /^[a-zA-Z0-9._-]+@polban.ac.id$/;
-
-  return emailPattern.test(username);
-}
-
   return (
       <div className="page">
         <CContainer style={{ width: '100%', maxWidth: '500px' }}>
