@@ -6,6 +6,8 @@ const mhsAuth = require('../middleware/mhsAuth')
 // Get all students
 router.get('/', dataMahasiswaController.getAllStudents);
 
+router.get('/:id', dataMahasiswaController.getStudent);
+
 router.post('/register', mhsAuth.saveUser, dataMahasiswaController.registerStudent);
 
 router.post('/login', dataMahasiswaController.loginStudent);
