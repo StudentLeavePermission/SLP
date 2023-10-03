@@ -24,15 +24,16 @@ exports.getAllStudents = async (req, res) => {
 
 exports.loginStudent = async (req, res) => {
   try {
-    // const {NIM, Password} = req.body;
+    const {NIM, Password} = req.body;
     const mhs = await Data_Mahasiswa.get({
       where: {
-        NIM: req.body.NIM
+        NIM: NIM
       }
     });
     
     if (mhs) {
-      const isSame = await bcrypt.compare(req.body.Password, mhs.Password);
+      const isSame = await bcrypt.compare(Password, mhs.Password);
+      console.log(Password + ", " + mhs.Password + ", isSame = " + isSame);
 
       if (isSame) {
         let token = jwt.sign({ id: mhs.id }, 'secretKey', { expiresIn: '1h' });
@@ -54,10 +55,14 @@ exports.loginStudent = async (req, res) => {
 
 exports.registerStudent = async (req, res) => {
   try {
-    const {NIM, Password} = req.body;
+    const {NIM, Nama, Password, Nomor_Telp, Email, ID_Kelas} = req.body;
     const data = {
       NIM,
-      Password: await bcrypt.hash(Password, 10)
+      Nama,
+      Password: await bcrypt.hash(Password, 10),
+      Nomor_Telp,
+      Email,
+      ID_Kelas
     };
     const mhs = await Data_Mahasiswa.post(data);
     if (mhs) {
