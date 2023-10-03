@@ -20,6 +20,8 @@ import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
 import {useNavigate} from 'react-router-dom'
 
+const baseURL = "http://localhost:3000/data-pengajuan/";
+
 const CustomCheckboxTable = () => {
   const [keterangan, setKeterangan] = useState("")
   const [tanggalPengajuan, setTanggalPengajuan] = useState("")
@@ -28,7 +30,7 @@ const CustomCheckboxTable = () => {
   const [jenisIzin, setJenisIzin] = useState("")
   const [statusPengajuan, setStatusPengajuan] = useState("")
   const [idMahasiswa, setIdMahasiswa] = useState("")
-  const [fileBukti, setFileBukti] = useState("")
+  const [fileBukti, setFileBukti] = useState("nama_file_anda.pdf")
   const [tableData, setTableData] = useState([]) // State untuk data tabel
   const [selectedDate, setSelectedDate] = useState(new Date()) // State untuk menyimpan tanggal yang dipilih
   const [selectedDates, setSelectedDates] = useState([]) // State untuk menyimpan tanggal-tanggal yang dipilih
@@ -45,7 +47,7 @@ const CustomCheckboxTable = () => {
     setKeterangan(event.target.value);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Fungsi untuk mendapatkan tanggal hari ini
     const getTanggalHariIni = () => {
       const today = new Date();
@@ -70,26 +72,38 @@ const CustomCheckboxTable = () => {
     setTanggalAbsen('');
   }, []);
 
-  
-  const sendDataToAPI = async (e) => {
-    e.preventDefault();
-    console.log(idMahasiswa);
-    try {
-       axios.post('http://localhost:3000/data-pengajuan/', {
-        idMahasiswa,
-        keterangan,
-        jenisIzin,
-        idJadwalKelas,
-        tanggalPengajuan,
-        tanggalAbsen,
-        fileBukti,
-        statusPengajuan,
-        });
-        console.log('berhasul');
-    } catch (error) {
-      console.error('Terjadi kesalahan:', error);
-    }
-  };
+
+  function createPost() {
+    axios
+      .post(baseURL, {
+        ID_Mahasiswa : idMahasiswa,
+        Keterangan : keterangan,
+        Jenis_Izin : jenisIzin,
+        ID_Jadwal_Kelas : idJadwalKelas,
+        File_Pengajuan : fileBukti,
+        Status_Pengajuan : statusPengajuan
+      });
+  }
+
+  // const sendDataToAPI = async (e) => {
+  //   e.preventDefault();
+  //   console.log(idMahasiswa);
+  //   try {
+  //      axios.post('http://localhost:3000/data-pengajuan/', {
+  //       idMahasiswa,
+  //       keterangan,
+  //       jenisIzin,
+  //       idJadwalKelas,
+  //       tanggalPengajuan,
+  //       tanggalAbsen,
+  //       fileBukti,
+  //       statusPengajuan,
+  //       });
+  //       console.log('berhasul');
+  //   } catch (error) {
+  //     console.error('Terjadi kesalahan:', error);
+  //   }
+  // };
 
   const getDayName = (date) => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
@@ -304,8 +318,8 @@ const CustomCheckboxTable = () => {
           required
         >
           <option value="">Pilih Jenis Surat</option>
-          <option value="izin">Izin</option>
-          <option value="sakit">Sakit</option>
+          <option value="Izin">Izin</option>
+          <option value="Sakit">Sakit</option>
         </CFormSelect>
         <CFormFeedback valid>Jenis surat sudah dipilih!</CFormFeedback>
         <CFormFeedback invalid>Mohon pilih jenis surat</CFormFeedback>
@@ -446,7 +460,7 @@ const CustomCheckboxTable = () => {
         <CFormFeedback invalid>You must agree before submitting.</CFormFeedback>
       </CCol>
       <CCol xs={12}>
-        <CButton color="primary" type="submit" onClick={sendDataToAPI}>
+        <CButton color="primary" type="submit" onClick={createPost}>
           Kirim
         </CButton>
       </CCol>

@@ -15,20 +15,28 @@ exports.getAllLeaveRequests = async (req, res) => {
   }
 };
 
-// Create a new leave request
+// //Create a new leave request
 // exports.createLeaveRequest = async (req, res) => {
 //   try {
-//     const { Keterangan, Tanggal_Pengajuan, Tanggal_Izin, ID_Jadwal_Kelas, Jenis_Izin, ID_Mahasiswa, Status_Pengajuan } = req.body;
-//     const newRequest = await Data_Pengajuan.create({
+//     const { ID_Mahasiswa,
 //       Keterangan,
+//       Jenis_Izin,
+//       ID_Jadwal_Kelas,
 //       Tanggal_Pengajuan,
 //       Tanggal_Izin,
-//       ID_Jadwal_Kelas,
-//       Jenis_Izin,
+//       File_Pengajuan,
+//       Status_Pengajuan} = req.body;
+//     const newRequest = await Data_Pengajuan.post({
 //       ID_Mahasiswa,
+//       Keterangan,
+//       Jenis_Izin,
+//       ID_Jadwal_Kelas,
+//       Tanggal_Pengajuan,
+//       Tanggal_Izin,
+//       File_Pengajuan,
 //       Status_Pengajuan,
 //     });
-//     res.status(201).json(newRequest);
+//     res.status(201).json({ msg: 'Leave Request created' });
 //   } catch (error) {
 //     console.error(error);
 //     res.status(500).json({ error: 'Internal Server Error' });
@@ -37,12 +45,8 @@ exports.getAllLeaveRequests = async (req, res) => {
 
 exports.createLeaveRequest = async (req, res) => {
   try {
-    const mhs = await Data_Pengajuan.post(req.body);
-    if (mhs) {
-      return res.status(201).send(mhs); 
-    } else {
-      return res.status(409).send('Incorrect details');
-    }
+    await Data_Pengajuan.post(req.body);
+    res.status(201).json({ msg: 'Leave Request created' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
