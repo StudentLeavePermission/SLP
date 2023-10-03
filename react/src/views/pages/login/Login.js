@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   CButton,
   CCard,
@@ -16,15 +16,29 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser, cilPhone, cilEnvelopeOpen } from '@coreui/icons'
 import '../../../scss/_variables.scss'
 import './style.css'
+import axios from 'axios'
 
 const Login = () => {
   const loginRef = useRef(null)
   const aboutUsRef = useRef(null)
   const contactRef = useRef(null)
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const baseURL = 'http://localhost:3000/data-mahasiswa/login';
 
-  const scrollToSection = (id) => {
-    id.current.scrollIntoView({ behavior: 'smooth' })
-  }
+function handleLogin() {
+  axios
+    .post(baseURL, {
+      NIM: username,
+      Password: password,
+    });
+}
+
+const isEmail = (username) => {
+  const emailPattern = /^[a-zA-Z0-9._-]+@polban.ac.id$/;
+
+  return emailPattern.test(username);
+}
 
   return (
     <div style={{ backgroundColor: '#F2F6FF' }}>
@@ -55,7 +69,13 @@ const Login = () => {
                     <CInputGroupText>
                       <CIcon icon={cilUser} />
                     </CInputGroupText>
-                    <CFormInput placeholder="Username" autoComplete="username" />
+                    <CFormInput 
+                      name="username"
+                      placeholder="Username"
+                      autoComplete="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
                   </CInputGroup>
                   <CInputGroup className="mb-4" style={{ width: '90%', margin: '0 auto' }}>
                     <CInputGroupText>
@@ -63,14 +83,20 @@ const Login = () => {
                     </CInputGroupText>
                     <CFormInput
                       type="password"
+                      name="password"
                       placeholder="Password"
                       autoComplete="current-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </CInputGroup>
                   <CRow className="mx-1">
-                    <CButton style={{ width: '90%', margin: '0 auto', backgroundColor: '#0536FF' }}>
-                      <span> Login </span>
-                    </CButton>
+                  <CButton
+                    style={{ width: '90%', margin: '0 auto', backgroundColor: '#0536FF' }}
+                    onClick={handleLogin}
+                  >
+                    <span> Login </span>
+                  </CButton>
                   </CRow>
                 </CForm>
               </CCardBody>
@@ -122,7 +148,7 @@ const Login = () => {
         </CContainer>
       </div>
     </div>
-  )
+  );
 }
 
 export default Login

@@ -1,0 +1,110 @@
+.fixed-bar {
+    position: fixed;
+    width: 100%;
+    z-index: 500;
+    text-align: right;
+}
+
+.landing-image1 {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: auto;
+    margin-top: -200px;
+    overflow: hidden;
+}
+
+.landing-image2 {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: auto;
+    padding-top: 34px;
+}
+
+.landing-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding-bottom: 200px;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  text-align: center;
+}
+
+.page {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #F2F6FF;
+}
+.landing-page {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.about-us-cont {
+    width: 100%;
+    max-width: 850px;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.card-judul {
+    color: white;
+    background-color: #324567;
+    height: 50px;
+    width: 150px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.paragraf {
+    font-family: 'Montserrat', sans-serif;
+    text-align: justify;
+    margin: 5%;
+}
+
+.contact-cont {
+    width: 80%;
+    max-width: 1000px;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-contact {
+    width: 300px;
+    height: 250px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    position: relative;
+}
+
+.lingkaran {
+    width: 50px;
+    height: 50px;
+    background-color: #324567;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
