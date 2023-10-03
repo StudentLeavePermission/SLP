@@ -17,9 +17,9 @@ class mainModel {
         })
     }
 
-    getAll({where={}}){
+    getAll(){
         return this.models.findAll({
-            where:where,
+            // where:where,
             // attributes:attr
         },{
             sequelize
