@@ -20,13 +20,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Data_Pengajuan.init({
+    ID_Mahasiswa: DataTypes.INTEGER,
     Keterangan: DataTypes.TEXT,
+    Jenis_Izin: DataTypes.ENUM('Sakit', 'Izin'),
+    ID_Jadwal_Kelas: DataTypes.INTEGER,
     Tanggal_Pengajuan: DataTypes.DATE,
     Tanggal_Izin: DataTypes.DATE,
-    ID_Jadwal_Kelas: DataTypes.INTEGER,
-    Jenis_Izin: DataTypes.ENUM('Sakit', 'Izin'),
-    Status_Pengajuan: DataTypes.ENUM('Drafted', 'Delivered', 'On Progress', 'Accepted', 'Rejected'),
-    ID_Mahasiswa: DataTypes.INTEGER
+    File_Pengajuan: DataTypes.STRING,
+    Status_Pengajuan: DataTypes.ENUM('Delivered', 'On Progress', 'Accepted', 'Rejected'),
   }, {
     sequelize,
     modelName: 'Data_Pengajuan',

@@ -9,14 +9,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      ID_Mahasiswa: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Data_Mahasiswa',
+          key: 'id',
+          as: 'ID_Mahasiswa'
+        }
+      },
       Keterangan: {
         type: Sequelize.TEXT
       },
-      Tanggal_Pengajuan: {
-        type: Sequelize.DATE
-      },
-      Tanggal_Izin: {
-        type: Sequelize.DATE
+      Jenis_Izin: {
+        type: Sequelize.ENUM('Sakit', 'Izin'),
       },
       ID_Jadwal_Kelas: {
         type: Sequelize.INTEGER,
@@ -27,20 +33,18 @@ module.exports = {
           as: 'ID_Jadwal_Kelas'
         }
       },
-      Jenis_Izin: {
-        type: Sequelize.ENUM('Sakit', 'Izin'),
+      Tanggal_Pengajuan: {
+        type: Sequelize.DATE
+      },
+      Tanggal_Izin: {
+        type: Sequelize.DATE
+      },
+      File_Pengajuan: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       Status_Pengajuan: {
-        type: Sequelize.ENUM('Drafted', 'Delivered', 'On Progress', 'Accepted', 'Rejected'),
-      },
-      ID_Mahasiswa: {
-        type: Sequelize.INTEGER,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Data_Mahasiswa',
-          key: 'id',
-          as: 'ID_Mahasiswa'
-        }
+        type: Sequelize.ENUM('Delivered', 'On Progress', 'Accepted', 'Rejected'),
       },
       createdAt: {
         allowNull: false,
