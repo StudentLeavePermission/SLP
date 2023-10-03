@@ -55,10 +55,14 @@ exports.loginStudent = async (req, res) => {
 
 exports.registerStudent = async (req, res) => {
   try {
-    const {NIM, Password} = req.body;
+    const {NIM, Nama, Password, Nomor_Telp, Email, ID_Kelas} = req.body;
     const data = {
       NIM,
-      Password: await bcrypt.hash(Password, 10)
+      Nama,
+      Password: await bcrypt.hash(Password, 10),
+      Nomor_Telp,
+      Email,
+      ID_Kelas
     };
     const mhs = await Data_Mahasiswa.post(data);
     if (mhs) {
