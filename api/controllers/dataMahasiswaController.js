@@ -7,7 +7,7 @@ const {mainModel} = require('../common/models');
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 
 // Get all students
-exports.getAllStudents = async (req, res) => {
+const getAllStudents = async (req, res) => {
   try {
     const students = await Data_Mahasiswa.getAll();
     // res.json(students);
@@ -22,7 +22,7 @@ exports.getAllStudents = async (req, res) => {
   }
 };
 
-exports.getStudent = async (req, res) => {
+const getStudent = async (req, res) => {
   try {
     const { id } = req.params; // Assuming NIM is passed as a route parameter
     const student = await Data_Mahasiswa.get({
@@ -45,7 +45,7 @@ exports.getStudent = async (req, res) => {
 };
 
 
-exports.loginStudent = async (req, res) => {
+const loginStudent = async (req, res) => {
   try {
     const {NIM, Password} = req.body;
     const mhs = await Data_Mahasiswa.get({
@@ -56,15 +56,15 @@ exports.loginStudent = async (req, res) => {
     
     if (mhs) {
       const isSame = await bcrypt.compare(Password, mhs.Password);
-      console.log(Password + ", " + mhs.Password + ", isSame = " + isSame);
+      // console.log(Password + ", " + mhs.Password + ", isSame = " + isSame);
 
       if (isSame) {
         let token = jwt.sign({ id: mhs.id }, 'secretKey', { expiresIn: '1h' });
 
-        res.cookie("jwt", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
-        console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
+        // res.cookie("access_token", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
+        // console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
         console.log(token);
-        return res.status(201).send(mhs);
+        return res.cookie("access_token", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true }).status(201).json("Login success");
       } else {
         return res.status(401).send('Authentication Failed');
       }
@@ -76,7 +76,7 @@ exports.loginStudent = async (req, res) => {
   }
 };
 
-exports.registerStudent = async (req, res) => {
+const registerStudent = async (req, res) => {
   try {
     const {NIM, Nama, Password, Nomor_Telp, Email, ID_Kelas} = req.body;
     const data = {
@@ -91,10 +91,10 @@ exports.registerStudent = async (req, res) => {
     if (mhs) {
       let token = jwt.sign({ id: mhs.id }, 'secretKey', { expiresIn: '1h' });
 
-      res.cookie('jwt', token, { maxAge: 2*60*60*1000, httpOnly: true });
-      console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
+      // res.cookie('access_token', token, { maxAge: 2*60*60*1000, httpOnly: true });
+      // console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
       console.log(token);
-      return res.status(201).send(mhs); 
+      return res.cookie('access_token', token, { maxAge: 2*60*60*1000, httpOnly: true }).status(201).json("Register success"); 
     } else {
       return res.status(409).send('Incorrect details');
     }
@@ -102,3 +102,20 @@ exports.registerStudent = async (req, res) => {
     console.error(error);
   }
 };
+
+const protected = async (req, res) => {
+  return res.json({ user: { NIM: req.NIM, Nama: req.Nama } });
+}
+
+const logoutStudent = async (req, res) => {
+  return res.clearCookie('access_token').status(200).json({ message: 'Logged out' });
+}
+
+module.exports = {
+  getAllStudents,
+  getStudent,
+  loginStudent,
+  registerStudent,
+  protected,
+  logoutStudent
+}
