@@ -7,6 +7,6 @@ const jadwalKelasController = require('../controllers/jadwalKelasController');
 router.get('/', jadwalKelasController.getAllClassSchedules);
 
 // Create a new class schedule
-router.post('/', jadwalKelasController.createClassSchedule);
+router.post('/create', jadwalKelasController.createClassSchedule);
 
 module.exports = router;

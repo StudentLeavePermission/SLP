@@ -24,16 +24,8 @@ exports.getAllClassSchedules = async (req, res) => {
 // Create a new class schedule
 exports.createClassSchedule = async (req, res) => {
   try {
-    const { Hari, ID_Jam_Pelajaran_Start, ID_Jam_Pelajaran_End, ID_Matkul, ID_Dosen, ID_Kelas } = req.body;
-    const newSchedule = await Jadwal_Kelas.post({
-      Hari,
-      ID_Jam_Pelajaran_Start,
-      ID_Jam_Pelajaran_End,
-      ID_Matkul,
-      ID_Dosen,
-      ID_Kelas
-    });
-    res.status(201).json(newSchedule);
+    await Jadwal_Kelas.post(req.body);
+    res.status(201).json({ msg: 'New Schedule created' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
