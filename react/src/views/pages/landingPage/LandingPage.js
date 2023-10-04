@@ -10,7 +10,7 @@ import {
 import CIcon from '@coreui/icons-react';
 import { cilPhone, cilEnvelopeOpen } from '@coreui/icons';
 import '../../../scss/_variables.scss';
-import './landingPage.css';
+import './LandingPage.css';
 import Lingkaran from './image/lingkaran.png';
 import Student from './image/student.png';
 import { FaBars, FaTimes } from 'react-icons/fa'; 
@@ -42,7 +42,7 @@ const LandingPage = () => {
             <button onClick={() => scrollToSection(homeRef)}>Home</button>
             <button onClick={() => scrollToSection(aboutUsRef)}>About Us</button>
             <button onClick={() => scrollToSection(contactRef)}>Contact</button>
-            <CButton className='login' href="#">Log In</CButton>
+            <CButton className='login' href="/#/login">Log In</CButton>
             <button className='nav-btn nav-close-btn' onClick={showNavbar}>
                 <FaTimes />
             </button>

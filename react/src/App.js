@@ -19,6 +19,7 @@ const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const FormPengajuan = React.lazy(() => import('./views/pages/formPengajuan/FormPengajuan'))
 const DetailDosen = React.lazy(()=> import('./views/pages/crudDosen/DetailDosen'))
+const LandingPage = React.lazy(()=> import('./views/pages/landingPage/LandingPage'))
 //CRUD Mahasiswa (TU)
 const EditMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/EditMahasiswa'))
 class App extends Component {
@@ -34,6 +35,7 @@ class App extends Component {
             <Route exact path="/detail-dosen/:key" name="DetailDosen" element={<DetailDosen />} />
             <Route exact path="/tu/mahasiswa/edit" name="EditMahasiswa" element={<EditMahasiswa />} />
             <Route exact path="/formPengajuan" name="form pengajuan" element={<FormPengajuan />} />
+            <Route index name="landing page" element={<LandingPage />} />
             <Route path="*" name="Home" element={<LayoutSLP />} />
           </Routes>
         </Suspense>
