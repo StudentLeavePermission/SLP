@@ -1,6 +1,8 @@
 //importing modules
 const express = require("express");
 const db = require("../models/models");
+const jwt = require('jsonwebtoken');
+
 //Assigning db.users to User variable
 const Mhs = db.Data_Mahasiswa;
 
@@ -16,7 +18,7 @@ const saveUser = async (req, res, next) => {
         });
         //if username exist in the database respond with a status of 409
         if (username) {
-            // return res.json(409).send("NIM already exists");
+            return res.json(409).send("NIM already exists");
         }
 
         next();
@@ -25,7 +27,25 @@ const saveUser = async (req, res, next) => {
     }
 };
 
+const authorizedUser = async (req, res, next) => {
+    const token = req.cookies.access_token;
+    if (!token) {
+        return res.status(403).send("Token does not exist");
+    }
+    try {
+        const data = jwt.verify(token, "secretKey");
+        req.NIM = data.NIM;
+        req.Nama = data.Nama;
+        console.log("Auth success, token: " + token);
+        return next();
+    } catch (error) {
+        console.log(error);
+        return res.status(403).send("An error occurred");
+    }
+}
+
 //exporting module
 module.exports = {
     saveUser,
+    authorizedUser
 };
