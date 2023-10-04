@@ -28,7 +28,13 @@ module.exports = (models) => {
   });
 
   Data_Jam_Pelajaran.hasMany(Jadwal_Kelas, {
-    foreignKey: 'ID_Jam_Pelajaran',
+    foreignKey: 'ID_Jam_Pelajaran_Start',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  });
+
+  Data_Jam_Pelajaran.hasMany(Jadwal_Kelas, {
+    foreignKey: 'ID_Jam_Pelajaran_End',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   });
@@ -58,7 +64,13 @@ module.exports = (models) => {
   });
 
   Jadwal_Kelas.belongsTo(Data_Jam_Pelajaran, {
-    foreignKey: 'ID_Jam_Pelajaran',
+    foreignKey: 'ID_Jam_Pelajaran_Start',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  });
+
+  Jadwal_Kelas.belongsTo(Data_Jam_Pelajaran, {
+    foreignKey: 'ID_Jam_Pelajaran_End',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
   });
