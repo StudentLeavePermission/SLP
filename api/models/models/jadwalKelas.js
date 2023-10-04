@@ -34,7 +34,8 @@ module.exports = (sequelize, DataTypes) => {
 
   Jadwal_Kelas.init({
     Hari_Jadwal: DataTypes.STRING,
-    ID_Jam_Pelajaran: DataTypes.STRING,
+    ID_Jam_Pelajaran_Start: DataTypes.INTEGER,
+    ID_Jam_Pelajaran_End: DataTypes.INTEGER,
     ID_Matkul: DataTypes.INTEGER,
     ID_Dosen: DataTypes.INTEGER,
     ID_Kelas: DataTypes.INTEGER

@@ -12,13 +12,22 @@ module.exports = {
       Hari_Jadwal: {
         type: Sequelize.STRING
       },
-      ID_Jam_Pelajaran: {
+      ID_Jam_Pelajaran_Start: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         references: {
           model: 'Data_Jam_Pelajaran',
           key: 'id',
-          as: 'ID_Jam_Pelajaran',
+          as: 'ID_Jam_Pelajaran_Start',
+        }
+      },
+      ID_Jam_Pelajaran_End: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Data_Jam_Pelajaran',
+          key: 'id',
+          as: 'ID_Jam_Pelajaran_End',
         }
       },
       ID_Matkul: {

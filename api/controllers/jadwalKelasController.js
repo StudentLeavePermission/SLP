@@ -24,11 +24,12 @@ exports.getAllClassSchedules = async (req, res) => {
 // Create a new class schedule
 exports.createClassSchedule = async (req, res) => {
   try {
-    const { Hari, ID_Jam_Pelajaran, ID_Matkul, ID_Dosen, ID_Kelas } = req.body;
+    const { Hari, ID_Jam_Pelajaran_Start, ID_Jam_Pelajaran_End, ID_Matkul, ID_Dosen, ID_Kelas } = req.body;
     const newSchedule = await Jadwal_Kelas.post({
       Hari,
-      ID_Jam_Pelajaran,
-      ID_Mata_Kuliah,
+      ID_Jam_Pelajaran_Start,
+      ID_Jam_Pelajaran_End,
+      ID_Matkul,
       ID_Dosen,
       ID_Kelas
     });
