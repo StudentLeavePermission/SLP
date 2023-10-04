@@ -12,6 +12,15 @@ module.exports = {
       Nama_Dosen: {
         type: Sequelize.STRING
       },
+      NIP: {
+        type: Sequelize.STRING
+      },
+      Kode_Dosen: {
+        type: Sequelize.CHAR(6)
+      },
+      InitialID: {
+        type: Sequelize.CHAR(2)
+      },
       Email_Dosen: {
         type: Sequelize.STRING
       },

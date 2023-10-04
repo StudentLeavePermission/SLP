@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   Data_Dosen.init({
     Nama_Dosen: DataTypes.STRING,
+    NIP: DataTypes.STRING,
+    Kode_Dosen: DataTypes.CHAR(6),
+    InitialID: DataTypes.CHAR(2),
     Email_Dosen: DataTypes.STRING
   }, {
     sequelize,
