@@ -1,15 +1,23 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const router = express.Router();
 const dataMahasiswaController = require('../controllers/dataMahasiswaController');
 const mhsAuth = require('../middleware/mhsAuth')
 
-// Get all students
-router.get('/', dataMahasiswaController.getAllStudents);
+router.use(cookieParser());
 
-router.get('/:id', dataMahasiswaController.getStudent);
+// Get all students
+router.get('/students', dataMahasiswaController.getAllStudents);
+
+router.get('/students/:id', dataMahasiswaController.getStudent);
 
 router.post('/register', mhsAuth.saveUser, dataMahasiswaController.registerStudent);
 
 router.post('/login', dataMahasiswaController.loginStudent);
+
+router.get('/logout', mhsAuth.authorizedUser, dataMahasiswaController.logoutStudent);
+
+router.get('/protected', mhsAuth.authorizedUser, dataMahasiswaController.protected);
+
 
 module.exports = router;
