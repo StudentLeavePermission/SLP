@@ -7,10 +7,12 @@ const bodyParser = require('body-parser');
 const app = express();
 const path_main = require('path');
 const winston = require('winston');
+const cookieParser = require('cookie-parser');
 const routesIndex = require('./routes');
 
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const path = path_main.join(__dirname, "./logapi");
 const fileName = '/access.log';
