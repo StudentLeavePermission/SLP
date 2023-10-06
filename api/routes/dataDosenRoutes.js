@@ -6,4 +6,12 @@ const dataDosenController = require('../controllers/dataDosenController');
 // Get all lecturers
 router.get('/', dataDosenController.getAllLecturers);
 
+router.post('/create', dataDosenController.createDataDosen);
+
+router.delete('/delete/:id', dataDosenController.deleteDataDosen);
+
+router.patch('/patch/:id', dataDosenController.editDataDosen);
+
+router.get('/get/:id', dataDosenController.getOneDataDosen);
+
 module.exports = router;
