@@ -10,7 +10,7 @@ exports.getAllClasses = async (req, res) => {
     const classes = await Data_Kelas.getAll();
     // res.json(classes);
     res.send({
-      message: "Lecturers sent successfully",
+      message: "Classes sent successfully",
       data: classes
     });
     console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");
