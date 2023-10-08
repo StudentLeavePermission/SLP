@@ -11,7 +11,7 @@ exports.getAllClasses = async (req, res) => {
     // res.json(classes);
     res.send({
       message: "Lecturers sent successfully",
-      data: lecturers
+      data: classes
     });
     console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");
   } catch (error) {
