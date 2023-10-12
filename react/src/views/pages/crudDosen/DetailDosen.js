@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { CCol, CRow } from '@coreui/react';
-import './detail.css';
+import './Detail.css';
 import avatar1 from 'src/assets/images/avatars/1.jpg';
 import avatar2 from 'src/assets/images/avatars/2.jpg';
 
