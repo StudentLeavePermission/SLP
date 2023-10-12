@@ -31,12 +31,12 @@ const Login = () => {
   
     return emailPattern.test(username);
   }
-  // useEffect(() => {
-  //   // Jika role berubah, navigasikan ke halaman dengan role yang baru
-  //   if (role) {
-  //     navigate(`/${role}`);
-  //   }
-  // }, [role, navigate]);
+  useEffect(() => {
+    // Jika role berubah, navigasikan ke halaman dengan role yang baru
+    if (role) {
+      navigate(`/${role}`);
+    }
+  }, [role, navigate]);
 
   function handleLogin() {
     axios
@@ -48,13 +48,13 @@ const Login = () => {
         const token = Cookies.get('jwt');
         if (token != 'undefined') {
           alert('Login successful!');
-          // if (isEmail(username)) {
-          //   setRole('dosen');
-          // } else if(username === 'admin'){
-          //   setRole('admin');
-          // }else {
-          //   setRole('mahasiswa');
-          // }
+          if (isEmail(username)) {
+            setRole('dosen');
+          } else if(username === 'admin'){
+            setRole('admin');
+          }else {
+            setRole('mahasiswa');
+          }
         } else {
           alert('coba ulangi'); 
         }
