@@ -17,6 +17,7 @@ import '../../../scss/_variables.scss'
 import './style.css'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -37,24 +38,33 @@ const Login = () => {
   //   }
   // }, [role, navigate]);
 
-function handleLogin() {
-    try {
-      axios
+  function handleLogin() {
+    axios
       .post(baseURL, {
         NIM: username,
         Password: password,
+      })
+      .then(() => {
+        const token = Cookies.get('jwt');
+        if (token != 'undefined') {
+          alert('Login successful!');
+          // if (isEmail(username)) {
+          //   setRole('dosen');
+          // } else if(username === 'admin'){
+          //   setRole('admin');
+          // }else {
+          //   setRole('mahasiswa');
+          // }
+        } else {
+          alert('coba ulangi'); 
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('An error occurred during login.');
       });
-      // if (isEmail(username)) {
-      //   setRole('dosen');
-      // } else if(username === 'admin'){
-      //   setRole('admin');
-      // }else {
-      //   setRole('mahasiswa');
-      // }
-    } catch (error) {
-      console.error(error);
-    }
-}
+  }
+  
   return (
       <div className="page">
         <CContainer style={{ width: '100%', maxWidth: '500px' }}>

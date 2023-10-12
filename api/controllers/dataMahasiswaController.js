@@ -56,13 +56,11 @@ const loginStudent = async (req, res) => {
     
     if (mhs) {
       const isSame = await bcrypt.compare(Password, mhs.Password);
-      // console.log(Password + ", " + mhs.Password + ", isSame = " + isSame);
+      console.log(Password + ", " + mhs.Password + ", isSame = " + isSame);
 
       if (isSame) {
         let token = jwt.sign({ id: mhs.id }, 'secretKey', { expiresIn: '1h' });
-
-        // res.cookie("access_token", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
-        // console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
+        console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
         console.log(token);
         return res.cookie("access_token", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true }).status(201).json("Login success");
       } else {
