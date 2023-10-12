@@ -5,4 +5,6 @@ const dataMataKuliahController = require('../controllers/dataMataKuliahControlle
 // Get all subjects
 router.get('/', dataMataKuliahController.getAllSubjects);
 
+router.get('/get/:id', dataMataKuliahController.getOneDataMatkul);
+
 module.exports = router;

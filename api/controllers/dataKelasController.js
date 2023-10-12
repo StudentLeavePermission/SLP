@@ -19,3 +19,25 @@ exports.getAllClasses = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.getOneDataKelas = async (req, res) => {
+  try {
+    const { id } = req.params; // Ambil ID dari parameter URL
+    const dataKelas = await Data_Kelas.get({ // Menggunakan metode 'get' dengan kriteria ID
+      where: { id: id },
+    });
+
+    if (dataKelas) {
+      res.send({
+        message: "Data Kelas found successfully",
+        data: dataKelas,
+      });
+      console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+    } else {
+      res.status(404).json({ message: "Data Kelas not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
