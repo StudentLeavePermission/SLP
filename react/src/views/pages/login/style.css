@@ -18,6 +18,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    background-color: #F2F6FF;
 }
 
 .about-us-cont {
@@ -79,4 +80,29 @@
     justify-content: center;
     align-items: center;
     position: relative;
+}
+
+.button-login {
+    width: 90%;
+    margin: 0 auto;
+    background-color: #0536FF;
+}
+
+.button-login:hover {
+    background-color:  #002A88;
+}
+
+.button-forgot {
+    background-color: transparent;
+    color: #0536FF;
+    border: none;
+}
+
+.button-forgot:hover {
+    background-color: transparent;
+    color: #002A88;
+}
+
+.button-forgot:active {
+    background-color: transparent;
 }
