@@ -23,9 +23,13 @@ const LandingPage = React.lazy(()=> import('./views/pages/landingPage/LandingPag
 const EditMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/EditMahasiswa'))
 //CRUD Dosen (TU)
 const CrudDosen = React.lazy(() => import('./views/pages/crudDosen/tabelDosen'))
-const DetailDosen = React.lazy(() => import('./views/pages/crudDosen/DetailDosen'))
+const DetailDosen = React.lazy(() => import('./views/pages/crudDosen/detailDosen'))
 const TambahDosen = React.lazy(()=> import('./views/pages/crudDosen/tambahDosen'));
-const EditDosen = React.lazy(() => import('./views/pages/crudDosen/editDosen'))
+const EditDosen = React.lazy(() => import('./views/pages/crudDosen/editDosen'));
+const VerifyPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/VerifyPengajuan'));
+
+//CRUD Jadwal (TU)
+const CrudJadwal = React.lazy(() => import('./views/pages/crudJadwal/TabelCRUD'))
 class App extends Component {
   render() {
     return (
@@ -42,7 +46,9 @@ class App extends Component {
             <Route exact path="/dataDosen" name="TabelDosen" element={<CrudDosen />} />
             <Route exact path="/detailDosen/:key" name="DetailDosen" element={<DetailDosen />} />
             <Route exact path="/tambahDosen" name="TambahDosen" element={<TambahDosen />} />
-            <Route exact path="/editDosen" name="EditDosen" element={<EditDosen />} />
+            <Route exact path="/editDosen/:key" name="EditDosen" element={<EditDosen />} />
+            <Route exact path="/verifyPengajuan" name="VerifyPengajuan" element={<VerifyPengajuan />} />
+            <Route exact path="/dataJadwal" name="TabelJadwal" element={<CrudJadwal />} />
             <Route path="*" name="Home" element={<LayoutSLP />} />
           </Routes>
         </Suspense>

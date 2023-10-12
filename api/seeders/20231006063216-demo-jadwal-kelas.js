@@ -12,6 +12,46 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+    await queryInterface.bulkInsert('Data_Jadwal_Kelas', [{
+      Hari_Jadwal: 'Senin',
+      ID_Jam_Pelajaran_Start: 1,
+      ID_Jam_Pelajaran_End: 2,
+      ID_Matkul: 1,
+      ID_Dosen: 1,
+      ID_Kelas: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      Hari_Jadwal: 'Selasa',
+      ID_Jam_Pelajaran_Start: 3,
+      ID_Jam_Pelajaran_End: 4,
+      ID_Matkul: 2,
+      ID_Dosen: 2,
+      ID_Kelas: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      Hari_Jadwal: 'Rabu',
+      ID_Jam_Pelajaran_Start: 5,
+      ID_Jam_Pelajaran_End: 6,
+      ID_Matkul: 3,
+      ID_Dosen: 3,
+      ID_Kelas: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      Hari_Jadwal: 'Kamis',
+      ID_Jam_Pelajaran_Start: 7,
+      ID_Jam_Pelajaran_End: 8,
+      ID_Matkul: 4,
+      ID_Dosen: 4,
+      ID_Kelas: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }])
   },
 
   async down (queryInterface, Sequelize) {
@@ -21,5 +61,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
+    await queryInterface.bulkDelete('Data_Jadwal_Kelas', null, {})
   }
 };
