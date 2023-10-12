@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from 'react';
 import {
   CRow,
@@ -27,6 +28,16 @@ const EditMahasiswa = () => {
       reader.readAsDataURL(file);
     }
   };
+  const [post, setPost] = React.useState(null);
+
+  React.useEffect(() => {
+    axios.get('').then((response) => {
+      setPost(response.data);
+    });
+  }, []);
+
+  if (!post) return null;
+
 
   return (
     <div className="c-app c-default-layout">
