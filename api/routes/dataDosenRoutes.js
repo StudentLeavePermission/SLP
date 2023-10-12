@@ -4,7 +4,7 @@ const axios = require('axios');
 const dataDosenController = require('../controllers/dataDosenController');
 
 // Get all lecturers
-router.get('/', dataDosenController.getAllLecturers);
+router.get('/', dataDosenController.getAllDataDosen);
 
 router.post('/create', dataDosenController.createDataDosen);
 

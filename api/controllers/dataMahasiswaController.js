@@ -103,7 +103,7 @@ const registerStudent = async (req, res) => {
   }
 };
 
-const protected = async (req, res) => {
+const protectedContent = async (req, res) => {
   return res.json({ user: { NIM: req.NIM, Nama: req.Nama } });
 }
 
@@ -116,6 +116,6 @@ module.exports = {
   getStudent,
   loginStudent,
   registerStudent,
-  protected,
+  protectedContent,
   logoutStudent
 }

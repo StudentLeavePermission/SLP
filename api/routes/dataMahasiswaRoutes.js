@@ -17,7 +17,7 @@ router.post('/login', dataMahasiswaController.loginStudent);
 
 router.get('/logout', mhsAuth.authorizedUser, dataMahasiswaController.logoutStudent);
 
-router.get('/protected', mhsAuth.authorizedUser, dataMahasiswaController.protected);
+router.get('/protected', mhsAuth.authorizedUser, dataMahasiswaController.protectedContent);
 
 
 module.exports = router;
