@@ -1,93 +1,41 @@
-import React, { useState, useEffect, useRef } from 'react';
-import 'datatables.net-dt/css/jquery.dataTables.css'; // Import DataTables CSS
-import $ from 'jquery'; // Import jQuery
-import 'datatables.net'; // Import DataTables
+import React, { useState, useEffect } from 'react';
 import './tabelDosen.css'; // Import your CSS file
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil } from '@coreui/icons';
 import { CButton } from '@coreui/react';
-import avatar1 from 'src/assets/images/avatars/1.jpg';
-import avatar2 from 'src/assets/images/avatars/2.jpg';
+import axios from "axios";
 
 function TabelCRUD() {
-  const tableRef = useRef(null);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    // Mengatur opsi bahasa DataTables
-    $.extend($.fn.dataTable.defaults, {
-      language: {
-        paginate: {
-          previous: '<', // Mengubah "Previous" menjadi tanda "<"
-          next: '>', // Mengubah "Next" menjadi tanda ">"
-        },
-      },
-    });
-
-    // Inisialisasi DataTables pada tabel menggunakan ref
-    const dataTable = $(tableRef.current).DataTable({
-      paging: true, // Aktifkan paginasi
-      searching: true, // Aktifkan pencarian
-      lengthChange: false, // Sembunyikan dropdown "Show [X] entries"
-      pageLength: 5, // Set panjang halaman default menjadi 5 entri per halaman
-      // Konfigurasi DataTables lainnya
-    });
-
-    return () => {
-      // Hapus DataTables saat komponen unmount
-      dataTable.destroy();
-    };
+    getAllDataDosen();
   }, []);
 
-  const [data, setData] = useState([
-    {
-      key: '1',
-      nip: '197312271999031003',
-      nama: 'Ade Chandra Nugraha, S.Si., M.T.',
-      id: 'AD',
-      kode: 'KO001N',
-      email: 'chandra@jtk.polban.ac.id',
-      status: 'Bukan Dosen Wali',
-      kelas: null,
-      prodi: null,
-      image: avatar2,
-    },
-    {
-      key: '2',
-      nip: '198903252019032023',
-      nama: 'Sri Ratna Wulan, S.Pd., M.T.',
-      id: 'SW',
-      kode: 'KO076N',
-      email: 'sri.ratna@jtk.polban.ac.id',
-      status: 'Dosen Wali',
-      kelas: '2A',
-      prodi: 'D3 Teknik Informatika',
-      image: avatar1,
-    },
-  ]);
-
-  const [form, setForm] = useState({}); // Form data
-  // const [detailItem, setDetailItem] = useState(null); // To display details
-  const [editIndex, setEditIndex] = useState(-1); // Index of the data being edited
-
-  // Function to add new data
-  const tambahData = () => {
-    setData([...data, form]);
-    setForm({});
+  const getAllDataDosen = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-dosen');
+      setData(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   // Function to delete data
-  const hapusData = (index) => {
-    const newData = [...data];
-    newData.splice(index, 1);
-    setData(newData);
-
-    // Setelah menghapus data, perlu memeriksa apakah data yang dihapus adalah data yang sedang diedit
-    // Jika ya, kita perlu menghentikan mode pengeditan.
-    if (editIndex === index) {
-      setEditIndex(-1);
-      setForm({});
+  const hapusData = async (id) => {
+    const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
+  
+    if (confirmation) {
+      try {
+        await axios.delete(`http://localhost:3000/data-dosen/delete/${id}`);
+        const newData = data.filter(item => item.id !== id);
+        setData(newData);
+      } catch (error) {
+        console.error('Error deleting data:', error);
+      }
     }
   };
+  
 
   // JSX for the header section
   const headerSection = (
@@ -102,12 +50,12 @@ function TabelCRUD() {
   const mainSection = (
     <div className="container">
       <div className="table-box">
-        <CButton href={`/#/tambahDosen/`} onClick={tambahData} className="btn-tambah table-font">
-            + Tambah Data
+        <CButton href={`/#/tambahDosen/`} className="btn-tambah table-font">
+          + Tambah Data
         </CButton>
         <button className="btn-eksport table-font">Eksport</button>
         <button className="btn-impor table-font">Import</button>
-        <table ref={tableRef} className="tabel">
+        <table className="tabel">
           <thead>
             <tr>
               <th className="header-cell rata table-font">Nomor</th>
@@ -120,20 +68,20 @@ function TabelCRUD() {
           </thead>
           <tbody>
             {data.map((item, index) => (
-              <tr key={index}>
+              <tr key={item.id}>
                 <td className="cell rata table-font">{index + 1}</td>
-                <td className="cell rata table-font">{item.kode}</td>
-                <td className="cell rata table-font">{item.id}</td>
-                <td className="cell rata table-font">{item.nip}</td>
-                <td className="cell rata table-font">{item.nama}</td>
+                <td className="cell rata table-font">{item.Kode_Dosen}</td>
+                <td className="cell rata table-font">{item.InitialID}</td>
+                <td className="cell rata table-font">{item.NIP}</td>
+                <td className="cell rata table-font">{item.Nama_Dosen}</td>
                 <td className="cell aksi">
-                  <CButton href={`/#/detailDosen/${item.key}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                  <CButton href={`/#/detailDosen/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
                     <CIcon icon={cilInfo} />
                   </CButton>
-                  <CButton href={`/editDosen/${item.key}`} style={{ color: 'black', backgroundColor: 'transparent' }} >
+                  <CButton href={`/#/editDosen/${item.id}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
                     <CIcon icon={cilPencil} />
                   </CButton>
-                  <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(index)}>
+                  <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(item.id)}>
                     <CIcon icon={cilTrash} />
                   </button>
                 </td>
@@ -144,6 +92,7 @@ function TabelCRUD() {
       </div>
     </div>
   );
+
   return (
     <>
       {headerSection}

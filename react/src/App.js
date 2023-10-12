@@ -43,7 +43,7 @@ class App extends Component {
             <Route exact path="/dataDosen" name="TabelDosen" element={<CrudDosen />} />
             <Route exact path="/detailDosen/:key" name="DetailDosen" element={<DetailDosen />} />
             <Route exact path="/tambahDosen" name="TambahDosen" element={<TambahDosen />} />
-            <Route exact path="/editDosen" name="EditDosen" element={<EditDosen />} />
+            <Route exact path="/editDosen/:key" name="EditDosen" element={<EditDosen />} />
             <Route exact path="/verifyPengajuan" name="VerifyPengajuan" element={<VerifyPengajuan />} />
             <Route path="*" name="Home" element={<LayoutSLP />} />
           </Routes>
