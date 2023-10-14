@@ -14,7 +14,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { DocsExample } from 'src/components'
-import './Style.css'
+import './style.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
