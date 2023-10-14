@@ -19,6 +19,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
 import {useNavigate, useParams} from 'react-router-dom'
+import { idMahasiswa } from '../login/Login'
 
 const baseURL = "http://localhost:3000/data-pengajuan/";
 
