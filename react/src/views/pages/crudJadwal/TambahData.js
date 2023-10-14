@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import './Style.css';
+import './TabelCRUD.css';
 
-const TambahDataJadwal = () => {
+const TambahData = () => {
   const [formData, setFormData] = useState({
     kelas: '',
     mataKuliah: '',
@@ -82,131 +82,133 @@ const TambahDataJadwal = () => {
   };
 
   return (
-    <form className="row g-3" onSubmit={handleSubmit}>
-      <div className="col-md-6">
-        <label className="table-font">Kelas</label>
-        <Select
-          name="kelas"
-          value={dummyData.kelas.find((option) => option.value === formData.kelas)}
-          onChange={(selectedOption) => {
-            handleChange('kelas', selectedOption.value);
-          }}
-          options={dummyData.kelas}
-          isSearchable
-          required
-        />
-        {isFormSubmitted && !formData.kelas && (
-          <div className="invalid-feedback">Mohon pilih kelas!</div>
-        )}
-      </div>
+    <div className="center-form">
+      <form className="row g-3" onSubmit={handleSubmit}>
+        <div className="col-md-4 margin-right">
+          <label className="table-font">Kelas</label>
+          <Select
+            name="kelas"
+            value={dummyData.kelas.find((option) => option.value === formData.kelas)}
+            onChange={(selectedOption) => {
+              handleChange('kelas', selectedOption.value);
+            }}
+            options={dummyData.kelas}
+            isSearchable
+            required
+          />
+          {isFormSubmitted && !formData.kelas && (
+            <div className="invalid-feedback">Mohon pilih kelas!</div>
+          )}
+        </div>
 
-      <div className="col-md-6">
-        <label className="table-font">Mata Kuliah</label>
-        <Select
-          name="mataKuliah"
-          value={dummyData.mataKuliah.find((option) => option.value === formData.mataKuliah)}
-          onChange={(selectedOption) => {
-            handleChange('mataKuliah', selectedOption.value);
-          }}
-          options={dummyData.mataKuliah}
-          isSearchable
-          required
-        />
-        {isFormSubmitted && !formData.mataKuliah && (
-          <div className="invalid-feedback">Mohon pilih mata kuliah!</div>
-        )}
-      </div>
+        <div className="col-md-4">
+          <label className="table-font">Mata Kuliah</label>
+          <Select
+            name="mataKuliah"
+            value={dummyData.mataKuliah.find((option) => option.value === formData.mataKuliah)}
+            onChange={(selectedOption) => {
+              handleChange('mataKuliah', selectedOption.value);
+            }}
+            options={dummyData.mataKuliah}
+            isSearchable
+            required
+          />
+          {isFormSubmitted && !formData.mataKuliah && (
+            <div className="invalid-feedback">Mohon pilih mata kuliah!</div>
+          )}
+        </div>
 
-      <div className="col-md-6">
-        <label className="table-font">Hari</label>
-        <Select
-          name="hari"
-          value={dummyData.hari.find((option) => option.value === formData.hari)}
-          onChange={(selectedOption) => {
-            handleChange('hari', selectedOption.value);
-          }}
-          options={dummyData.hari}
-          isSearchable
-          required
-        />
-        {isFormSubmitted && !formData.hari && (
-          <div className="invalid-feedback">Mohon pilih hari!</div>
-        )}
-      </div>
+        <div className="col-md-4 margin-right">
+          <label className="table-font">Hari</label>
+          <Select
+            name="hari"
+            value={dummyData.hari.find((option) => option.value === formData.hari)}
+            onChange={(selectedOption) => {
+              handleChange('hari', selectedOption.value);
+            }}
+            options={dummyData.hari}
+            isSearchable
+            required
+          />
+          {isFormSubmitted && !formData.hari && (
+            <div className="invalid-feedback">Mohon pilih hari!</div>
+          )}
+        </div>
 
-      <div className="col-md-6">
-        <label className="table-font">Nama Dosen</label>
-        <Select
-          name="namaDosen"
-          value={dummyData.namaDosen.find((option) => option.value === formData.namaDosen)}
-          onChange={(selectedOption) => {
-            handleChange('namaDosen', selectedOption.value);
-          }}
-          options={dummyData.namaDosen}
-          isSearchable
-          required
-        />
-        {isFormSubmitted && !formData.namaDosen && (
-          <div className="invalid-feedback">Mohon pilih nama dosen!</div>
-        )}
-      </div>
+        <div className="col-md-4">
+          <label className="table-font">Nama Dosen</label>
+          <Select
+            name="namaDosen"
+            value={dummyData.namaDosen.find((option) => option.value === formData.namaDosen)}
+            onChange={(selectedOption) => {
+              handleChange('namaDosen', selectedOption.value);
+            }}
+            options={dummyData.namaDosen}
+            isSearchable
+            required
+          />
+          {isFormSubmitted && !formData.namaDosen && (
+            <div className="invalid-feedback">Mohon pilih nama dosen!</div>
+          )}
+        </div>
 
-      <div className="col-md-6">
-        <label className="table-font">Jam Ke</label>
-        <input
-          type="text"
-          name="jamKe"
-          value={formData.jamKe}
-          onChange={(e) => handleChange('jamKe', e.target.value)}
-          className={`form-control ${isFormSubmitted && !formData.jamKe ? 'is-invalid' : ''}`}
-          required
-        />
-        {isFormSubmitted && !formData.jamKe && (
-          <div className="invalid-feedback">Mohon isi jam ke!</div>
-        )}
-      </div>
+        <div className="col-md-4 margin-right">
+          <label className="table-font">Jam Ke</label>
+          <input
+            type="text"
+            name="jamKe"
+            value={formData.jamKe}
+            onChange={(e) => handleChange('jamKe', e.target.value)}
+            className={`form-control ${isFormSubmitted && !formData.jamKe ? 'is-invalid' : ''}`}
+            required
+          />
+          {isFormSubmitted && !formData.jamKe && (
+            <div className="invalid-feedback">Mohon isi jam ke!</div>
+          )}
+        </div>
 
-      <div className="col-md-6">
-        <label className="table-font">Ruangan</label>
-        <Select
-          name="ruangan"
-          value={dummyData.ruangan.find((option) => option.value === formData.ruangan)}
-          onChange={(selectedOption) => {
-            handleChange('ruangan', selectedOption.value);
-          }}
-          options={dummyData.ruangan}
-          isSearchable
-          required
-        />
-        {isFormSubmitted && !formData.ruangan && (
-          <div className="invalid-feedback">Mohon pilih ruangan!</div>
-        )}
-      </div>
+        <div className="col-md-4">
+          <label className="table-font">Ruangan</label>
+          <Select
+            name="ruangan"
+            value={dummyData.ruangan.find((option) => option.value === formData.ruangan)}
+            onChange={(selectedOption) => {
+              handleChange('ruangan', selectedOption.value);
+            }}
+            options={dummyData.ruangan}
+            isSearchable
+            required
+          />
+          {isFormSubmitted && !formData.ruangan && (
+            <div className="invalid-feedback">Mohon pilih ruangan!</div>
+          )}
+        </div>
 
-      <div className="col-md-6">
-        <label className="table-font">Waktu</label>
-        <Select
-          name="waktu"
-          value={dummyData.waktu.find((option) => option.value === formData.waktu)}
-          onChange={(selectedOption) => {
-            handleChange('waktu', selectedOption.value);
-          }}
-          options={dummyData.waktu}
-          isSearchable
-          required
-        />
-        {isFormSubmitted && !formData.waktu && (
-          <div className="invalid-feedback">Mohon pilih waktu!</div>
-        )}
-      </div>
+        <div className="col-md-4 margin-right">
+          <label className="table-font">Waktu</label>
+          <Select
+            name="waktu"
+            value={dummyData.waktu.find((option) => option.value === formData.waktu)}
+            onChange={(selectedOption) => {
+              handleChange('waktu', selectedOption.value);
+            }}
+            options={dummyData.waktu}
+            isSearchable
+            required
+          />
+          {isFormSubmitted && !formData.waktu && (
+            <div className="invalid-feedback">Mohon pilih waktu!</div>
+          )}
+        </div>
 
-      <div className="col-xs-12 mt-3">
-        <button className="btn btn-primary float-end" type="submit">
-          Kirim
-        </button>
-      </div>
-    </form>
+        <div className="col-xs-12 mt-3">
+          <button className="btn btn-primary float-end" type="submit">
+            Kirim
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 
-export default TambahDataJadwal;
+export default TambahData;
