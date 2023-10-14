@@ -17,10 +17,11 @@ class mainModel {
         })
     }
 
-    getAll(){
+    getAll({ where = {}, include = {}, attributes = [] }) {
         return this.models.findAll({
-            // where:where,
-            // attributes:attr
+          where: where,
+          include: include,
+          attributes: attributes
         },{
             sequelize
         })

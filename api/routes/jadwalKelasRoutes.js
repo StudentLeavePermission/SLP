@@ -18,4 +18,7 @@ router.patch('/update/:id', jadwalKelasController.editClassSchedule);
 // Create a new class schedule
 router.get('/get/:id', jadwalKelasController.getClassSchedule);
 
+router.get('/:idKelas/:hari', jadwalKelasController.getClassScheduleWithTwoParams);
+
+
 module.exports = router;

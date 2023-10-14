@@ -18,19 +18,26 @@ import './Style.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 
 const baseURL = "http://localhost:3000/data-pengajuan/";
 
+
 const CustomCheckboxTable = () => {
+  const [jadwalKelas, setJadwalKelas] = useState([]);
+  const [mahasiswa, setMahasiswa] = useState([]);
+  const [idMahasiswa, setIdMahasiswa] = useState("")
+  const [nama, setNama] = useState("")
+  const [NIM, setNIM] = useState("")
+  const [kelas, setKelas] = useState("")
+  const [hari, setHari] = useState("")
   const [keterangan, setKeterangan] = useState("")
-  const [tanggalPengajuan, setTanggalPengajuan] = useState("")
+  const [tanggalPengajuan, setTanggalPengajuan] = useState(new Date())
   const [tanggalAbsen, setTanggalAbsen] = useState("")
-  const [idJadwalKelas, setIdJadwalKelas] = useState("")
+  const [idJadwalKelas, setIdJadwalKelas] = useState(1)
   const [jenisIzin, setJenisIzin] = useState("")
   const [statusPengajuan, setStatusPengajuan] = useState("")
-  const [idMahasiswa, setIdMahasiswa] = useState("")
-  const [fileBukti, setFileBukti] = useState("nama_file_anda.pdf")
+  const [fileBukti, setFileBukti] = useState(null)
   const [tableData, setTableData] = useState([]) // State untuk data tabel
   const [selectedDate, setSelectedDate] = useState(new Date()) // State untuk menyimpan tanggal yang dipilih
   const [selectedDates, setSelectedDates] = useState([]) // State untuk menyimpan tanggal-tanggal yang dipilih
@@ -38,17 +45,12 @@ const CustomCheckboxTable = () => {
   const [expandedDates, setExpandedDates] = useState([]) // State untuk tanggal yang sedang diperluas
   const selectedDatesExist = selectedDates.length > 0
   const navigate = useNavigate()
-  // Fungsi untuk mendapatkan nama hari dari tanggal
-  const handleJenisChange = (event) => {
-    setJenisIzin(event.target.value);
-  };
+  const hariC = 'Selasa'
+  const id =3
+  const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/1/${hariC}`;
+  const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id}`;
 
-  const handleketeranganChange = (event) => {
-    setKeterangan(event.target.value);
-  };
-
-  React.useEffect(() => {
-    // Fungsi untuk mendapatkan tanggal hari ini
+  useEffect(() => {
     const getTanggalHariIni = () => {
       const today = new Date();
       const dd = String(today.getDate()).padStart(2, '0');
@@ -63,26 +65,51 @@ const CustomCheckboxTable = () => {
     // Panggil fungsi getTanggalHariIni saat komponen pertama kali dirender
     getTanggalHariIni();
     setStatusPengajuan('Delivered');
-    setIdMahasiswa(1);
+    
     setIdJadwalKelas(1);
-    setFileBukti('lala.pdf');
-    setKeterangan(''); // Inisialisasi keterangan dengan string kosong
-    setJenisIzin(''); // Inisialisasi jenisIzin dengan string kosong
-    setTanggalPengajuan(''); // Inisialisasi tanggalPengajuan dengan string kosong
-    setTanggalAbsen('');
+    fetch(urlMahasiswaGetOne)
+        .then((response) => response.json())
+         .then((data) => {
+            console.log(data);
+            setMahasiswa(data);
+            setNama(data.data.Nama);
+            setNIM(data.data.NIM);
+            setKelas(data.data.ID_Kelas)
+            setIdMahasiswa(data.data.id)
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+
+    fetch(urlJadwalKelasGetOne)
+         .then((response) => response.json())
+         .then((data) => {
+            console.log('hai',data);
+            setJadwalKelas(data);
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+    
   }, []);
 
 
   function createPost() {
-    axios
+    selectedDates.forEach((item) => {
+       const tanggal = item.date;
+      axios
       .post(baseURL, {
         ID_Mahasiswa : idMahasiswa,
         Keterangan : keterangan,
         Jenis_Izin : jenisIzin,
+        Tanggal_Pengajuan : tanggalPengajuan,
+        Tanggal_Izin : tanggal,
         ID_Jadwal_Kelas : idJadwalKelas,
-        File_Pengajuan : fileBukti,
+        File_Pengajuan : fileBukti.name,//fileBukti,
         Status_Pengajuan : statusPengajuan
       });
+    });
+    
   }
 
   // const sendDataToAPI = async (e) => {
@@ -105,6 +132,7 @@ const CustomCheckboxTable = () => {
   //   }
   // };
 
+
   const getDayName = (date) => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
     const dayIndex = date.getDay()
@@ -116,7 +144,8 @@ const CustomCheckboxTable = () => {
   //   return date.toLocaleDateString(undefined, options)
   // }
 
-  const dayName = getDayName(selectedDate) // Mendapatkan nama hari dari tanggal yang dipilih
+  const dayName = getDayName(selectedDate)
+   // Mendapatkan nama hari dari tanggal yang dipilih
 
   // Fungsi untuk mendapatkan data tabel berdasarkan hari yang dipilih
   const getTableDataForDay = (dayName) => {
@@ -236,6 +265,7 @@ const CustomCheckboxTable = () => {
       setSelectedDates(updatedSelectedDates)
     }
     setSelectedDate(date)
+    setHari(getDayName(date))
   }
 
   // Fungsi untuk menampilkan atau menyembunyikan jadwal berdasarkan tanggal yang diperluas
@@ -273,7 +303,7 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom01" className="table-font">
           Nama
         </CFormLabel>
-        <CFormInput type="text" id="validationCustom01" placeholder="Ketikkan nama Anda" required />
+        <CFormInput type="text" id="validationCustom01" value={nama} placeholder="Ketikkan nama Anda" disabled />
         <CFormFeedback valid>Nama sudah terisi!</CFormFeedback>
         <CFormFeedback invalid>Mohon Nama diisi</CFormFeedback>
       </CCol>
@@ -282,7 +312,7 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom02" className="table-font">
           NIM
         </CFormLabel>
-        <CFormInput type="text" id="validationCustom02" placeholder="Ketikkan NIM Anda" required />
+        <CFormInput type="text" id="validationCustom02" placeholder="Ketikkan NIM Anda"  value={NIM} disabled/>
         <CFormFeedback valid>NIM sudah terisi!</CFormFeedback>
         <CFormFeedback invalid>Mohon NIM diisi</CFormFeedback>
       </CCol>
@@ -328,9 +358,7 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom04" className="table-font margin-jadwal">
           Pilih Jadwal Absen:
         </CFormLabel>
-        {dayName && (
-          <>
-            <table className="table table-bordered custom-table">
+        <table className="table table-bordered custom-table">
               <thead>
                 <tr>
                   <th>
@@ -346,24 +374,22 @@ const CustomCheckboxTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {tableData.map((item) => (
-                  <tr key={item.id}>
+                {/* {jadwalKelas.data.map((jadwal) => (
+                  <tr key={jadwal.id}>
                     <td>
                       <CFormCheck
                         type="checkbox"
-                        id={item.id}
-                        checked={item.isChecked}
-                        onChange={() => handleCheckboxChange(item.id, selectedDate)}
+                        id={jadwal.id}
+                        checked={jadwal.isChecked}
+                        onChange={() => handleCheckboxChange(jadwal.id, selectedDate)}
                       />
                     </td>
-                    <td>{item.jamPelajaran}</td>
-                    <td>{item.namaMataKuliah}</td>
+                    <td>{jadwal.ID_Jam_Pelajaran_Start} sampai {jadwal.ID_Jam_Pelajaran_End}</td>
+                    <td>{jadwal.ID_Matkul}</td>
                   </tr>
-                ))}
+                ))} */}
               </tbody>
             </table>
-          </>
-        )}
       </CCol>
       <CCol md={4}>
         <div className="mb-5">
@@ -374,7 +400,7 @@ const CustomCheckboxTable = () => {
           id="validationTextarea"
           placeholder="Ketikkan alasan Anda"
           value={keterangan}
-          onChange={handleketeranganChange}
+          onChange={(event) => setKeterangan(event.target.value)}
           rows={7}
           required
           >
@@ -383,7 +409,7 @@ const CustomCheckboxTable = () => {
           <CFormFeedback invalid>Mohon Alasan diisi</CFormFeedback>
         </div>
       </CCol>
-      <CCol md={7}>
+      <CCol md={7} >
         {dayName && selectedDatesExist && (
           <>
             <CFormLabel className="tanggal-dipilih form-label table-font">
@@ -446,7 +472,7 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom07" className="table-font">
           Lampiran
         </CFormLabel>
-        <CFormInput type="file" id="validationTextarea" aria-label="file example" required />
+        <CFormInput type="file" id="validationTextarea" aria-label="file example" required onChange={(event) => setFileBukti(event.target.files[0])}/>
         <CFormFeedback valid>Lampiran sudah terisi!</CFormFeedback>
         <CFormFeedback invalid>Mohon untuk upload lampiran!</CFormFeedback>
       </div>
