@@ -21,9 +21,6 @@ module.exports = {
       Nomor_Telp: {
         type: Sequelize.STRING
       },
-      Nomor_Telp_Ortu: {
-        type: Sequelize.STRING
-      },
       Email: {
         type: Sequelize.STRING
       },
@@ -35,6 +32,12 @@ module.exports = {
           key: 'id',
           as: 'ID_Kelas',
         }
+      },
+      Nama_Ortu: {
+        type: Sequelize.STRING
+      },
+      Nomor_Telp_Ortu: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

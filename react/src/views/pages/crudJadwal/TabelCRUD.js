@@ -5,10 +5,94 @@ import 'datatables.net'; // Import DataTables
 import './TabelCRUD.css'; // Import your CSS file
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil } from '@coreui/icons';
+import { CButton } from '@coreui/react';
+import axios from 'axios';
 
 function TabelCRUD() {
-  const tableRef = useRef(null);
+  const tableRef = useRef(null);  
+  const [dataJadwal, setDataJadwal] = useState([]);
+  const [dataDosen, setDataDosen] = useState({
+    Nama_Dosen:'',
+  });
+  const [dataMatkul, setDataMatkul] = useState({
+    Nama_Mata_Kuliah:'',
+  });
+  const [dataKelas, setDataKelas] = useState({
+    Nama_Kelas:'',
+  });
+  const [tampiljadwal, setTampilJadwal] = useState([]);
 
+  useEffect(() => {
+    getAllClassSchedules();
+  }, []);
+
+  const getAllClassSchedules = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/jadwal-kelas');
+      const formattedData = response.data.data.map((item, index) => {
+        const namaDosen = getNamaaDosen(item.ID_Dosen);
+        const namaMatkul = getNamaMatkul(item.ID_Matkul);
+        const namaKelas = getNamaKelas(item.ID_Kelas);
+        return {
+          ...item,
+          DT_RowId: `${index + 1}`, // Tambahkan ini sebagai kunci unik
+          Nama_Dosen: namaDosen,
+          Mata_Kuliah: namaMatkul,
+          Kelas: namaKelas
+        };
+      });
+      setDataJadwal(formattedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+  
+  function getNamaaDosen(id)  {
+    const apiURL = `http://localhost:3000/data-dosen/get/${id}`;
+      // Fetch data detail dosen dari API
+      fetch(apiURL)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.data);
+          setDataDosen(data.data);
+        })
+        .catch((error) => console.error('Error fetching data:', error));
+  
+    return dataDosen.Nama_Dosen;
+  }
+
+  function getNamaMatkul(id)  {
+    const apiURL = `http://localhost:3000/data-mata-kuliah/get/${id}`;
+      // Fetch data detail dosen dari API
+      fetch(apiURL)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.data);
+          setDataMatkul(data.data);
+        })
+        .catch((error) => console.error('Error fetching data:', error));
+  
+    return dataMatkul.Nama_Mata_Kuliah;
+  }
+
+  function getNamaKelas(id)  {
+    const apiURL = `http://localhost:3000/data-kelas/get/${id}`;
+      // Fetch data detail dosen dari API
+      fetch(apiURL)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.data);
+          setDataKelas(data.data);
+        })
+        .catch((error) => console.error('Error fetching data:', error));
+  
+    return dataKelas.Nama_Kelas;
+  }
+
+  function icon() {
+    return 
+  }
+  
   useEffect(() => {
     // Mengatur opsi bahasa DataTables
     $.extend($.fn.dataTable.defaults, {
@@ -22,142 +106,48 @@ function TabelCRUD() {
 
     // Inisialisasi DataTables pada tabel menggunakan ref
     const dataTable = $(tableRef.current).DataTable({
-      paging: true, // Aktifkan paginasi
-      searching: true, // Aktifkan pencarian
-      lengthChange: false, // Sembunyikan dropdown "Show [X] entries"
-      pageLength: 5, // Set panjang halaman default menjadi 5 entri per halaman
-      // Konfigurasi DataTables lainnya
-    });
+      paging: true,
+      searching: true,
+      lengthChange: false,
+      pageLength: 5,
+      data: dataJadwal,
+      columns: [
+        { data: "DT_RowId" },
+        { data: "Hari_Jadwal" },
+        { data: "ID_Jam_Pelajaran_Start" },
+        { data: "Nama_Dosen" },
+        { data: "Mata_Kuliah" },
+        { data: "Kelas" },
+        { 
+          data: null,
+          "render": function () {
+            return '<div class="aksi">' +
+            '<span class="action-button"><i class="cil cil-info"></i></span> ' +
+            '<span class="action-button"><i class="cil cil-pencil"></i></span> ' +
+            '<span class="action-button"><i class="cil cil-trash"></i></span>' +
+            '</div>'
+          }
+        }
+      ],
+      createdRow: (row, data, dataIndex) => {
+        // Tambahkan class atau atribut lainnya ke elemen tr (baris) sesuai kebutuhan
+        $(row).find(".custom-button").on("click", () => {
+          const id = $(row).find(".custom-button").data("id");
+          hapusData(id);
+        });
+      },
+      // Menggunakan columnDefs untuk menerapkan kelas CSS pada kolom tertentu
+      columnDefs: [
+        { targets: [0, 1, 2, 3, 4, 5], className: "rata table-font" }, // Kolom 0 hingga 5
+        { targets: [5], className: "aksi" }, // Kolom aksi
+      ],
+    });    
 
     return () => {
       // Hapus DataTables saat komponen unmount
       dataTable.destroy();
     };
-  }, []);
-
-  const [data, setData] = useState([
-    {
-      hari: 'Senin',
-      jam: '08:00',
-      namaDosen: 'Dr. John Doe',
-      mataKuliah: 'Matematika Dasar',
-    },
-    {
-      hari: 'Selasa',
-      jam: '10:00',
-      namaDosen: 'Prof. Jane Smith',
-      mataKuliah: 'Fisika Lanjut',
-    },
-    {
-      hari: 'Rabu',
-      jam: '14:00',
-      namaDosen: 'Dr. Alice Johnson',
-      mataKuliah: 'Kimia Organik',
-    },
-    {
-      hari: 'Kamis',
-      jam: '09:00',
-      namaDosen: 'Prof. Robert Brown',
-      mataKuliah: 'Sejarah Dunia',
-    },
-    {
-      hari: 'Jumat',
-      jam: '11:30',
-      namaDosen: 'Dr. Emily White',
-      mataKuliah: 'Biologi Molekuler',
-    },
-    {
-      hari: 'Senin',
-      jam: '13:00',
-      namaDosen: 'Prof. David Clark',
-      mataKuliah: 'Ekonomi Makro',
-    },
-    {
-      hari: 'Selasa',
-      jam: '16:00',
-      namaDosen: 'Dr. Sarah Lee',
-      mataKuliah: 'Bahasa Inggris',
-    },
-    {
-      hari: 'Rabu',
-      jam: '08:30',
-      namaDosen: 'Prof. Michael Harris',
-      mataKuliah: 'Fisika Dasar',
-    },
-    {
-      hari: 'Kamis',
-      jam: '10:45',
-      namaDosen: 'Dr. Susan Taylor',
-      mataKuliah: 'Pemrograman Web',
-    },
-    {
-      hari: 'Jumat',
-      jam: '12:15',
-      namaDosen: 'Prof. Laura Brown',
-      mataKuliah: 'Hukum Bisnis',
-    },
-    {
-      hari: 'Senin',
-      jam: '09:30',
-      namaDosen: 'Dr. James Wilson',
-      mataKuliah: 'Sosiologi',
-    },
-    {
-      hari: 'Selasa',
-      jam: '15:00',
-      namaDosen: 'Prof. Maria Garcia',
-      mataKuliah: 'Seni Rupa',
-    },
-    {
-      hari: 'Rabu',
-      jam: '11:00',
-      namaDosen: 'Dr. Daniel Miller',
-      mataKuliah: 'Manajemen Proyek',
-    },
-    {
-      hari: 'Kamis',
-      jam: '14:30',
-      namaDosen: 'Prof. Karen Brown',
-      mataKuliah: 'Psikologi',
-    },
-    {
-      hari: 'Jumat',
-      jam: '10:00',
-      namaDosen: 'Dr. Richard Davis',
-      mataKuliah: 'Pemrograman Java',
-    },
-    {
-      hari: 'Senin',
-      jam: '08:45',
-      namaDosen: 'Prof. Linda Thomas',
-      mataKuliah: 'Kalkulus',
-    },
-    {
-      hari: 'Selasa',
-      jam: '12:00',
-      namaDosen: 'Dr. Mark Anderson',
-      mataKuliah: 'Biologi Sel',
-    },
-    {
-      hari: 'Rabu',
-      jam: '15:15',
-      namaDosen: 'Prof. Sandra Martinez',
-      mataKuliah: 'Keuangan Perusahaan',
-    },
-    {
-      hari: 'Kamis',
-      jam: '13:30',
-      namaDosen: 'Dr. Paul White',
-      mataKuliah: 'Geografi',
-    },
-    {
-      hari: 'Jumat',
-      jam: '14:45',
-      namaDosen: 'Prof. Elizabeth Adams',
-      mataKuliah: 'Antropologi',
-    },
-    // Tambahkan data dummy lainnya di sini
-  ]);
+  }, [dataJadwal]);
 
   const [form, setForm] = useState({}); // Form data
   const [detailItem, setDetailItem] = useState(null); // To display details
@@ -216,9 +206,9 @@ function TabelCRUD() {
   const mainSection = (
     <div className="container">
       <div className="table-box">
-        <button onClick={tambahData} className="btn-tambah table-font">
+        <CButton href={'/#/tambahJadwal'} className="btn-tambah table-font">
             + Tambah Data
-        </button>
+        </CButton>
         <button className="btn-eksport table-font">Eksport</button>
         <button className="btn-impor table-font">Import</button>
         <table ref={tableRef} className="tabel">
@@ -229,43 +219,10 @@ function TabelCRUD() {
               <th className="header-cell rata table-font">Jam Ke</th>
               <th className="header-cell rata table-font">Nama Dosen</th>
               <th className="header-cell rata table-font">Mata Kuliah</th>
+              <th className="header-cell rata table-font">Kelas</th>
               <th className="header-cell rata table-font">Aksi</th>
             </tr>
           </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td className="cell rata table-font">{index + 1}</td>
-                <td className="cell rata table-font">{item.hari}</td>
-                <td className="cell rata table-font">{item.jam}</td>
-                <td className="cell rata table-font">{item.namaDosen}</td>
-                <td className="cell rata table-font">{item.mataKuliah}</td>
-                <td className="cell aksi">
-                  <button className="margin-button" style={{ backgroundColor: 'transparent' }} onClick={() => tampilkanDetail(item)}>
-                    <CIcon icon={cilInfo} />
-                  </button>
-                  <span className="vert-line"></span>
-                  {editIndex === index ? (
-                    <>
-                      <button className="btn-simpan rata table-font" onClick={() => simpanPerubahan()}>
-                        Simpan
-                      </button>
-                      <button className="btn-batal rata table-font" onClick={() => setEditIndex(-1)}>
-                        Batal
-                      </button>
-                    </>
-                  ) : (
-                    <button style={{ backgroundColor: 'transparent' }} onClick={() => aktifkanEdit(index)}>
-                      <CIcon icon={cilPencil} />
-                    </button>
-                  )}
-                  <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(index)}>
-                    <CIcon icon={cilTrash} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
         </table>
         {detailItem && (
           <div className="detail">

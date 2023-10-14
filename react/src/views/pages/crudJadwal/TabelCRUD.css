@@ -294,28 +294,18 @@
     border-radius: 10px;
   }
 
-  /* Gaya untuk pesan validasi */
-.invalid-feedback {
-  color: red; /* Warna teks merah untuk pesan validasi */
-  font-size: 14px; /* Ukuran font pesan validasi */
-  margin-top: 4px; /* Jarak antara input dan pesan validasi */
-}
-
-/* Gaya untuk input yang tidak valid */
-.has-error .select__control,
-.has-error .form-control {
-  border-color: red !important; /* Border merah untuk input yang tidak valid */
-}
 
 /* Gaya untuk tombol Kirim */
 .btn-primary {
-  background-color: #007bff; /* Warna latar belakang tombol */
+  background-color: #2662FF; /* Warna latar belakang tombol */
   color: #fff; /* Warna teks tombol */
   border: none; /* Hapus border tombol */
-  padding: 10px 20px; /* Padding tombol */
+  padding: 8px 15px; /* Padding tombol */
   cursor: pointer; /* Ganti kursor saat di atas tombol */
-  border-radius: 4px; /* Sudut bulat pada tombol */
+  border-radius: 10px; /* Sudut bulat pada tombol */
   transition: background-color 0.3s; /* Animasi perubahan warna latar belakang */
+  margin-right: 50px;
+  margin-top:20px;
 }
 
 /* Gaya untuk tombol Kirim saat di atasnya */
@@ -329,8 +319,28 @@
   margin-bottom: 20px; /* Jarak antara form dan elemen lainnya */
 }
 
-/* Gaya untuk elemen yang memiliki margin atas */
-.col-md-4,
+/* Gaya untuk form */
+.center-form {
+  display: flex;
+  justify-content: center; /* Menengahkan secara horizontal */
+  align-items: center; /* Menengahkan secara vertikal */
+  height: 100vh; /* Menyesuaikan tinggi form ke tampilan layar */
+}
+
+/* Hapus margin-left pada elemen col-md-4 */
+.col-md-4 {
+  margin-top: 30px;
+  /* margin-left: 10px; */
+}
+
 .col-xs-12 {
-  margin-top: 10px; /* Jarak atas antara elemen */
+  margin-top: 20px; /* Jarak atas antara elemen */
+}
+
+/* .margin-right{
+  margin-right: 90px;
+} */
+
+.action-button {
+  color: black;
 }

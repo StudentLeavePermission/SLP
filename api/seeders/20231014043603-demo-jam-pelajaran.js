@@ -12,58 +12,63 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('Data_Mata_Kuliah', [{
-      Nama_Mata_Kuliah: 'Basis Data',
+    await queryInterface.bulkInsert('Data_Jam_Pelajaran', [{
+      Jam_Ke: 1,
+      Waktu_Mulai: '07:00:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Pemrograman Web',
+      Jam_Ke: 2,
+      Waktu_Mulai: '07:50:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Pemrograman Berorientasi Objek',
+      Jam_Ke: 3,
+      Waktu_Mulai: '08:40:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Algoritma',
+      Jam_Ke: 4,
+      Waktu_Mulai: '09:50:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Matematika Diskrit',
+      Jam_Ke: 5,
+      Waktu_Mulai: '10:40:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Bahasa Inggris',
+      Jam_Ke: 6,
+      Waktu_Mulai: '11:30:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Bahasa Indonesia',
+      Jam_Ke: 7,
+      Waktu_Mulai: '13:00:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Sistem Operasi',
+      Jam_Ke: 8,
+      Waktu_Mulai: '13:50:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Manajemen Proyek',
+      Jam_Ke: 9,
+      Waktu_Mulai: '14:40:00',
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Kewirausahaan',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      Nama_Mata_Kuliah: 'Bahasa Jerman',
+      Jam_Ke: 10,
+      Waktu_Mulai: '15:50:00',
       createdAt: new Date(),
       updatedAt: new Date()
     }]);
@@ -76,5 +81,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
+    await queryInterface.bulkDelete('Data_Jam_Pelajaran', null, {});
   }
 };

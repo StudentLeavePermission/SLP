@@ -12,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('Data_Jadwal_Kelas', [{
+    await queryInterface.bulkInsert('Jadwal_Kelas', [{
       Hari_Jadwal: 'Senin',
       ID_Jam_Pelajaran_Start: 1,
       ID_Jam_Pelajaran_End: 2,
@@ -61,6 +61,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Data_Jadwal_Kelas', null, {})
+    await queryInterface.bulkDelete('Jadwal_Kelas', null, {})
   }
 };
