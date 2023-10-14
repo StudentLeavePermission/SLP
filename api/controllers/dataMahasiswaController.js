@@ -76,14 +76,16 @@ const loginStudent = async (req, res) => {
 
 const registerStudent = async (req, res) => {
   try {
-    const {NIM, Nama, Password, Nomor_Telp, Email, ID_Kelas} = req.body;
+    const {NIM, Nama, Password, Nomor_Telp, Email, ID_Kelas, Nama_Ortu, Nomor_Telp_Ortu} = req.body;
     const data = {
       NIM,
       Nama,
       Password: await bcrypt.hash(Password, 10),
       Nomor_Telp,
       Email,
-      ID_Kelas
+      ID_Kelas,
+      Nama_Ortu,
+      Nomor_Telp_Ortu
     };
     const mhs = await Data_Mahasiswa.post(data);
     if (mhs) {

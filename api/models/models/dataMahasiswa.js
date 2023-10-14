@@ -23,9 +23,10 @@ module.exports = (sequelize, DataTypes) => {
     Nama: DataTypes.STRING,
     Password: DataTypes.STRING,
     Nomor_Telp: DataTypes.STRING,
-    Nomor_Telp_Ortu: DataTypes.STRING,
     Email: DataTypes.STRING,
-    ID_Kelas: DataTypes.INTEGER
+    ID_Kelas: DataTypes.INTEGER,
+    Nama_Ortu: DataTypes.STRING,
+    Nomor_Telp_Ortu: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Data_Mahasiswa',
