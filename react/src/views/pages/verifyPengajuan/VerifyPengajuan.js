@@ -23,6 +23,8 @@ import {useNavigate} from 'react-router-dom'
 const baseURL = "http://localhost:3000/data-pengajuan/";
 
 const CustomCheckboxTable = () => {
+  const [visible, setVisible] = useState(false)
+
   const [keterangan, setKeterangan] = useState("")
   const [tanggalPengajuan, setTanggalPengajuan] = useState("")
   const [tanggalAbsen, setTanggalAbsen] = useState("")
@@ -85,6 +87,17 @@ const CustomCheckboxTable = () => {
       });
   }
 
+  function acceptRequest() {
+
+  }
+
+  function rejectRequest() {
+
+  }
+
+  function downloadRequestFile() {
+
+  }
   // const sendDataToAPI = async (e) => {
   //   e.preventDefault();
   //   console.log(idMahasiswa);
@@ -181,75 +194,6 @@ const CustomCheckboxTable = () => {
     setTableData(dataForSelectedDay)
   }, [selectedDate, dayName]) // Sertakan dayName dalam dependency array
 
-  // Fungsi untuk menangani perubahan checkbox
-  const handleCheckboxChange = (id, date) => {
-    const updatedData = tableData.map((item) => {
-      if (item.id === id) {
-        // Ubah nilai isChecked berdasarkan checkbox yang diklik
-        item.isChecked = !item.isChecked
-      }
-      return item
-    })
-    setTableData(updatedData)
-
-    // Perbarui status checkbox sesuai dengan tanggal yang dipilih
-    const updatedDates = selectedDates.map((d) => {
-      if (d.date.toDateString() === date.toDateString()) {
-        // Temukan tanggal yang sesuai
-        const dateData = updatedData.map((item) => item.isChecked)
-        return { date: d.date, data: dateData }
-      }
-      return d
-    })
-    setSelectedDates(updatedDates)
-  }
-
-  // Fungsi untuk menangani perubahan checkbox "Pilih Semua Jadwal"
-  const handleSelectAllChange = (date) => {
-    const updatedData = tableData.map((item) => {
-      item.isChecked = !selectAll // Setel semua checkbox sesuai dengan nilai "Pilih Semua Jadwal"
-      return item
-    })
-    setTableData(updatedData)
-    setSelectAll(!selectAll) // Toggle nilai "Pilih Semua Jadwal"
-
-    // Perbarui status checkbox sesuai dengan tanggal yang dipilih
-    const updatedDates = selectedDates.map((d) => {
-      if (d.date.toDateString() === date.toDateString()) {
-        // Temukan tanggal yang sesuai
-        const dateData = updatedData.map((item) => item.isChecked)
-        return { date: d.date, data: dateData }
-      }
-      return d
-    })
-    setSelectedDates(updatedDates)
-  }
-
-  // Fungsi untuk menangani perubahan tanggal yang dipilih
-  const handleDateChange = (date) => {
-    // Periksa apakah tanggal sudah ada dalam selectedDates
-    if (!selectedDates.some((d) => d.date.toDateString() === date.toDateString())) {
-      const updatedSelectedDates = [
-        ...selectedDates,
-        { date, data: tableData.map((item) => item.isChecked) },
-      ]
-      setSelectedDates(updatedSelectedDates)
-    }
-    setSelectedDate(date)
-  }
-
-  // Fungsi untuk menampilkan atau menyembunyikan jadwal berdasarkan tanggal yang diperluas
-  const toggleExpandedDate = (date) => {
-    if (expandedDates.includes(date)) {
-      // Jika tanggal sudah ada dalam expandedDates, hapus dari array
-      const updatedExpandedDates = expandedDates.filter((d) => d !== date)
-      setExpandedDates(updatedExpandedDates)
-    } else {
-      // Jika tanggal belum ada dalam expandedDates, tambahkan ke array
-      setExpandedDates([...expandedDates, date])
-    }
-  }
-
   const [validated, setValidated] = useState(false)
   const handleSubmit = (event) => {
     const form = event.currentTarget
@@ -273,18 +217,14 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom01" className="table-font">
           Nama
         </CFormLabel>
-        <CFormInput type="text" id="validationCustom01" placeholder="Ketikkan nama Anda" required />
-        <CFormFeedback valid>Nama sudah terisi!</CFormFeedback>
-        <CFormFeedback invalid>Mohon Nama diisi</CFormFeedback>
+        <CFormInput type="text" id="validationCustom01" placeholder="Agam Andika" disabled />
       </CCol>
       <CCol md={2}></CCol>
       <CCol md={4}>
         <CFormLabel htmlFor="validationCustom02" className="table-font">
           NIM
         </CFormLabel>
-        <CFormInput type="text" id="validationCustom02" placeholder="Ketikkan NIM Anda" required />
-        <CFormFeedback valid>NIM sudah terisi!</CFormFeedback>
-        <CFormFeedback invalid>Mohon NIM diisi</CFormFeedback>
+        <CFormInput type="text" id="validationCustom02" placeholder="221511001" disabled />
       </CCol>
       <CCol md={1}></CCol>
       <CCol md={1}></CCol>
@@ -301,7 +241,7 @@ const CustomCheckboxTable = () => {
               selected={selectedDate}
               onChange={(date) => handleDateChange(date)}
               dateFormat="dd/MM/yyyy" // Format tanggal sesuai keinginan Anda
-              required
+              disabled
               className="form-control margin-tanggal1"
             />
           </div>
@@ -315,18 +255,15 @@ const CustomCheckboxTable = () => {
           id="validationCustom04"
           value={jenisIzin}
           onChange={(event) => setJenisIzin(event.target.value)}
-          required
+          disabled
         >
-          <option value="">Pilih Jenis Surat</option>
           <option value="Izin">Izin</option>
           <option value="Sakit">Sakit</option>
         </CFormSelect>
-        <CFormFeedback valid>Jenis surat sudah dipilih!</CFormFeedback>
-        <CFormFeedback invalid>Mohon pilih jenis surat</CFormFeedback>
       </CCol>
       <CCol md={7}>
         <CFormLabel htmlFor="validationCustom04" className="table-font margin-jadwal">
-          Pilih Jadwal Absen:
+          Jadwal Absen yang Dipilih:
         </CFormLabel>
         {dayName && (
           <>
@@ -339,6 +276,7 @@ const CustomCheckboxTable = () => {
                       id="selectAllCheckbox"
                       checked={selectAll}
                       onChange={() => handleSelectAllChange(selectedDate)}
+                      disabled
                     />
                   </th>
                   <th>Jam Pelajaran</th>
@@ -354,6 +292,7 @@ const CustomCheckboxTable = () => {
                         id={item.id}
                         checked={item.isChecked}
                         onChange={() => handleCheckboxChange(item.id, selectedDate)}
+                        disabled
                       />
                     </td>
                     <td>{item.jamPelajaran}</td>
@@ -376,11 +315,9 @@ const CustomCheckboxTable = () => {
           value={keterangan}
           onChange={handleketeranganChange}
           rows={7}
-          required
+          disabled
           >
           </CFormTextarea>
-          <CFormFeedback valid>Alasan sudah diisi</CFormFeedback>
-          <CFormFeedback invalid>Mohon Alasan diisi</CFormFeedback>
         </div>
       </CCol>
       <CCol md={7}>
@@ -446,23 +383,42 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom07" className="table-font">
           Lampiran
         </CFormLabel>
-        <CFormInput type="file" id="validationTextarea" aria-label="file example" required />
-        <CFormFeedback valid>Lampiran sudah terisi!</CFormFeedback>
-        <CFormFeedback invalid>Mohon untuk upload lampiran!</CFormFeedback>
+        <CFormInput
+          type="text"
+          id="validationCustom03"
+          value="file.pdf"
+          readOnly
+        />
+        <CButton color="primary" type="submit" onClick={downloadRequestFile}>
+          Unduh
+        </CButton>
       </div>
       <CCol xs={12}>
-        <CFormCheck
-          type="checkbox"
-          id="invalidCheck"
-          label="Saya mengajukan sakit/izin dengan data yang benar"
-          required
-        />
-        <CFormFeedback invalid>You must agree before submitting.</CFormFeedback>
-      </CCol>
-      <CCol xs={12}>
-        <CButton color="primary" type="submit" onClick={createPost}>
-          Kirim
+        <CButton color="primary" type="submit" onClick={acceptRequest}>
+          Setujui
         </CButton>
+        <>
+          <CButton onClick={() => setVisible(!visible)}>Launch static backdrop modal</CButton>
+          <CModal
+            backdrop="static"
+            visible={visible}
+            onClose={() => setVisible(false)}
+            aria-labelledby="StaticBackdropExampleLabel"
+          >
+            <CModalHeader>
+              <CModalTitle id="StaticBackdropExampleLabel">Modal title</CModalTitle>
+            </CModalHeader>
+            <CModalBody>
+              I will not close if you click outside me. Don't even try to press escape key.
+            </CModalBody>
+            <CModalFooter>
+              <CButton color="secondary" onClick={() => setVisible(false)}>
+                Close
+              </CButton>
+              <CButton color="primary">Save changes</CButton>
+            </CModalFooter>
+          </CModal>
+        </>
       </CCol>
     </CForm>
   )
