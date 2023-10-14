@@ -11,6 +11,10 @@ router.get('/students', dataMahasiswaController.getAllStudents);
 
 router.get('/students/:id', dataMahasiswaController.getStudent);
 
+router.get('/students/getId/:NIM', dataMahasiswaController.getStudentId);
+
+router.post('/students/edit/:id', dataMahasiswaController.editStudent);
+
 router.post('/register', mhsAuth.saveUser, dataMahasiswaController.registerStudent);
 
 router.post('/login', dataMahasiswaController.loginStudent);

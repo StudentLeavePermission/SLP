@@ -31,8 +31,8 @@ const EditMahasiswa = () => {
   const [post, setPost] = React.useState(null);
 
   React.useEffect(() => {
-    axios.get('').then((response) => {
-      setPost(response.data);
+    axios.get('http://localhost:3000/data-mahasiswa/students/1').then((response) => {
+      setPost(response.data.data);
     });
   }, []);
 
@@ -40,6 +40,9 @@ const EditMahasiswa = () => {
 
 
   return (
+
+
+
     <div className="c-app c-default-layout">
       <div className="c-wrapper">
         <main className="c-main">
@@ -59,6 +62,8 @@ const EditMahasiswa = () => {
                               type="text"
                               id="kelas"
                               name="kelas"
+                              defaultValue={post.ID_Kelas}
+                              disabled
                             />
                           </CCol>
                           <CCol>
@@ -72,6 +77,8 @@ const EditMahasiswa = () => {
                               type="text"
                               id="programStudi"
                               name="programStudi"
+                              defaultValue={post.ID_Kelas}
+                              disabled
                             />
                           </CCol>
                         </CRow>
@@ -82,6 +89,8 @@ const EditMahasiswa = () => {
                           type="text"
                           id="jurusan"
                           name="jurusan"
+                          defaultValue="Teknik Komputer dan Informatika"
+                            disabled
                         />
                         <CFormLabel htmlFor="email" className="label">
                           Email
@@ -90,6 +99,8 @@ const EditMahasiswa = () => {
                           type="email"
                           id="email"
                           name="email"
+                          defaultValue={post.Email}
+                              disabled
                         />
                         <CFormLabel htmlFor="noHandphone" className="label">
                           No Handphone
@@ -98,6 +109,8 @@ const EditMahasiswa = () => {
                           type="text"
                           id="noHandphone"
                           name="noHandphone"
+                          defaultValue={post.Nomor_Telp}
+
                         />
                         <br />
                         <p className="header-text">Data Orang Tua Wali</p>
@@ -111,6 +124,8 @@ const EditMahasiswa = () => {
                           type="text"
                           id="namaOrangTuaWali"
                           name="namaOrangTuaWali"
+                          defaultValue={post.Nomor_Telp_Ortu}
+                          disabled
                         />
                         <CFormLabel
                           htmlFor="noHandphoneOrangTuaWali"
@@ -122,6 +137,7 @@ const EditMahasiswa = () => {
                           type="text"
                           id="noHandphoneOrangTuaWali"
                           name="noHandphoneOrangTuaWali"
+                          defaultValue={post.Nomor_Telp_Ortu}
                         />
                       </CCol>
                       <CCol xs="6" className="my-col-inner">
@@ -153,11 +169,11 @@ const EditMahasiswa = () => {
                         <CFormLabel htmlFor="nama" className="label">
                           Nama
                         </CFormLabel>
-                        <CFormInput type="text" id="nama" name="nama" />
+                        <CFormInput type="text" id="nama" name="nama" defaultValue={post.Nama} disabled />
                         <CFormLabel htmlFor="nim" className="label">
                           NIM
                         </CFormLabel>
-                        <CFormInput type="text" id="nim" name="nim" />
+                        <CFormInput type="text" id="nim" name="nim" defaultValue={post.NIM} disabled/>
                         <CFormLabel htmlFor="waliDosen" className="label">
                           Wali Dosen
                         </CFormLabel>
@@ -165,6 +181,8 @@ const EditMahasiswa = () => {
                           type="text"
                           id="waliDosen"
                           name="waliDosen"
+                          defaultValue={post.ID_Kelas}
+                          disabled
                         />
                         <CButton
                           component="input"
