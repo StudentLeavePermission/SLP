@@ -98,17 +98,27 @@ exports.getClassScheduleWithTwoParams = async (req, res) => {
     const idKelas = req.params.idKelas
     const hari = req.params.hari
     const schedule = await Jadwal_Kelas.getAll({
-      where: { 
+      where: {
         Hari_Jadwal: hari,
-        ID_Kelas: idKelas},
-        include: ['Data_Mata_Kuliah' ]
+        ID_Kelas: idKelas
+      },
+    });
+
+    const schedule2 = await Jadwal_Kelas.getAllInclude({
+      where: {
+        Hari_Jadwal: hari,
+        ID_Kelas: idKelas
+      },
+      include: ['Data_Mata_Kuliah']
     });
 
     if (schedule) {
       res.send({
         message: "schedule found successfully",
         data: schedule,
+        mata_kuliah : schedule2
       });
+      
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
     } else {
       res.status(404).json({ message: "schedule not found" });
