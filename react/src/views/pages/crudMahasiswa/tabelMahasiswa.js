@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'datatables.net-dt/css/jquery.dataTables.css'; // Import DataTables CSS
 import $ from 'jquery'; // Import jQuery
 import 'datatables.net'; // Import DataTables
-import './tabelMahasiswa.css'; // Import your CSS file
+import './tabelMahasiswa'; // Import your CSS file
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil } from '@coreui/icons';
 import { CButton } from '@coreui/react';

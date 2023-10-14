@@ -44,6 +44,28 @@ const getStudent = async (req, res) => {
   }
 };
 
+const getStudentId = async (req, res) => {
+  try {
+    const { NIM } = req.params; // Assuming NIM is passed as a route parameter
+    const student = await Data_Mahasiswa.get({
+      where: { NIM : NIM },
+    });
+
+    if (student) {
+      res.send({
+        message: "Student found successfully",
+        data: student,
+      });
+      console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+    } else {
+      res.status(404).json({ message: "Student not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 const loginStudent = async (req, res) => {
   try {
@@ -111,11 +133,39 @@ const logoutStudent = async (req, res) => {
   return res.clearCookie('access_token').status(200).json({ message: 'Logged out' });
 }
 
+const editStudent = async (req, res) => {
+  try {
+    const {Nomor_Telp,Nomor_Telp_Ortu} = req.body;
+    const { id } = req.params; // Assuming NIM is passed as a route parameter
+    const student = await Data_Mahasiswa.get({
+      where: { id: id },
+    });
+   
+    if (!student) {
+      return res.status(404).json({ error: 'Mahasiswa tidak ditemukan' });
+    }
+
+
+    student.Nomor_Telp = Nomor_Telp;
+    student.Nomor_Telp_Ortu = Nomor_Telp_Ortu
+
+    
+    await student.save();
+    
+    res.json(student);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 module.exports = {
   getAllStudents,
   getStudent,
   loginStudent,
   registerStudent,
   protectedContent,
-  logoutStudent
+  logoutStudent,
+  editStudent,
+  getStudentId
 }
