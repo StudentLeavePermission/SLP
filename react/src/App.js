@@ -31,6 +31,7 @@ const TabelPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/ta
 
 //CRUD Jadwal (TU)
 const CrudJadwal = React.lazy(() => import('./views/pages/crudJadwal/TabelCRUD'))
+const TambahJadwal = React.lazy(() => import('./views/pages/crudJadwal/TambahData'))
 class App extends Component {
   render() {
     return (
@@ -51,6 +52,7 @@ class App extends Component {
             <Route exact path="/verifyPengajuan" name="VerifyPengajuan" element={<VerifyPengajuan />} />
             <Route exact path="/tabelPengajuan" name="tabelPengajuan" element={<TabelPengajuan />} />
             <Route exact path="/dataJadwal" name="TabelJadwal" element={<CrudJadwal />} />
+            <Route exact path="/tambahJadwal" name="TambahJadwal" element={<TambahJadwal />} />
             <Route path="*" name="Home" element={<LayoutSLP />} />
           </Routes>
         </Suspense>
