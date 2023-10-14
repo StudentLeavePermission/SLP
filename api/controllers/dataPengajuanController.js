@@ -75,3 +75,22 @@ exports.createLeaveRequest = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.editLeaveRequest = async (req, res) => {
+  try {
+    const { id } = req.params; // Ambil ID dari parameter URL
+    const newData = req.body; // Data yang akan digunakan untuk mengganti data yang ada
+    const whereClause = { id }; // Kriteria untuk menentukan data yang akan diedit
+
+    const [updatedRowCount] = await Data_Pengajuan.patch(newData, whereClause);
+
+    if (updatedRowCount === 0) {
+      return res.status(404).json({ msg: 'LeaveRequest not found' });
+    }
+
+    res.status(200).json({ msg: 'LeaveRequest updated' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
