@@ -19,6 +19,10 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 
+let idMhs = '';
+
+export let idMahasiswa = '';
+
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -40,6 +44,12 @@ const Login = () => {
       }, 800); 
     }
   }, [role, navigate]);
+
+  useEffect(() => {
+    if (idMhs) {
+      idMahasiswa = idMhs;
+    }
+  })
 
   const validateForm = () => {
     const errors = {};
@@ -74,7 +84,7 @@ const Login = () => {
                 const apiURL = `http://localhost:3000/data-mahasiswa/students/getId/${username}`;
                 const response = await axios.get(apiURL);
                 const data = response.data.data;
-                const idMhs = data.id;
+                idMhs = data.id;
                 console.log(idMhs);
                 setRole('mahasiswa');
               } catch (error) {
