@@ -19,7 +19,7 @@ module.exports = {
       ID_Jadwal_Kelas: 1,
       Tanggal_Pengajuan: new Date(),
       Tanggal_Izin: new Date(),
-      File_Pengajuan: 'file',
+      File_Pengajuan: 'file.pdf',
       Status_Pengajuan: 'Accepted',
       createdAt: new Date(),
       updatedAt: new Date()
