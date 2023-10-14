@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CButton,
   CCard,
@@ -12,7 +12,7 @@ import {
   CRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser, cilEnvelopeOpen } from '@coreui/icons'
+import { cilLockLocked, cilUser } from '@coreui/icons'
 import '../../../scss/_variables.scss'
 import './style.css'
 import { useNavigate } from 'react-router-dom'
@@ -53,7 +53,7 @@ const Login = () => {
     return errors;
   };
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
@@ -62,15 +62,25 @@ const Login = () => {
           NIM: username,
           Password: password,
         })
-        .then(() => {
+        .then(async () => { // Gunakan async di sini
           const token = Cookies.get('jwt');
           if (token !== 'undefined') {
             if (isEmail(username)) {
               setRole('dosen');
-            } else if(username === 'admin'){
+            } else if (username === 'admin') {
               setRole('admin');
-            }else {
-              setRole('mahasiswa');
+            } else {
+              try {
+                const apiURL = `http://localhost:3000/data-mahasiswa/students/getId/${username}`;
+                const response = await axios.get(apiURL);
+                const data = response.data.data;
+                const idMhs = data.id;
+                console.log(idMhs);
+                setRole('mahasiswa');
+              } catch (error) {
+                console.error('Error fetching data:', error);
+                alert('Failed to fetch data');
+              }
             }
           } else {
             alert('Coba lagi');
@@ -81,7 +91,7 @@ const Login = () => {
           alert('Username or password is invalid');
         });
     }
-  }
+  }  
 
   return (
     <div className="page">
