@@ -16,7 +16,7 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.js\"",
-    "start": "set PORT = 3006 && react-scripts start",
+    "start": "cross-env PORT=3006 react-scripts start",
     "test": "react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand"
@@ -34,6 +34,7 @@
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
     "core-js": "^3.31.0",
+    "cross-env": "^7.0.3",
     "datatables.net": "^1.13.6",
     "datatables.net-dt": "^1.13.6",
     "jquery": "^3.7.1",
