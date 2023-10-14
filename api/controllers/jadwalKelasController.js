@@ -97,7 +97,7 @@ exports.getClassScheduleWithTwoParams = async (req, res) => {
   try {
     const idKelas = req.params.idKelas
     const hari = req.params.hari
-    const schedule = await Jadwal_Kelas.getAll({
+    const schedule = await Jadwal_Kelas.getAllWhere({
       where: {
         Hari_Jadwal: hari,
         ID_Kelas: idKelas

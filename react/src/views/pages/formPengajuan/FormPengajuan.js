@@ -24,13 +24,18 @@ const baseURL = "http://localhost:3000/data-pengajuan/";
 
 
 const CustomCheckboxTable = () => {
+  const [jadwalKelasAll, setJadwalKelasAll] = useState([]);
   const [jadwalKelas, setJadwalKelas] = useState([]);
   const [mahasiswa, setMahasiswa] = useState([]);
+  const [mataKuliah, setMataKuliah] = useState([]);
+  const [jamPelajaran, setJamPelajaran] = useState([]);
   const [idMahasiswa, setIdMahasiswa] = useState("")
   const [nama, setNama] = useState("")
   const [NIM, setNIM] = useState("")
   const [kelas, setKelas] = useState("")
   const [hari, setHari] = useState("")
+  const [jamMulai, setJamMulai] = useState("")
+  const [jamSelesai, setJamSelesai] = useState("")
   const [keterangan, setKeterangan] = useState("")
   const [tanggalPengajuan, setTanggalPengajuan] = useState(new Date())
   const [tanggalAbsen, setTanggalAbsen] = useState("")
@@ -45,12 +50,13 @@ const CustomCheckboxTable = () => {
   const [expandedDates, setExpandedDates] = useState([]) // State untuk tanggal yang sedang diperluas
   const selectedDatesExist = selectedDates.length > 0
   const navigate = useNavigate()
-  const hariC = 'Selasa'
+  const hariC = 'Senin'
   const id =3
   const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/1/${hariC}`;
   const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id}`;
 
   useEffect(() => {
+    
     const getTanggalHariIni = () => {
       const today = new Date();
       const dd = String(today.getDate()).padStart(2, '0');
@@ -85,13 +91,35 @@ const CustomCheckboxTable = () => {
          .then((response) => response.json())
          .then((data) => {
             console.log('hai',data);
-            setJadwalKelas(data);
+            setJadwalKelasAll(data);
+            setJadwalKelas(data.data);
+            setMataKuliah(data.mata_kuliah);
+              
          })
          .catch((err) => {
             console.log(err);
          });
+         
     
   }, []);
+
+  useEffect(() => {
+    getAllClassHours();
+  }, []);
+
+  const getAllClassHours = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-jam-pelajaran');
+      setJamPelajaran(response.data.data);
+      console.log('hoii',response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  /* useEffect(() => {
+    console.log('jadwalKelas:', jadwalKelas.data[0].id);
+  }, [jadwalKelas]); */
 
 
   function createPost() {
@@ -372,6 +400,22 @@ const CustomCheckboxTable = () => {
                   <th>Jam Pelajaran</th>
                   <th>Nama Mata Kuliah</th>
                 </tr>
+                {jadwalKelas.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>
+                      <CFormCheck
+                        type="checkbox"
+                        id={item.id.toString()}
+                        checked={item.isChecked}
+                        onChange={() => handleCheckboxChange(item.id, selectedDate)}
+                      />
+                      </td>
+                      <td><p>{jamPelajaran[item.ID_Jam_Pelajaran_Start-1].Waktu_Mulai}</p></td>
+                      <td>{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
+                    </tr>
+                  );
+                })}
               </thead>
               <tbody>
                 {/* {jadwalKelas.data.map((jadwal) => (

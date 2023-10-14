@@ -27,9 +27,16 @@ class mainModel {
         })
     }
 
-    getAll({ where = {}}) {
+    getAllWhere({ where = {}}) {
         return this.models.findAll({
           where: where,
+        },{
+            sequelize
+        })
+    }
+
+    getAll() {
+        return this.models.findAll({
         },{
             sequelize
         })
