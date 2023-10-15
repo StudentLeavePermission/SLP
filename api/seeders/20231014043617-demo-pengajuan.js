@@ -20,7 +20,7 @@ module.exports = {
       Tanggal_Pengajuan: new Date(),
       Tanggal_Izin: new Date(),
       File_Pengajuan: 'file.pdf',
-      Status_Pengajuan: 'Accepted',
+      Status_Pengajuan: 'Delivered',
       createdAt: new Date(),
       updatedAt: new Date()
     }])
