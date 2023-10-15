@@ -421,7 +421,7 @@ const CustomCheckboxTable = () => {
         </CButton>
       </div>
       <CCol xs={12}>
-        <CButton color="primary" type="submit" onclick={() => handleChange('Status_Pengajuan', 'Accepted')}>
+        <CButton color="primary" type="submit" onClick={() => handleChange('Status_Pengajuan', 'Accepted')}>
           Setujui
         </CButton>
         <>
