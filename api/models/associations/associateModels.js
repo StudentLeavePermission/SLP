@@ -55,6 +55,13 @@ module.exports = (models) => {
     foreignKey: 'ID_Matkul'
   });
 
+  
+  Data_Kelas.hasMany(Jadwal_Kelas, {
+    foreignKey: 'ID_Kelas',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  });
+
   Data_Pengajuan.belongsTo(Jadwal_Kelas, {
     foreignKey: 'ID_Jadwal_Kelas'
   });

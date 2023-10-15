@@ -11,6 +11,11 @@ import {
   CFormFeedback,
   CFormLabel,
   CFormSelect,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
   CRow,
 } from '@coreui/react'
 import { DocsExample } from 'src/components'
