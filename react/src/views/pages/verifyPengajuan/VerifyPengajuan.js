@@ -54,12 +54,14 @@ const CustomCheckboxTable = () => {
     Tanggal_Izin: '',
     ID_Jadwal_Kelas: '',
     File_Pengajuan: '',
-    Status_Pengajuan: ''
+    Status_Pengajuan: '',
+    // Alasan_Penolakan: ''
   });
   const selectedDatesExist = selectedDates.length > 0
   const handleketeranganChange = (event) => {
     setKeterangan(event.target.value);
   };
+  
   const handleKeteranganPenolakanChange = (event) => {
     setKeteranganPenolakan(event.target.value);
   }
@@ -101,7 +103,8 @@ const CustomCheckboxTable = () => {
           Tanggal_Izin: data.Tanggal_Izin,
           ID_Jadwal_Kelas: data.ID_Jadwal_Kelas,
           File_Pengajuan: data.File_Pengajuan,
-          Status_Pengajuan: data.Status_Pengajuan
+          Status_Pengajuan: data.Status_Pengajuan,
+          // Alasan_Penolakan: data.Alasan_Penolakan
         });
         // setSelectedDate(data.Tanggal_Izin);
       } else {
@@ -217,7 +220,7 @@ const CustomCheckboxTable = () => {
 
       if (response.status === 200) {
         console.log('Data berhasil diubah di database:', response.data);
-        alert("Current status pengajuan: " + statusPengajuan + ", on DB: " + formData.Status_Pengajuan);
+        alert("Berhasil mengubah data! " + formData.Status_Pengajuan);
         setValidated(true)
       } else {
         console.error('Gagal mengubah data di database');
@@ -485,7 +488,7 @@ const CustomCheckboxTable = () => {
               }}>
                 Batalkan
               </CButton>
-              <CButton color="danger" onClick={rejectRequest}>Tolak pengajuan</CButton>
+              <CButton color="danger" onClick={() => handleChange('Status_Pengajuan', 'Rejected')}>Tolak pengajuan</CButton>
             </CModalFooter>
           </CModal>
         </>
