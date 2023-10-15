@@ -31,6 +31,7 @@ const baseURL = "http://localhost:3000/data-pengajuan/";
 const CustomCheckboxTable = () => {
   const [visible, setVisible] = useState(false)
   const [keterangan, setKeterangan] = useState("")
+  const [keteranganPenolakan, setKeteranganPenolakan] = useState("")
   const [tanggalPengajuan, setTanggalPengajuan] = useState("")
   const [tanggalAbsen, setTanggalAbsen] = useState("")
   const [idJadwalKelas, setIdJadwalKelas] = useState("")
@@ -53,6 +54,10 @@ const CustomCheckboxTable = () => {
   const handleketeranganChange = (event) => {
     setKeterangan(event.target.value);
   };
+
+  const handleKeteranganPenolakanChange = (event) => {
+    setKeteranganPenolakan(event.target.value);
+  }
 
   React.useEffect(() => {
     // Fungsi untuk mendapatkan tanggal hari ini
@@ -265,13 +270,25 @@ const CustomCheckboxTable = () => {
   //   setValidated(true)
   // }
 
+  const handleChange = (name, value) => {
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+
+    setFormErrors({
+      ...formErrors,
+      [name]: '',
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const errors = validateForm();
+    // const errors = validateForm();
 
-    if (Object.keys(errors).length === 0) {
+    // if (Object.keys(errors).length === 0) {
       try {
-        const response = await axios.patch(`http://localhost:3000/data-pengajuan/${key}`, formData);
+        const response = await axios.patch(`http://localhost:3000/data-pengajuan/update/${key}`, formData);
 
         if (response.status === 200) {
           console.log('Data berhasil diubah di database:', response.data);
@@ -285,9 +302,9 @@ const CustomCheckboxTable = () => {
         console.error('Error:', error);
         alert('Terjadi kesalahan saat mengubah data.');
       }
-    } else {
-      alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
-    }
+    // } else {
+    //   alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
+    // }
   };
 
   return (
@@ -481,7 +498,7 @@ const CustomCheckboxTable = () => {
         </CButton>
       </div>
       <CCol xs={12}>
-        <CButton color="primary" type="submit">
+        <CButton color="primary" type="submit" onclick={() => handleChange('Status_Pengajuan', 'Accepted')}>
           Setujui
         </CButton>
         <>
@@ -502,9 +519,8 @@ const CustomCheckboxTable = () => {
                 </CFormLabel>
                 <CFormTextarea
                 id="validationTextarea"
-                placeholder="Ada keperluan di luar kota"
-                value={formData.Keterangan} // nyambung ke backend
-                onChange={handleketeranganChange}
+                placeholder="Tuliskan alasan penolakan..."
+                onChange={handleKeteranganPenolakanChange}
                 rows={7}
                 required
                 >

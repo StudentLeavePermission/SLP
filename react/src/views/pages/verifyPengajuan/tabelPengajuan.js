@@ -5,11 +5,23 @@ import 'datatables.net'; // Import DataTables
 import './tabelPengajuan'; // Import your CSS file
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil } from '@coreui/icons';
-import { CButton } from '@coreui/react';
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCol,
+  CRow,
+  CTable,
+  CTableBody,
+  CTableHead,
+  CTableRow,
+  CTableDataCell,
+} from '@coreui/react'
+import { DocsExample } from 'src/components'
 import avatar1 from 'src/assets/images/avatars/1.jpg';
 import avatar2 from 'src/assets/images/avatars/2.jpg';
 
-function TabelCRUD() {
+const TabelCRUD = () => {
   const tableRef = useRef(null);
 
   useEffect(() => {
@@ -102,43 +114,43 @@ function TabelCRUD() {
   const mainSection = (
     <div className="container">
       <div className="table-box">
-        <CButton href={`/#/tambahDosen/`} onClick={tambahData} className="btn-tambah table-font">
-            + Tambah Data
+        <CButton href="/#/tambahDosen/" onClick={tambahData} color="primary" className="btn-tambah table-font">
+          + Tambah Data
         </CButton>
-        <button className="btn-eksport table-font">Eksport</button>
-        <button className="btn-impor table-font">Import</button>
-        <table ref={tableRef} className="tabel">
-          <thead>
-            <tr>
-              <th className="header-cell rata table-font">Nomor</th>
-              <th className="header-cell rata table-font">NIM</th>
-              <th className="header-cell rata table-font">Nama Lengkap</th>
-              <th className="header-cell rata table-font">Kelas</th>
-              <th className="header-cell rata table-font">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td className="cell rata table-font">{index + 1}</td>
-                <td className="cell rata table-font">{item.kode}</td>
-                <td className="cell rata table-font">{item.id}</td>
-                <td className="cell rata table-font">{item.nip}</td>
-                <td className="cell aksi">
-                  <CButton href={`/#/detailDosen/${item.key}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+        <CButton color="info" className="btn-eksport table-font">Eksport</CButton>
+        <CButton color="info" className="btn-impor table-font">Import</CButton>
+        <CTable ref={tableRef} className="tabel">
+          <CTableHead>
+            <CTableRow>
+              <CTableDataCell className="header-cell rata table-font">Nomor</CTableDataCell>
+              <CTableDataCell className="header-cell rata table-font">NIM</CTableDataCell>
+              <CTableDataCell className="header-cell rata table-font">Nama Lengkap</CTableDataCell>
+              <CTableDataCell className="header-cell rata table-font">Kelas</CTableDataCell>
+              <CTableDataCell className="header-cell rata table-font">Aksi</CTableDataCell>
+            </CTableRow>
+          </CTableHead>
+          <CTableBody>
+            {data.map((item) => (
+              <CTableRow key={item.key}>
+                <CTableDataCell className="cell rata table-font">{item.key}</CTableDataCell>
+                <CTableDataCell className="cell rata table-font">{item.kode}</CTableDataCell>
+                <CTableDataCell className="cell rata table-font">{item.id}</CTableDataCell>
+                <CTableDataCell className="cell rata table-font">{item.nip}</CTableDataCell>
+                <CTableDataCell className="cell aksi">
+                  <CButton to={`/detailDosen/${item.key}`} color="info" className="margin-button">
                     <CIcon icon={cilInfo} />
                   </CButton>
-                  <CButton href={`/editDosen/${item.key}`} style={{ color: 'black', backgroundColor: 'transparent' }} >
+                  <CButton to={`/editDosen/${item.key}`}>
                     <CIcon icon={cilPencil} />
                   </CButton>
-                  <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(index)}>
+                  <CButton color="danger" onClick={() => hapusData(index)}>
                     <CIcon icon={cilTrash} />
-                  </button>
-                </td>
-              </tr>
+                  </CButton>
+                </CTableDataCell>
+              </CTableRow>
             ))}
-          </tbody>
-        </table>
+          </CTableBody>
+        </CTable>
       </div>
     </div>
   );
@@ -150,4 +162,21 @@ function TabelCRUD() {
   );
 }
 
-export default TabelCRUD;
+const Validation = () => {
+  return (
+    <CRow>
+      <CCol xs={12}>
+        <CCard className="mb-4">
+          <CCardBody>
+            <strong className="table-font-judul fs-5">Tabel Pengajuan</strong>
+            <DocsExample href="forms/validation">
+              <TabelCRUD />
+            </DocsExample>
+          </CCardBody>
+        </CCard>
+      </CCol>
+    </CRow>
+  )
+}
+
+export default Validation;
