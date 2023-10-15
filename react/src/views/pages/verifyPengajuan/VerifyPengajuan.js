@@ -23,13 +23,13 @@ import './style.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
-import {useNavigate} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
+import { data } from 'jquery'
 
 const baseURL = "http://localhost:3000/data-pengajuan/";
 
 const CustomCheckboxTable = () => {
   const [visible, setVisible] = useState(false)
-
   const [keterangan, setKeterangan] = useState("")
   const [tanggalPengajuan, setTanggalPengajuan] = useState("")
   const [tanggalAbsen, setTanggalAbsen] = useState("")
@@ -79,18 +79,74 @@ const CustomCheckboxTable = () => {
     setTanggalAbsen('');
   }, []);
 
+  const [formData, setFormData] = useState({
+    ID_Mahasiswa: '',
+    Keterangan: '',
+    Jenis_Izin: '',
+    Tanggal_Pengajuan: '',
+    Tanggal_Izin: '',
+    ID_Jadwal_Kelas: '',
+    File_Pengajuan: '',
+    Status_Pengajuan: ''
+  });
 
-  function createPost() {
-    axios
-      .post(baseURL, {
-        ID_Mahasiswa : idMahasiswa,
-        Keterangan : keterangan,
-        Jenis_Izin : jenisIzin,
-        ID_Jadwal_Kelas : idJadwalKelas,
-        File_Pengajuan : fileBukti,
-        Status_Pengajuan : statusPengajuan
-      });
-  }
+  // function createPost() {
+  //   axios
+  //     .post(baseURL, {
+  //       ID_Mahasiswa : idMahasiswa,
+  //       Keterangan : keterangan,
+  //       Jenis_Izin : jenisIzin,
+  //       ID_Jadwal_Kelas : idJadwalKelas,
+  //       File_Pengajuan : fileBukti,
+  //       Status_Pengajuan : statusPengajuan
+  //     });
+  // }
+
+  // function getRequest() {
+  //   axios
+  //     .get(baseURL, {
+  //       ID_Mahasiswa : idMahasiswa,
+  //       Keterangan : keterangan,
+  //       Jenis_Izin : jenisIzin,
+  //       ID_Jadwal_Kelas : idJadwalKelas,
+  //       File_Pengajuan : fileBukti,
+  //       Status_Pengajuan : statusPengajuan
+  //     });
+  // }
+
+  const [formErrors, setFormErrors] = useState({});
+  const { key } = useParams();
+
+  useEffect(() => {
+    fetchData(key);
+  }, [key]);
+
+  const fetchData = async (key) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/${key}`);
+      const data = response.data.data; // Ambil data dari response
+  
+      if (response.status === 200) {
+        console.log('Data yang telah diambil dari server:', data);
+        // Atur formData dengan data dari database
+        setFormData({
+          ID_Mahasiswa: data.ID_Mahasiswa,
+          Keterangan: data.Keterangan,
+          Jenis_Izin: data.Jenis_Izin,
+          Tanggal_Pengajuan: data.Tanggal_Pengajuan,
+          Tanggal_Izin: data.Tanggal_Izin,
+          ID_Jadwal_Kelas: data.ID_Jadwal_Kelas,
+          File_Pengajuan: data.File_Pengajuan,
+          Status_Pengajuan: data.Status_Pengajuan
+        });
+        // setSelectedDate(data.Tanggal_Izin);
+      } else {
+        console.error('Gagal mengambil data pengajuan');
+      }
+    } catch (error) {
+      console.error('Terjadi kesalahan:', error);
+    }
+  };
 
   function acceptRequest() {
 
@@ -200,14 +256,39 @@ const CustomCheckboxTable = () => {
   }, [selectedDate, dayName]) // Sertakan dayName dalam dependency array
 
   const [validated, setValidated] = useState(false)
-  const handleSubmit = (event) => {
-    const form = event.currentTarget
-    if (form.checkValidity() === false) {
-      event.preventDefault()
-      event.stopPropagation()
+  // const handleSubmit = (event) => {
+  //   const form = event.currentTarget
+  //   if (form.checkValidity() === false) {
+  //     event.preventDefault()
+  //     event.stopPropagation()
+  //   }
+  //   setValidated(true)
+  // }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const errors = validateForm();
+
+    if (Object.keys(errors).length === 0) {
+      try {
+        const response = await axios.patch(`http://localhost:3000/data-pengajuan/${key}`, formData);
+
+        if (response.status === 200) {
+          console.log('Data berhasil diubah di database:', response.data);
+          alert('Data berhasil diubah!');
+          setValidated(true)
+        } else {
+          console.error('Gagal mengubah data di database');
+          alert('Gagal mengubah data di database');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat mengubah data.');
+      }
+    } else {
+      alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
     }
-    setValidated(true)
-  }
+  };
 
   return (
     <CForm
@@ -222,14 +303,14 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom01" className="table-font">
           Nama
         </CFormLabel>
-        <CFormInput type="text" id="validationCustom01" placeholder="Agam Andika" disabled />
+        <CFormInput type="text" id="validationCustom01" placeholder={formData.ID_Mahasiswa} disabled /> {/* nyambung ke backend */}
       </CCol>
       <CCol md={2}></CCol>
       <CCol md={4}>
         <CFormLabel htmlFor="validationCustom02" className="table-font">
           NIM
         </CFormLabel>
-        <CFormInput type="text" id="validationCustom02" placeholder="221511001" disabled />
+        <CFormInput type="text" id="validationCustom02" placeholder={formData.ID_Mahasiswa} disabled /> {/* nyambung ke backend */}
       </CCol>
       <CCol md={1}></CCol>
       <CCol md={1}></CCol>
@@ -244,6 +325,7 @@ const CustomCheckboxTable = () => {
             <DatePicker
               id="validationCustom06"
               selected={selectedDate}
+              value={formData.Tanggal_Izin} // nyambung ke backend
               onChange={(date) => handleDateChange(date)}
               dateFormat="dd/MM/yyyy" // Format tanggal sesuai keinginan Anda
               disabled
@@ -258,7 +340,7 @@ const CustomCheckboxTable = () => {
         </CFormLabel>
         <CFormSelect
           id="validationCustom04"
-          value={jenisIzin}
+          value={formData.Jenis_Izin}
           onChange={(event) => setJenisIzin(event.target.value)}
           disabled
         >
@@ -316,8 +398,8 @@ const CustomCheckboxTable = () => {
           </CFormLabel>
           <CFormTextarea
           id="validationTextarea"
-          placeholder="Ketikkan alasan Anda"
-          value={keterangan}
+          placeholder="Ada keperluan di luar kota"
+          value={formData.Keterangan} // nyambung ke backend
           onChange={handleketeranganChange}
           rows={7}
           disabled
@@ -391,19 +473,19 @@ const CustomCheckboxTable = () => {
         <CFormInput
           type="text"
           id="validationCustom03"
-          value="file.pdf"
+          value={formData.File_Pengajuan} // nyambung ke backend
           readOnly
         />
-        <CButton color="primary" type="submit" onClick={downloadRequestFile}>
+        <CButton color="primary" type='button' onClick={downloadRequestFile}>
           Unduh
         </CButton>
       </div>
       <CCol xs={12}>
-        <CButton color="primary" type="submit" onClick={acceptRequest}>
+        <CButton color="primary" type="submit">
           Setujui
         </CButton>
         <>
-          <CButton onClick={() => setVisible(!visible)}>Launch static backdrop modal</CButton>
+          <CButton color="danger" onClick={() => setVisible(!visible)}>Tolak</CButton>
           <CModal
             backdrop="static"
             visible={visible}
@@ -411,16 +493,31 @@ const CustomCheckboxTable = () => {
             aria-labelledby="StaticBackdropExampleLabel"
           >
             <CModalHeader>
-              <CModalTitle id="StaticBackdropExampleLabel">Modal title</CModalTitle>
+              <CModalTitle id="StaticBackdropExampleLabel">Penolakan</CModalTitle>
             </CModalHeader>
             <CModalBody>
-              I will not close if you click outside me. Don't even try to press escape key.
+              <div className="mb-5">
+                <CFormLabel htmlFor="validationCustom05" className="form-label table-font">
+                  Alasan penolakan
+                </CFormLabel>
+                <CFormTextarea
+                id="validationTextarea"
+                placeholder="Ada keperluan di luar kota"
+                value={formData.Keterangan} // nyambung ke backend
+                onChange={handleketeranganChange}
+                rows={7}
+                required
+                >
+                </CFormTextarea>
+                <CFormFeedback valid>Alasan sudah diisi</CFormFeedback>
+                <CFormFeedback invalid>Mohon sertakan alasan penolakan</CFormFeedback>
+              </div>
             </CModalBody>
             <CModalFooter>
               <CButton color="secondary" onClick={() => setVisible(false)}>
-                Close
+                Batalkan
               </CButton>
-              <CButton color="primary">Save changes</CButton>
+              <CButton color="danger" onClick={rejectRequest}>Tolak pengajuan</CButton>
             </CModalFooter>
           </CModal>
         </>

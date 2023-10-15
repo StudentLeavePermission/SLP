@@ -49,7 +49,7 @@ class App extends Component {
             <Route exact path="/detailDosen/:key" name="DetailDosen" element={<DetailDosen />} />
             <Route exact path="/tambahDosen" name="TambahDosen" element={<TambahDosen />} />
             <Route exact path="/editDosen/:key" name="EditDosen" element={<EditDosen />} />
-            <Route exact path="/verifyPengajuan" name="VerifyPengajuan" element={<VerifyPengajuan />} />
+            <Route exact path="/verifyPengajuan/:key" name="VerifyPengajuan" element={<VerifyPengajuan />} />
             <Route exact path="/tabelPengajuan" name="tabelPengajuan" element={<TabelPengajuan />} />
             <Route exact path="/dataJadwal" name="TabelJadwal" element={<CrudJadwal />} />
             <Route exact path="/tambahJadwal" name="TambahJadwal" element={<TambahJadwal />} />
