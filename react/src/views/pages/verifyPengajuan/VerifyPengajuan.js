@@ -23,7 +23,7 @@ import './style.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
-import {useNavigate, useParams} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { data } from 'jquery'
 
 const baseURL = "http://localhost:3000/data-pengajuan/";
@@ -44,21 +44,21 @@ const CustomCheckboxTable = () => {
   const [selectedDates, setSelectedDates] = useState([]) // State untuk menyimpan tanggal-tanggal yang dipilih
   const [selectAll, setSelectAll] = useState(false) // State untuk checkbox "Pilih Semua Jadwal"
   const [expandedDates, setExpandedDates] = useState([]) // State untuk tanggal yang sedang diperluas
+  const [validated, setValidated] = useState(false)
+  const [formData, setFormData] = useState({
+    ID_Mahasiswa: '',
+    Keterangan: '',
+    Jenis_Izin: '',
+    Tanggal_Pengajuan: '',
+    Tanggal_Izin: '',
+    ID_Jadwal_Kelas: '',
+    File_Pengajuan: '',
+    Status_Pengajuan: ''
+  });
   const selectedDatesExist = selectedDates.length > 0
-  const navigate = useNavigate()
-  // Fungsi untuk mendapatkan nama hari dari tanggal
-  const handleJenisChange = (event) => {
-    setJenisIzin(event.target.value);
-  };
-
   const handleketeranganChange = (event) => {
     setKeterangan(event.target.value);
   };
-
-  const handleStatusPengajuanChange = () => {
-    setStatusPengajuan('Accepted');
-  }
-
   const handleKeteranganPenolakanChange = (event) => {
     setKeteranganPenolakan(event.target.value);
   }
@@ -75,53 +75,7 @@ const CustomCheckboxTable = () => {
       setTanggalAbsen(tanggalHariIni);
       setTanggalPengajuan(tanggalHariIni);
     };
-
-    // Panggil fungsi getTanggalHariIni saat komponen pertama kali dirender
-    getTanggalHariIni();
-    setStatusPengajuan('Delivered');
-    setIdMahasiswa(1);
-    setIdJadwalKelas(1);
-    setFileBukti('lala.pdf');
-    setKeterangan(''); // Inisialisasi keterangan dengan string kosong
-    setJenisIzin(''); // Inisialisasi jenisIzin dengan string kosong
-    setTanggalPengajuan(''); // Inisialisasi tanggalPengajuan dengan string kosong
-    setTanggalAbsen('');
   }, []);
-
-  const [formData, setFormData] = useState({
-    ID_Mahasiswa: '',
-    Keterangan: '',
-    Jenis_Izin: '',
-    Tanggal_Pengajuan: '',
-    Tanggal_Izin: '',
-    ID_Jadwal_Kelas: '',
-    File_Pengajuan: '',
-    Status_Pengajuan: ''
-  });
-
-  // function createPost() {
-  //   axios
-  //     .post(baseURL, {
-  //       ID_Mahasiswa : idMahasiswa,
-  //       Keterangan : keterangan,
-  //       Jenis_Izin : jenisIzin,
-  //       ID_Jadwal_Kelas : idJadwalKelas,
-  //       File_Pengajuan : fileBukti,
-  //       Status_Pengajuan : statusPengajuan
-  //     });
-  // }
-
-  // function getRequest() {
-  //   axios
-  //     .get(baseURL, {
-  //       ID_Mahasiswa : idMahasiswa,
-  //       Keterangan : keterangan,
-  //       Jenis_Izin : jenisIzin,
-  //       ID_Jadwal_Kelas : idJadwalKelas,
-  //       File_Pengajuan : fileBukti,
-  //       Status_Pengajuan : statusPengajuan
-  //     });
-  // }
 
   const [formErrors, setFormErrors] = useState({});
   const { key } = useParams();
@@ -134,7 +88,7 @@ const CustomCheckboxTable = () => {
     try {
       const response = await axios.get(`http://localhost:3000/data-pengajuan/${key}`);
       const data = response.data.data; // Ambil data dari response
-  
+
       if (response.status === 200) {
         console.log('Data yang telah diambil dari server:', data);
         // Atur formData dengan data dari database
@@ -168,25 +122,7 @@ const CustomCheckboxTable = () => {
   function downloadRequestFile() {
 
   }
-  // const sendDataToAPI = async (e) => {
-  //   e.preventDefault();
-  //   console.log(idMahasiswa);
-  //   try {
-  //      axios.post('http://localhost:3000/data-pengajuan/', {
-  //       idMahasiswa,
-  //       keterangan,
-  //       jenisIzin,
-  //       idJadwalKelas,
-  //       tanggalPengajuan,
-  //       tanggalAbsen,
-  //       fileBukti,
-  //       statusPengajuan,
-  //       });
-  //       console.log('berhasul');
-  //   } catch (error) {
-  //     console.error('Terjadi kesalahan:', error);
-  //   }
-  // };
+
 
   const getDayName = (date) => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
@@ -194,10 +130,6 @@ const CustomCheckboxTable = () => {
     return days[dayIndex]
   }
 
-  // const formatSelectedDate = (date) => {
-  //   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-  //   return date.toLocaleDateString(undefined, options)
-  // }
 
   const dayName = getDayName(selectedDate) // Mendapatkan nama hari dari tanggal yang dipilih
 
@@ -264,16 +196,6 @@ const CustomCheckboxTable = () => {
     setTableData(dataForSelectedDay)
   }, [selectedDate, dayName]) // Sertakan dayName dalam dependency array
 
-  const [validated, setValidated] = useState(false)
-  // const handleSubmit = (event) => {
-  //   const form = event.currentTarget
-  //   if (form.checkValidity() === false) {
-  //     event.preventDefault()
-  //     event.stopPropagation()
-  //   }
-  //   setValidated(true)
-  // }
-
   const handleChange = (name, value) => {
     setFormData({
       ...formData,
@@ -288,48 +210,27 @@ const CustomCheckboxTable = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // const errors = validateForm();
 
-    // if (Object.keys(errors).length === 0) {
-      try {
-        const response = await axios.patch(`http://localhost:3000/data-pengajuan/update/${key}`, {
-          Status_Pengajuan: statusPengajuan
-        });
+    try {
+      const response = await axios.patch(`http://localhost:3000/data-pengajuan/update/${key}`, formData);
 
-  // function createPost() {
-  //   axios
-  //     .post(baseURL, {
-  //       ID_Mahasiswa : idMahasiswa,
-  //       Keterangan : keterangan,
-  //       Jenis_Izin : jenisIzin,
-  //       ID_Jadwal_Kelas : idJadwalKelas,
-  //       File_Pengajuan : fileBukti,
-  //       Status_Pengajuan : statusPengajuan
-  //     });
-  // }
-
-        if (response.status === 200) {
-          console.log('Data berhasil diubah di database:', response.data);
-          alert('Data berhasil diubah!');
-          // setValidated(true)
-        } else {
-          console.error('Gagal mengubah data di database');
-          alert('Gagal mengubah data di database');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat mengubah data.');
+      if (response.status === 200) {
+        console.log('Data berhasil diubah di database:', response.data);
+        alert("Current status pengajuan: " + statusPengajuan + ", on DB: " + formData.Status_Pengajuan);
+        setValidated(true)
+      } else {
+        console.error('Gagal mengubah data di database');
+        alert('Gagal mengubah data di database');
       }
-    // } else {
-    //   alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
-    // }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Terjadi kesalahan saat mengubah data. ' + statusPengajuan);
+    }
   };
 
   return (
     <CForm
       className="row g-3"
-      // noValidate
-      // validated={validated}
       onSubmit={handleSubmit}
     >
       {/* Form elements */}
@@ -432,12 +333,12 @@ const CustomCheckboxTable = () => {
             Alasan
           </CFormLabel>
           <CFormTextarea
-          id="validationTextarea"
-          placeholder="Ada keperluan di luar kota"
-          value={formData.Keterangan} // nyambung ke backend
-          onChange={handleketeranganChange}
-          rows={7}
-          disabled
+            id="validationTextarea"
+            placeholder="Ada keperluan di luar kota"
+            value={formData.Keterangan} // nyambung ke backend
+            onChange={handleketeranganChange}
+            rows={7}
+            disabled
           >
           </CFormTextarea>
         </div>
@@ -516,7 +417,7 @@ const CustomCheckboxTable = () => {
         </CButton>
       </div>
       <CCol xs={12}>
-        <CButton color="primary" type="submit" onclick={() => setStatusPengajuan('Accepted')}>
+        <CButton color="primary" type="submit" onclick={() => handleChange('Status_Pengajuan', 'Accepted')}>
           Setujui
         </CButton>
         <>
@@ -536,11 +437,11 @@ const CustomCheckboxTable = () => {
                   Alasan penolakan
                 </CFormLabel>
                 <CFormTextarea
-                id="validationTextarea"
-                placeholder="Tuliskan alasan penolakan..."
-                onChange={handleKeteranganPenolakanChange}
-                rows={7}
-                required
+                  id="validationTextarea"
+                  placeholder={statusPengajuan}
+                  onChange={handleKeteranganPenolakanChange}
+                  rows={7}
+                  required
                 >
                 </CFormTextarea>
                 <CFormFeedback valid>Alasan sudah diisi</CFormFeedback>
