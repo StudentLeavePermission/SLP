@@ -55,6 +55,10 @@ const CustomCheckboxTable = () => {
     setKeterangan(event.target.value);
   };
 
+  const handleStatusPengajuanChange = () => {
+    setStatusPengajuan('Accepted');
+  }
+
   const handleKeteranganPenolakanChange = (event) => {
     setKeteranganPenolakan(event.target.value);
   }
@@ -288,12 +292,26 @@ const CustomCheckboxTable = () => {
 
     // if (Object.keys(errors).length === 0) {
       try {
-        const response = await axios.patch(`http://localhost:3000/data-pengajuan/update/${key}`, formData);
+        const response = await axios.patch(`http://localhost:3000/data-pengajuan/update/${key}`, {
+          Status_Pengajuan: statusPengajuan
+        });
+
+  // function createPost() {
+  //   axios
+  //     .post(baseURL, {
+  //       ID_Mahasiswa : idMahasiswa,
+  //       Keterangan : keterangan,
+  //       Jenis_Izin : jenisIzin,
+  //       ID_Jadwal_Kelas : idJadwalKelas,
+  //       File_Pengajuan : fileBukti,
+  //       Status_Pengajuan : statusPengajuan
+  //     });
+  // }
 
         if (response.status === 200) {
           console.log('Data berhasil diubah di database:', response.data);
           alert('Data berhasil diubah!');
-          setValidated(true)
+          // setValidated(true)
         } else {
           console.error('Gagal mengubah data di database');
           alert('Gagal mengubah data di database');
@@ -309,9 +327,9 @@ const CustomCheckboxTable = () => {
 
   return (
     <CForm
-      className="row g-3 needs-validation"
-      noValidate
-      validated={validated}
+      className="row g-3"
+      // noValidate
+      // validated={validated}
       onSubmit={handleSubmit}
     >
       {/* Form elements */}
@@ -498,7 +516,7 @@ const CustomCheckboxTable = () => {
         </CButton>
       </div>
       <CCol xs={12}>
-        <CButton color="primary" type="submit" onclick={() => handleChange('Status_Pengajuan', 'Accepted')}>
+        <CButton color="primary" type="submit" onclick={() => setStatusPengajuan('Accepted')}>
           Setujui
         </CButton>
         <>
