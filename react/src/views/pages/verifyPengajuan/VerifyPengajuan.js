@@ -30,6 +30,7 @@ const baseURL = "http://localhost:3000/data-pengajuan/";
 
 const CustomCheckboxTable = () => {
   const [visible, setVisible] = useState(false)
+  const [rejectConfirmVisible, setRejectConfirmVisible] = useState(false)
   const [keterangan, setKeterangan] = useState("")
   const [keteranganPenolakan, setKeteranganPenolakan] = useState("")
   const [tanggalPengajuan, setTanggalPengajuan] = useState("")
@@ -450,6 +451,38 @@ const CustomCheckboxTable = () => {
             </CModalBody>
             <CModalFooter>
               <CButton color="secondary" onClick={() => setVisible(false)}>
+                Batalkan
+              </CButton>
+              <CButton color="danger" onClick={() => {
+                setVisible(false)
+                setRejectConfirmVisible(true)
+              }}>Tolak pengajuan</CButton>
+            </CModalFooter>
+          </CModal>
+          <CModal
+            backdrop="static"
+            visible={rejectConfirmVisible}
+            onClick={() => {
+              setVisible(true)
+              setRejectConfirmVisible(false)
+            }}
+            aria-labelledby="StaticBackdropExampleLabel2"
+          >
+            <CModalHeader>
+              <CModalTitle id="StaticBackdropExampleLabel2">Konfirmasi Penolakan</CModalTitle>
+            </CModalHeader>
+            <CModalBody>
+              <div className="mb-5">
+                <CFormLabel htmlFor="validationCustom06" className="form-label table-font">
+                  Apakah anda yakin ingin menolak pengajuan ini? Tindakan ini tidak dapat diurungkan.
+                </CFormLabel>
+              </div>
+            </CModalBody>
+            <CModalFooter>
+              <CButton color="secondary" onClick={() => {
+                setVisible(true)
+                setRejectConfirmVisible(false)
+              }}>
                 Batalkan
               </CButton>
               <CButton color="danger" onClick={rejectRequest}>Tolak pengajuan</CButton>
