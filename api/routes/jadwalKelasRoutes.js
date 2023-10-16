@@ -20,5 +20,6 @@ router.get('/get/:id', jadwalKelasController.getClassSchedule);
 
 router.get('/:idKelas/:hari', jadwalKelasController.getClassScheduleWithTwoParams);
 
+router.get('/formatted', jadwalKelasController.getClassScheduleFormatted);
 
 module.exports = router;
