@@ -18,7 +18,7 @@ import './Style.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
-import {useNavigate, useParams} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { idMahasiswa } from '../login/Login'
 
 const baseURL = "http://localhost:3000/data-pengajuan/";
@@ -56,7 +56,7 @@ const CustomCheckboxTable = () => {
   const [checkboxStatus, setCheckboxStatus] = useState({})
   const selectedDatesExist = selectedDates.length > 0
   const navigate = useNavigate()
-  const id = {idMahasiswa}
+  const id = { idMahasiswa }
   const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id.idMahasiswa}`;
 
   // const formatSelectedDate = (date) => {
@@ -67,10 +67,10 @@ const CustomCheckboxTable = () => {
   const dayName = getDayName(selectedDate)
 
   useEffect(() => {
-    
+
     // Lakukan apa pun yang Anda butuhkan dengan URL ini, misalnya, permintaan API.
     console.log(urlJadwalKelasGetOne);
-    
+
     const getTanggalHariIni = () => {
       const today = new Date();
       const dd = String(today.getDate()).padStart(2, '0');
@@ -79,43 +79,43 @@ const CustomCheckboxTable = () => {
 
       const tanggalHariIni = `${yyyy}-${mm}-${dd}`;
       return tanggalHariIni
-      
+
     };
     // Panggil fungsi getTanggalHariIni saat komponen pertama kali dirender
     setTanggalAbsen(getTanggalHariIni());
     setTanggalPengajuan(getTanggalHariIni());
     setStatusPengajuan('Delivered');
-    
+
     setIdJadwalKelas(1);
     fetch(urlMahasiswaGetOne)
-        .then((response) => response.json())
-         .then((data) => {
-            console.log(data);
-            setMahasiswa(data);
-            setNama(data.data.Nama);
-            setNIM(data.data.NIM);
-            setKelas(data.data.ID_Kelas)
-            setIdMahasiswa(data.data.id)
-         })
-         .catch((err) => {
-            console.log(err);
-         });
-         
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setMahasiswa(data);
+        setNama(data.data.Nama);
+        setNIM(data.data.NIM);
+        setKelas(data.data.ID_Kelas)
+        setIdMahasiswa(data.data.id)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/1/${hari}`;
     fetch(urlJadwalKelasGetOne)
-         .then((response) => response.json())
-         .then((data) => {
-            console.log('hai',data);
-            setJadwalKelasAll(data);
-            setJadwalKelas(data.data);
-            setMataKuliah(data.mata_kuliah);
-              
-         })
-         .catch((err) => {
-            console.log(err);
-         });
-         
-    
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('hai', data);
+        setJadwalKelasAll(data);
+        setJadwalKelas(data.data);
+        setMataKuliah(data.mata_kuliah);
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+
   }, []);
 
   useEffect(() => {
@@ -126,7 +126,7 @@ const CustomCheckboxTable = () => {
     try {
       const response = await axios.get('http://localhost:3000/data-jam-pelajaran');
       setJamPelajaran(response.data.data);
-      console.log('hoii',response.data.data);
+      console.log('hoii', response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -136,29 +136,60 @@ const CustomCheckboxTable = () => {
     console.log('jadwalKelas:', jadwalKelas.data[0].id);
   }, [jadwalKelas]); */
 
-  
+
   function createPost() {// Panggil fungsi getTanggalHariIni() untuk mendapatkan tanggal hari ini.
 
     if (selectedDates.length === 0) {
       selectedDates.push({ date: new Date() });
-    }
-
-    selectedDates.forEach((item) => {
-       const tanggal = item.date;
-       selectedjadwal.forEach((item) => {
-        axios
-        .post(baseURL, {
-          ID_Mahasiswa : idMahasiswa,
-          Keterangan : keterangan,
-          Jenis_Izin : jenisIzin,
-          Tanggal_Pengajuan : tanggalPengajuan,
-          Tanggal_Izin : tanggalAbsen,
-          ID_Jadwal_Kelas : item,
-          File_Pengajuan : fileBukti.name,//fileBukti,
-          Status_Pengajuan : statusPengajuan
+    }else if(selectedDates.length >1){
+      console.log('lebih dr 1')
+      selectedDates.forEach((item) => {
+        const tanggal = item.date;
+        const hariSelected = getDayName(tanggal);
+        urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/1/${hariSelected}`;
+        
+          fetch(urlJadwalKelasGetOne)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('hai', data);
+                const jadwalKelasArray = data.data;
+                console.log('jadwal ?', jadwalKelasArray)
+                jadwalKelasArray.forEach(item => {
+                  axios
+                  .post(baseURL, {
+                    ID_Mahasiswa: idMahasiswa,
+                    Keterangan: keterangan,
+                    Jenis_Izin: jenisIzin,
+                    Tanggal_Pengajuan: tanggalPengajuan,
+                    Tanggal_Izin: tanggal,
+                    ID_Jadwal_Kelas: item.id,
+                    File_Pengajuan: fileBukti.name,//fileBukti,
+                    Status_Pengajuan: statusPengajuan
+                  });
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
         });
-     });
-    });
+    }else{
+      selectedDates.forEach((item) => {
+        const tanggal = item.date;
+        selectedjadwal.forEach((item) => {
+          axios
+            .post(baseURL, {
+              ID_Mahasiswa: idMahasiswa,
+              Keterangan: keterangan,
+              Jenis_Izin: jenisIzin,
+              Tanggal_Pengajuan: tanggalPengajuan,
+              Tanggal_Izin: tanggalAbsen,
+              ID_Jadwal_Kelas: item,
+              File_Pengajuan: fileBukti.name,//fileBukti,
+              Status_Pengajuan: statusPengajuan
+            });
+        });
+      });
+    }
     
   }
 
@@ -183,8 +214,8 @@ const CustomCheckboxTable = () => {
   // };
 
 
-  
-   // Mendapatkan nama hari dari tanggal yang dipilih
+
+  // Mendapatkan nama hari dari tanggal yang dipilih
 
   // Fungsi untuk mendapatkan data tabel berdasarkan hari yang dipilih
   const getTableDataForDay = (dayName) => {
@@ -254,31 +285,31 @@ const CustomCheckboxTable = () => {
   const handleCheckboxChange = (id) => {
     // Copy state checkboxStatus menjadi objek baru
     const updatedCheckboxStatus = { ...checkboxStatus };
-  
+
     // Ubah status checkbox untuk id yang sesuai
     updatedCheckboxStatus[id] = !updatedCheckboxStatus[id];
     setCheckboxStatus(updatedCheckboxStatus);
 
     setSelectedJadwal((prevSelectedJadwal) => {
-    // Buat salinan state terbaru
-    const updatedSelectedJadwal = [...prevSelectedJadwal];
+      // Buat salinan state terbaru
+      const updatedSelectedJadwal = [...prevSelectedJadwal];
 
-    if (!updatedSelectedJadwal.includes(id)) {
-      // Jika checkbox dicentang dan ID belum ada di dalam selectedjadwal, tambahkan ID
-      updatedSelectedJadwal.push(id);
-    } else {
-      // Jika checkbox tidak dicentang (false), hilangkan ID dari selectedjadwal
-      const index = updatedSelectedJadwal.indexOf(id);
-      if (index !== -1) {
-        updatedSelectedJadwal.splice(index, 1);
+      if (!updatedSelectedJadwal.includes(id)) {
+        // Jika checkbox dicentang dan ID belum ada di dalam selectedjadwal, tambahkan ID
+        updatedSelectedJadwal.push(id);
+      } else {
+        // Jika checkbox tidak dicentang (false), hilangkan ID dari selectedjadwal
+        const index = updatedSelectedJadwal.indexOf(id);
+        if (index !== -1) {
+          updatedSelectedJadwal.splice(index, 1);
+        }
       }
-    }
-    
-    return updatedSelectedJadwal;
-  });
-    
-  // Periksa selectedjadwal yang telah diperbarui
-  
+
+      return updatedSelectedJadwal;
+    });
+
+    // Periksa selectedjadwal yang telah diperbarui
+
   };
 
   // Fungsi untuk menangani perubahan checkbox "Pilih Semua Jadwal"
@@ -318,17 +349,17 @@ const CustomCheckboxTable = () => {
     // Lakukan apa pun yang Anda butuhkan dengan URL ini, misalnya, permintaan API.
     console.log(urlJadwalKelasGetOne);
     fetch(urlJadwalKelasGetOne)
-         .then((response) => response.json())
-         .then((data) => {
-            console.log('hai',data);
-            setJadwalKelasAll(data);
-            setJadwalKelas(data.data);
-            setMataKuliah(data.mata_kuliah);
-              
-         })
-         .catch((err) => {
-            console.log(err);
-         });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('hai', data);
+        setJadwalKelasAll(data);
+        setJadwalKelas(data.data);
+        setMataKuliah(data.mata_kuliah);
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   // Fungsi untuk menampilkan atau menyembunyikan jadwal berdasarkan tanggal yang diperluas
@@ -375,7 +406,7 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom02" className="table-font">
           NIM
         </CFormLabel>
-        <CFormInput type="text" id="validationCustom02" placeholder="Ketikkan NIM Anda"  value={NIM} disabled/>
+        <CFormInput type="text" id="validationCustom02" placeholder="Ketikkan NIM Anda" value={NIM} disabled />
         <CFormFeedback valid>NIM sudah terisi!</CFormFeedback>
         <CFormFeedback invalid>Mohon NIM diisi</CFormFeedback>
       </CCol>
@@ -422,38 +453,38 @@ const CustomCheckboxTable = () => {
           Pilih Jadwal Absen:
         </CFormLabel>
         <table className="table table-bordered custom-table">
-              <thead>
-                <tr>
-                  <th>
+          <thead>
+            <tr>
+              <th>
+                <CFormCheck
+                  type="checkbox"
+                  id="selectAllCheckbox"
+                  checked={selectAll}
+                  onChange={() => handleSelectAllChange(selectedDate)}
+                />
+              </th>
+              <th>Jam Pelajaran</th>
+              <th>Nama Mata Kuliah</th>
+            </tr>
+            {jadwalKelas.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td>
                     <CFormCheck
                       type="checkbox"
-                      id="selectAllCheckbox"
-                      checked={selectAll}
-                      onChange={() => handleSelectAllChange(selectedDate)}
+                      id={item.id.toString()}
+                      checked={checkboxStatus[item.id]}
+                      onChange={() => handleCheckboxChange(item.id)}
                     />
-                  </th>
-                  <th>Jam Pelajaran</th>
-                  <th>Nama Mata Kuliah</th>
+                  </td>
+                  <td><p>{jamPelajaran[item.ID_Jam_Pelajaran_Start - 1].Waktu_Mulai}</p></td>
+                  <td>{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
                 </tr>
-                {jadwalKelas.map((item, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                      <CFormCheck
-                        type="checkbox"
-                        id={item.id.toString()}
-                        checked={checkboxStatus[item.id]}
-                        onChange={() => handleCheckboxChange(item.id)}
-                      />
-                      </td>
-                      <td><p>{jamPelajaran[item.ID_Jam_Pelajaran_Start-1].Waktu_Mulai}</p></td>
-                      <td>{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
-                    </tr>
-                  );
-                })}
-              </thead>
-              <tbody>
-                {/* {jadwalKelas.data.map((jadwal) => (
+              );
+            })}
+          </thead>
+          <tbody>
+            {/* {jadwalKelas.data.map((jadwal) => (
                   <tr key={jadwal.id}>
                     <td>
                       <CFormCheck
@@ -467,8 +498,8 @@ const CustomCheckboxTable = () => {
                     <td>{jadwal.ID_Matkul}</td>
                   </tr>
                 ))} */}
-              </tbody>
-            </table>
+          </tbody>
+        </table>
       </CCol>
       <CCol md={4}>
         <div className="mb-5">
@@ -476,12 +507,12 @@ const CustomCheckboxTable = () => {
             Alasan
           </CFormLabel>
           <CFormTextarea
-          id="validationTextarea"
-          placeholder="Ketikkan alasan Anda"
-          value={keterangan}
-          onChange={(event) => setKeterangan(event.target.value)}
-          rows={7}
-          required
+            id="validationTextarea"
+            placeholder="Ketikkan alasan Anda"
+            value={keterangan}
+            onChange={(event) => setKeterangan(event.target.value)}
+            rows={7}
+            required
           >
           </CFormTextarea>
           <CFormFeedback valid>Alasan sudah diisi</CFormFeedback>
@@ -551,7 +582,7 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom07" className="table-font">
           Lampiran
         </CFormLabel>
-        <CFormInput type="file" id="validationTextarea" aria-label="file example" required onChange={(event) => setFileBukti(event.target.files[0])}/>
+        <CFormInput type="file" id="validationTextarea" aria-label="file example" required onChange={(event) => setFileBukti(event.target.files[0])} />
         <CFormFeedback valid>Lampiran sudah terisi!</CFormFeedback>
         <CFormFeedback invalid>Mohon untuk upload lampiran!</CFormFeedback>
       </div>
