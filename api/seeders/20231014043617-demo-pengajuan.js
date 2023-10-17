@@ -21,6 +21,20 @@ module.exports = {
       Tanggal_Izin: new Date(),
       File_Pengajuan: 'file.pdf',
       Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      ID_Mahasiswa: 2,
+      Keterangan: 'Izin',
+      Jenis_Izin: 'Izin',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file2.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
       createdAt: new Date(),
       updatedAt: new Date()
     }])

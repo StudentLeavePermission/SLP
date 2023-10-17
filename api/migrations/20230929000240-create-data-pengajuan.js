@@ -46,6 +46,9 @@ module.exports = {
       Status_Pengajuan: {
         type: Sequelize.ENUM('Delivered', 'On Progress', 'Accepted', 'Rejected'),
       },
+      Alasan_Penolakan: {
+        type: Sequelize.TEXT
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

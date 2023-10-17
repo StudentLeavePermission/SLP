@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     Tanggal_Izin: DataTypes.DATE,
     File_Pengajuan: DataTypes.STRING,
     Status_Pengajuan: DataTypes.ENUM('Delivered', 'On Progress', 'Accepted', 'Rejected'),
+    Alasan_Penolakan: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Data_Pengajuan',
