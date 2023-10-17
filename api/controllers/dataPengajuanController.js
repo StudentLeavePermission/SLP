@@ -68,7 +68,20 @@ exports.getLeaveRequest = async (req, res) => {
 
 exports.createLeaveRequest = async (req, res) => {
   try {
-    await Data_Pengajuan.post(req.body);
+    const { ID_Mahasiswa, Keterangan, Jenis_Izin, Tanggal_Pengajuan, Tanggal_Izin,ID_Jadwal_Kelas,Status_Pengajuan   } = req.body;
+    const filename = req.body.filename;
+    await Data_Pengajuan.post(
+      {
+        ID_Mahasiswa : ID_Mahasiswa,
+        Keterangan : Keterangan,
+        Jenis_Izin : Jenis_Izin,
+        ID_Jadwal_Kelas : ID_Jadwal_Kelas,
+        Tanggal_Pengajuan : Tanggal_Pengajuan,
+        Tanggal_Izin : Tanggal_Izin,
+        File_Pengajuan: filename,
+        Status_Pengajuan :  Status_Pengajuan,
+      }
+    );
     res.status(201).json({ msg: 'Leave Request created' });
   } catch (error) {
     console.error(error);

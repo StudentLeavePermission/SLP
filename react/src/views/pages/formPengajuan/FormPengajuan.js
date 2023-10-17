@@ -30,10 +30,10 @@ const CustomCheckboxTable = () => {
   const [mahasiswa, setMahasiswa] = useState([]);
   const [mataKuliah, setMataKuliah] = useState([]);
   const [jamPelajaran, setJamPelajaran] = useState([]);
-  const [idMahasiswa, setIdMahasiswa] = useState("1")
+  const [id, setIdMahasiswa] = useState(4)
   const [nama, setNama] = useState("")
   const [NIM, setNIM] = useState("")
-  const [kelas, setKelas] = useState("")
+  const [kelas, setKelas] = useState(1)
   const getDayName = (date) => {
     const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
     const dayIndex = date.getDay();
@@ -44,7 +44,7 @@ const CustomCheckboxTable = () => {
   const [keterangan, setKeterangan] = useState("")
   const [tanggalPengajuan, setTanggalPengajuan] = useState(new Date())
   const [tanggalAbsen, setTanggalAbsen] = useState("")
-  const [idJadwalKelas, setIdJadwalKelas] = useState(1)
+  const [idJadwalKelas, setIdJadwalKelas] = useState('1')
   const [jenisIzin, setJenisIzin] = useState("")
   const [statusPengajuan, setStatusPengajuan] = useState("")
   const [fileBukti, setFileBukti] = useState(null)
@@ -56,17 +56,26 @@ const CustomCheckboxTable = () => {
   const [checkboxStatus, setCheckboxStatus] = useState({})
   const selectedDatesExist = selectedDates.length > 0
   const navigate = useNavigate()
-  const id = { idMahasiswa }
-  const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id.idMahasiswa}`;
+  const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id}`;
 
   // const formatSelectedDate = (date) => {
   //   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
   //   return date.toLocaleDateString(undefined, options)
   // }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      setFileBukti(file)
+      
+    }
+  };
 
   const dayName = getDayName(selectedDate)
 
   useEffect(() => {
+    console.log('id', id)
 
     // Lakukan apa pun yang Anda butuhkan dengan URL ini, misalnya, permintaan API.
     console.log(urlJadwalKelasGetOne);
@@ -88,32 +97,30 @@ const CustomCheckboxTable = () => {
 
     setIdJadwalKelas(1);
     fetch(urlMahasiswaGetOne)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setMahasiswa(data);
-        setNama(data.data.Nama);
-        setNIM(data.data.NIM);
-        setKelas(data.data.ID_Kelas)
-        setIdMahasiswa(data.data.id)
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+    setMahasiswa(data);
+    setNama(data.data.Nama);
+    setNIM(data.data.NIM);
+    setKelas(data.data.ID_Kelas);
+    console.log('kelasnya', data.data.ID_Kelas);
+    setIdMahasiswa(data.data.id);
 
-    urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/1/${hari}`;
-    fetch(urlJadwalKelasGetOne)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('hai', data);
-        setJadwalKelasAll(data);
-        setJadwalKelas(data.data);
-        setMataKuliah(data.mata_kuliah);
-
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // Setelah mendapatkan data Mahasiswa, lakukan permintaan kedua
+    const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${data.data.ID_Kelas}/${hari}`;
+    return fetch(urlJadwalKelasGetOne);
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    console.log('hai', data);
+    setJadwalKelasAll(data);
+    setJadwalKelas(data.data);
+    setMataKuliah(data.mata_kuliah);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 
   }, []);
@@ -146,26 +153,33 @@ const CustomCheckboxTable = () => {
       selectedDates.forEach((item) => {
         const tanggal = item.date;
         const hariSelected = getDayName(tanggal);
-        urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/1/${hariSelected}`;
+        urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${kelas}/${hariSelected}`;
         
           fetch(urlJadwalKelasGetOne)
             .then((response) => response.json())
             .then((data) => {
-                console.log('hai', data);
                 const jadwalKelasArray = data.data;
-                console.log('jadwal ?', jadwalKelasArray)
                 jadwalKelasArray.forEach(item => {
+                  const data = new FormData();
+                  console.log('namaaaa', fileBukti.name)
+                  data.append("ID_Mahasiswa",  id);
+                  data.append("Keterangan", keterangan);
+                  data.append("Jenis_Izin", jenisIzin);
+                  data.append("Tanggal_Pengajuan", tanggalPengajuan);
+                  data.append("Tanggal_Izin", tanggal);
+                  data.append("ID_Jadwal_Kelas", item.id);
+                  data.append("File_Pengajuan", fileBukti);
+                  data.append("Status_Pengajuan", statusPengajuan);
+
                   axios
-                  .post(baseURL, {
-                    ID_Mahasiswa: idMahasiswa,
-                    Keterangan: keterangan,
-                    Jenis_Izin: jenisIzin,
-                    Tanggal_Pengajuan: tanggalPengajuan,
-                    Tanggal_Izin: tanggal,
-                    ID_Jadwal_Kelas: item.id,
-                    File_Pengajuan: fileBukti.name,//fileBukti,
-                    Status_Pengajuan: statusPengajuan
+                  .post(baseURL, data)
+                  .then((response) => {
+                    setPost(response.data);
+                  })
+                  .catch((error) => {
+                    console.error("Error:", error);
                   });
+      
                 });
             })
             .catch((err) => {
@@ -175,18 +189,44 @@ const CustomCheckboxTable = () => {
     }else{
       selectedDates.forEach((item) => {
         const tanggal = item.date;
+        if(selectedjadwal.length === 0){
+          const hariSelected = getDayName(tanggal);
+          urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${kelas}/${hariSelected}`;
+          fetch(urlJadwalKelasGetOne)
+          .then((response) => response.json())
+          .then((data) => {
+            setJadwalKelas(data.data);
+
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+          jadwalKelas.forEach((item) => {
+            selectedjadwal.push(item.id)
+          });
+        }
         selectedjadwal.forEach((item) => {
-          axios
-            .post(baseURL, {
-              ID_Mahasiswa: idMahasiswa,
-              Keterangan: keterangan,
-              Jenis_Izin: jenisIzin,
-              Tanggal_Pengajuan: tanggalPengajuan,
-              Tanggal_Izin: tanggalAbsen,
-              ID_Jadwal_Kelas: item,
-              File_Pengajuan: fileBukti.name,//fileBukti,
-              Status_Pengajuan: statusPengajuan
-            });
+          const data = new FormData();
+                  console.log('namaaaa', fileBukti.name)
+                  data.append("ID_Mahasiswa",  id);
+                  data.append("Keterangan", keterangan);
+                  data.append("Jenis_Izin", jenisIzin);
+                  data.append("Tanggal_Pengajuan", tanggalPengajuan);
+                  data.append("Tanggal_Izin", tanggal);
+                  data.append("ID_Jadwal_Kelas", item);
+                  data.append("File_Pengajuan", fileBukti);
+                  data.append("Status_Pengajuan", statusPengajuan);
+  
+                  axios
+                  .post(baseURL, data)
+                  .then((response) => {
+                    setPost(response.data);
+                  })
+                  .catch((error) => {
+                    console.error("Error:", error);
+                  });
+            
         });
       });
     }
@@ -345,7 +385,7 @@ const CustomCheckboxTable = () => {
     }
     setSelectedDate(date)
     const harihari = getDayName(date)
-    urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/1/${harihari}`;
+    urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${kelas}/${harihari}`;
     // Lakukan apa pun yang Anda butuhkan dengan URL ini, misalnya, permintaan API.
     console.log(urlJadwalKelasGetOne);
     fetch(urlJadwalKelasGetOne)
@@ -582,7 +622,7 @@ const CustomCheckboxTable = () => {
         <CFormLabel htmlFor="validationCustom07" className="table-font">
           Lampiran
         </CFormLabel>
-        <CFormInput type="file" id="validationTextarea" aria-label="file example" required onChange={(event) => setFileBukti(event.target.files[0])} />
+        <CFormInput type="file" id="validationTextarea" aria-label="file example" required onChange={handleFileChange} />
         <CFormFeedback valid>Lampiran sudah terisi!</CFormFeedback>
         <CFormFeedback invalid>Mohon untuk upload lampiran!</CFormFeedback>
       </div>
