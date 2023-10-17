@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'datatables.net-dt/css/jquery.dataTables.css'; // Import DataTables CSS
-import $ from 'jquery'; // Import jQuery
-import 'datatables.net'; // Import DataTables
-import './TabelCRUD.css'; // Import your CSS file
+import $ from 'jquery'; 
+import 'datatables.net'; 
+import './TabelCRUD.css';
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil } from '@coreui/icons';
 import { CButton } from '@coreui/react';
@@ -21,8 +21,6 @@ function TabelCRUD({}) {
       const response = await axios.get('http://localhost:3000/jadwal-kelas/formatted');
       const dataJamPelajaran = response.data.jam_pelajaran; 
       console.log(dataJamPelajaran);
-      // const dataJamPelajaranEnd = response.data.jam_pelajaran_end; 
-      // console.log(dataJamPelajaranEnd);
       const dataDosen = response.data.dosen;        
       const dataMatkul = response.data.mata_kuliah;
       console.log(dataDosen);
@@ -65,17 +63,6 @@ function TabelCRUD({}) {
     while (i < data.length){
       if (data[i].id == id_jam){
         return data[i].Waktu_Mulai;
-      }
-      i++;
-    }
-    return "NULL";
-  }
-
-  function getJamPelajaranStart (data, id_jam){
-    let i = 0;
-    while (i < data.length){
-      if (data[i].Data_Jam_Pelajaran.id == id_jam){
-        return data[i].Data_Jam_Pelajaran.Waktu_Mulai;
       }
       i++;
     }

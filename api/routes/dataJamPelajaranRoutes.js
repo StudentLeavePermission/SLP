@@ -5,4 +5,6 @@ const dataJamPelajaranController = require('../controllers/dataJamPelajaranContr
 // Get all class hours
 router.get('/', dataJamPelajaranController.getAllClassHours);
 
+router.get('/get/:id', dataJamPelajaranController.getOneDataClassHour);
+
 module.exports = router;
