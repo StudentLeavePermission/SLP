@@ -42,6 +42,15 @@ class mainModel {
         })
     }
 
+    getAllJustInclude({ include = {}, attributes = [] }) {
+        return this.models.findAll({
+            include: include,
+            attributes: attributes
+        },{
+            sequelize
+        })
+    }
+
     post(data){
         return this.models.create(data,{
             fields:Object.keys(data)

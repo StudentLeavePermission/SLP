@@ -9,4 +9,12 @@ router.post('/register', dataDosenWaliController.registerAdviserLecturer);
 
 router.post('/login', dataDosenWaliController.loginAdviserLecturer);
 
+router.post('/create', dataDosenWaliController.createDataDosenWali);
+
+router.patch('/patch/:id', dataDosenWaliController.editDataDosenWali);
+
+router.get('/get/:id', dataDosenWaliController.getOneDataDosenWali);
+
+router.delete('/delete/:id', dataDosenWaliController.deleteDataDosenWali);
+
 module.exports = router;

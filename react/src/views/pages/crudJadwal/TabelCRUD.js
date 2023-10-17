@@ -8,19 +8,9 @@ import { cilInfo, cilTrash, cilPencil } from '@coreui/icons';
 import { CButton } from '@coreui/react';
 import axios from 'axios';
 
-function TabelCRUD() {
+function TabelCRUD({}) {
   const tableRef = useRef(null);  
   const [dataJadwal, setDataJadwal] = useState([]);
-  const [dataDosen, setDataDosen] = useState({
-    Nama_Dosen:'',
-  });
-  const [dataMatkul, setDataMatkul] = useState({
-    Nama_Mata_Kuliah:'',
-  });
-  const [dataKelas, setDataKelas] = useState({
-    Nama_Kelas:'',
-  });
-  const [tampiljadwal, setTampilJadwal] = useState([]);
 
   useEffect(() => {
     getAllClassSchedules();
@@ -28,17 +18,24 @@ function TabelCRUD() {
 
   const getAllClassSchedules = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/jadwal-kelas');
+      const response = await axios.get('http://localhost:3000/jadwal-kelas/formatted');
+      const dataJamPelajaran = response.data.jam_pelajaran; 
+      console.log(dataJamPelajaran);
+      // const dataJamPelajaranEnd = response.data.jam_pelajaran_end; 
+      // console.log(dataJamPelajaranEnd);
+      const dataDosen = response.data.dosen;        
+      const dataMatkul = response.data.mata_kuliah;
+      console.log(dataDosen);
       const formattedData = response.data.data.map((item, index) => {
-        const namaDosen = getNamaaDosen(item.ID_Dosen);
-        const namaMatkul = getNamaMatkul(item.ID_Matkul);
-        const namaKelas = getNamaKelas(item.ID_Kelas);
+        const JamPelajaran = getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_Start)+" - "+ tambahIntervalWaktu(getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_End), 50); 
+        const namaDosen = getNamaDosen(dataDosen, item.ID_Dosen);
+        const namaMatkul = getNamaMatkul(dataMatkul, item.ID_Matkul);
         return {
           ...item,
-          DT_RowId: `${index + 1}`, // Tambahkan ini sebagai kunci unik
+          DT_RowId: `${index + 1}`,
+          Jam: JamPelajaran,
           Nama_Dosen: namaDosen,
-          Mata_Kuliah: namaMatkul,
-          Kelas: namaKelas
+          Mata_Kuliah: namaMatkul
         };
       });
       setDataJadwal(formattedData);
@@ -46,51 +43,65 @@ function TabelCRUD() {
       console.error('Error fetching data:', error);
     }
   }
+
+  function tambahIntervalWaktu(time, intervalMenit) {
+    const [jam, menit, detik] = time.split(':').map(Number);
   
-  function getNamaaDosen(id)  {
-    const apiURL = `http://localhost:3000/data-dosen/get/${id}`;
-      // Fetch data detail dosen dari API
-      fetch(apiURL)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data.data);
-          setDataDosen(data.data);
-        })
-        .catch((error) => console.error('Error fetching data:', error));
+    const totalMenit = (jam * 60) + menit;
   
-    return dataDosen.Nama_Dosen;
+    const totalMenitBaru = totalMenit + intervalMenit;
+  
+    const jamBaru = Math.floor(totalMenitBaru / 60);
+    const sisaMenit = totalMenitBaru % 60;
+  
+    // Format hasil baru sebagai tipe data time (HH:MM:SS)
+    const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+  
+    return waktuBaru;
   }
 
-  function getNamaMatkul(id)  {
-    const apiURL = `http://localhost:3000/data-mata-kuliah/get/${id}`;
-      // Fetch data detail dosen dari API
-      fetch(apiURL)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data.data);
-          setDataMatkul(data.data);
-        })
-        .catch((error) => console.error('Error fetching data:', error));
-  
-    return dataMatkul.Nama_Mata_Kuliah;
+  function getJamPelajaran (data, id_jam){
+    let i = 0;
+    while (i < data.length){
+      if (data[i].id == id_jam){
+        return data[i].Waktu_Mulai;
+      }
+      i++;
+    }
+    return "NULL";
   }
 
-  function getNamaKelas(id)  {
-    const apiURL = `http://localhost:3000/data-kelas/get/${id}`;
-      // Fetch data detail dosen dari API
-      fetch(apiURL)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data.data);
-          setDataKelas(data.data);
-        })
-        .catch((error) => console.error('Error fetching data:', error));
-  
-    return dataKelas.Nama_Kelas;
+  function getJamPelajaranStart (data, id_jam){
+    let i = 0;
+    while (i < data.length){
+      if (data[i].Data_Jam_Pelajaran.id == id_jam){
+        return data[i].Data_Jam_Pelajaran.Waktu_Mulai;
+      }
+      i++;
+    }
+    return "NULL";
   }
 
-  function icon() {
-    return 
+  function getNamaDosen (data, id_dosen){
+    let i = 0;
+    while (i < data.length){
+      if (data[i].Data_Dosen.id == id_dosen){
+        return data[i].Data_Dosen.Nama_Dosen;
+      }
+      i++;
+    }
+    return "NULL";
+  }
+
+  function getNamaMatkul (data, id_matkul){
+    let i = 0;
+    while (i < data.length){
+      if (data[i].Data_Mata_Kuliah.id == id_matkul){
+        return data[i].Data_Mata_Kuliah.Nama_Mata_Kuliah;
+      }
+      i++;
+    }
+    return "NULL";
   }
   
   useEffect(() => {
@@ -114,10 +125,10 @@ function TabelCRUD() {
       columns: [
         { data: "DT_RowId" },
         { data: "Hari_Jadwal" },
-        { data: "ID_Jam_Pelajaran_Start" },
+        { data: "Jam" },
         { data: "Nama_Dosen" },
         { data: "Mata_Kuliah" },
-        { data: "Kelas" },
+        { data: "ID_Kelas" },
         { 
           data: null,
           "render": function () {
@@ -216,7 +227,7 @@ function TabelCRUD() {
             <tr>
               <th className="header-cell rata table-font">Nomor</th>
               <th className="header-cell rata table-font">Hari</th>
-              <th className="header-cell rata table-font">Jam Ke</th>
+              <th className="header-cell rata table-font">Jam</th>
               <th className="header-cell rata table-font">Nama Dosen</th>
               <th className="header-cell rata table-font">Mata Kuliah</th>
               <th className="header-cell rata table-font">Kelas</th>

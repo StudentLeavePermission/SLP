@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import './TabelCRUD.css';
+import axios from 'axios';
 
 const TambahData = () => {
   const [formData, setFormData] = useState({
@@ -8,12 +9,15 @@ const TambahData = () => {
     mataKuliah: '',
     hari: '',
     namaDosen: '',
-    jamKe: '', // Mengubah jamKe menjadi teks
-    ruangan: '',
-    waktu: '',
+    waktuMulai: '',
+    waktuSelesai: '',
   });
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [dataDosen, setDataDosen] = useState([]);
+  const [dataMatkul, setDataMatkul] = useState([]);
+  const [dataKelas, setDataKelas] = useState([]);
+  const [dataJamPelajaran, setDataJamPelajaran] = useState([]);
 
   const handleChange = (name, value) => {
     setFormData({
@@ -22,17 +26,144 @@ const TambahData = () => {
     });
   };
 
+  useEffect(() => {
+    // Fetch data
+    getAllDataDosen();
+    getAllDataMatkul();
+    getAllDataKelas();
+    getAllDataJamPelajaran();
+  }, []);
+
+  const getAllDataDosen = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-dosen');
+      setDataDosen(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaDosen () {
+    const namaDosen = [];
+    for (let i = 0; i < dataDosen.length; i++) {
+      namaDosen.push({value: dataDosen[i].id, label: dataDosen[i].Nama_Dosen});
+    }
+    return namaDosen;
+  };
+
+  const getAllDataMatkul = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-mata-kuliah');
+      setDataMatkul(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaMatkul () {
+    const namaMatkul = [];
+    for (let i = 0; i < dataMatkul.length; i++) {
+      namaMatkul.push({value: dataMatkul[i].id, label: dataMatkul[i].Nama_Mata_Kuliah});
+    }
+    return namaMatkul;
+  }
+
+  const getAllDataKelas = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-kelas');
+      setDataKelas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaKelas () {
+    const namaKelas = [];
+    for (let i = 0; i < dataKelas.length; i++) {
+      namaKelas.push({value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas});
+    }
+    return namaKelas;
+  }
+
+  const getAllDataJamPelajaran = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-jam-pelajaran');
+      setDataJamPelajaran(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getJamPelajaranStart () {
+    const jamPelajaran = [];
+    for (let i = 0; i < dataJamPelajaran.length; i++) {
+      jamPelajaran.push({value: dataJamPelajaran[i].id, label: dataJamPelajaran[i].Waktu_Mulai});
+    }
+    return jamPelajaran;
+  }
+
+  function getJamPelajaranEnd () {
+    const jamPelajaran = [];
+    for (let i = 0; i < dataJamPelajaran.length; i++) {
+      let alias = tambahIntervalWaktu(dataJamPelajaran[i].Waktu_Mulai, 50);
+      jamPelajaran.push({value: dataJamPelajaran[i].id, label: alias});
+    }
+    return jamPelajaran;
+  }
+
+  function tambahIntervalWaktu(time, intervalMenit) {
+    const [jam, menit, detik] = time.split(':').map(Number);
+  
+    const totalMenit = (jam * 60) + menit;
+  
+    const totalMenitBaru = totalMenit + intervalMenit;
+  
+    const jamBaru = Math.floor(totalMenitBaru / 60);
+    const sisaMenit = totalMenitBaru % 60;
+  
+    // Format hasil baru sebagai tipe data time (HH:MM:SS)
+    const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+  
+    return waktuBaru;
+  }
+
+  useEffect(() => {
+    console.log(dataDosen);
+  }, [dataDosen]);
+
+  useEffect(() => {
+    console.log(dataMatkul);
+  }, [dataMatkul]);
+
+  useEffect(() => {
+    console.log(dataKelas);
+  }, [dataKelas]);
+
+  useEffect(() => {
+    console.log(dataJamPelajaran);
+  }, [dataJamPelajaran]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsFormSubmitted(true);
 
     // Validasi form di sini
     const isFormValid = validateForm();
-
+    
     if (isFormValid) {
-      // Data sudah terisi dan form valid, lakukan aksi submit di sini jika diperlukan
-      // Misalnya, kirim data ke server atau lakukan tindakan lainnya.
-      console.log('Form valid. Data akan dikirim:', formData);
+      try {
+        axios.post('http://localhost:3000/jadwal-kelas/create', {
+          Hari_Jadwal: formData.hari,
+          ID_Jam_Pelajaran_Start: formData.waktuMulai,
+          ID_Jam_Pelajaran_End: formData.waktuSelesai,
+          ID_Matkul: formData.mataKuliah,
+          ID_Dosen: formData.namaDosen,
+          ID_Kelas: formData.kelas,
+        })
+        console.log('Form valid. Data yang akan dikirim:', formData);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -47,38 +178,20 @@ const TambahData = () => {
     return true; // Jika semua input terisi, kembalikan true
   };
 
-  // Data dummy untuk kelas, mata kuliah, hari, dosen, ruangan, dan waktu
-  const dummyData = {
-    kelas: [
-      { value: 'D3 - 1A', label: 'D3 - 1A' },
-      { value: 'D3 - 1B', label: 'D3 - 1B' },
-      { value: 'D3 - 1C', label: 'D3 - 1C' },
-    ],
-    mataKuliah: [
-      { value: 'Aljabar Linear (T)', label: 'Aljabar Linear (T)' },
-      { value: 'Komputer Grafik (T)', label: 'Komputer Grafik (T)' },
-      { value: 'Matematika Diskrit 2 (T)', label: 'Matematika Diskrit 2 (T)' },
-    ],
+  // Data untuk menampilkan kelas, mata kuliah, hari, dosen, dan jam pelajaran
+  const pilihanData = {
+    kelas: getNamaKelas(),
+    mataKuliah: getNamaMatkul(),
     hari: [
       { value: 'Senin', label: 'Senin' },
       { value: 'Selasa', label: 'Selasa' },
       { value: 'Rabu', label: 'Rabu' },
+      { value: 'Kamis', label: 'Kamis' },
+      { value: 'Jumat', label: 'Jumat' },
     ],
-    namaDosen: [
-      { value: 'Dosen 1', label: 'Dosen 1' },
-      { value: 'Dosen 2', label: 'Dosen 2' },
-      { value: 'Dosen 3', label: 'Dosen 3' },
-    ],
-    ruangan: [
-      { value: 'Ruangan 101', label: 'Ruangan 101' },
-      { value: 'Ruangan 102', label: 'Ruangan 102' },
-      { value: 'Ruangan 103', label: 'Ruangan 103' },
-    ],
-    waktu: [
-      { value: '08:00 - 09:00', label: '08:00 - 09:00' },
-      { value: '09:00 - 10:00', label: '09:00 - 10:00' },
-      { value: '10:00 - 11:00', label: '10:00 - 11:00' },
-    ],
+    namaDosen: getNamaDosen(),
+    waktuMulai: getJamPelajaranStart(),
+    waktuSelesai: getJamPelajaranEnd(),
   };
 
   return (
@@ -88,11 +201,11 @@ const TambahData = () => {
           <label className="table-font">Kelas</label>
           <Select
             name="kelas"
-            value={dummyData.kelas.find((option) => option.value === formData.kelas)}
+            value={pilihanData.kelas.find((option) => option.value === formData.kelas)}
             onChange={(selectedOption) => {
               handleChange('kelas', selectedOption.value);
             }}
-            options={dummyData.kelas}
+            options={pilihanData.kelas}
             isSearchable
             required
           />
@@ -105,11 +218,11 @@ const TambahData = () => {
           <label className="table-font">Mata Kuliah</label>
           <Select
             name="mataKuliah"
-            value={dummyData.mataKuliah.find((option) => option.value === formData.mataKuliah)}
+            value={pilihanData.mataKuliah.find((option) => option.value === formData.mataKuliah)}
             onChange={(selectedOption) => {
               handleChange('mataKuliah', selectedOption.value);
             }}
-            options={dummyData.mataKuliah}
+            options={pilihanData.mataKuliah}
             isSearchable
             required
           />
@@ -122,11 +235,11 @@ const TambahData = () => {
           <label className="table-font">Hari</label>
           <Select
             name="hari"
-            value={dummyData.hari.find((option) => option.value === formData.hari)}
+            value={pilihanData.hari.find((option) => option.value === formData.hari)}
             onChange={(selectedOption) => {
               handleChange('hari', selectedOption.value);
             }}
-            options={dummyData.hari}
+            options={pilihanData.hari}
             isSearchable
             required
           />
@@ -139,11 +252,11 @@ const TambahData = () => {
           <label className="table-font">Nama Dosen</label>
           <Select
             name="namaDosen"
-            value={dummyData.namaDosen.find((option) => option.value === formData.namaDosen)}
+            value={pilihanData.namaDosen.find((option) => option.value === formData.namaDosen)}
             onChange={(selectedOption) => {
               handleChange('namaDosen', selectedOption.value);
             }}
-            options={dummyData.namaDosen}
+            options={pilihanData.namaDosen}
             isSearchable
             required
           />
@@ -153,50 +266,35 @@ const TambahData = () => {
         </div>
 
         <div className="col-md-4 margin-right">
-          <label className="table-font">Jam Ke</label>
-          <input
-            type="text"
-            name="jamKe"
-            value={formData.jamKe}
-            onChange={(e) => handleChange('jamKe', e.target.value)}
-            className={`form-control ${isFormSubmitted && !formData.jamKe ? 'is-invalid' : ''}`}
-            required
-          />
-          {isFormSubmitted && !formData.jamKe && (
-            <div className="invalid-feedback">Mohon isi jam ke!</div>
-          )}
-        </div>
-
-        <div className="col-md-4">
-          <label className="table-font">Ruangan</label>
+          <label className="table-font">Jam Mulai</label>
           <Select
-            name="ruangan"
-            value={dummyData.ruangan.find((option) => option.value === formData.ruangan)}
+            name="waktuMulai"
+            value={pilihanData.waktuMulai.find((option) => option.value === formData.waktuMulai)}
             onChange={(selectedOption) => {
-              handleChange('ruangan', selectedOption.value);
+              handleChange('waktuMulai', selectedOption.value);
             }}
-            options={dummyData.ruangan}
+            options={pilihanData.waktuMulai}
             isSearchable
             required
           />
-          {isFormSubmitted && !formData.ruangan && (
-            <div className="invalid-feedback">Mohon pilih ruangan!</div>
+          {isFormSubmitted && !formData.waktuMulai && (
+            <div className="invalid-feedback">Mohon pilih waktu!</div>
           )}
         </div>
 
         <div className="col-md-4 margin-right">
-          <label className="table-font">Waktu</label>
+          <label className="table-font">Jam Selesai</label>
           <Select
-            name="waktu"
-            value={dummyData.waktu.find((option) => option.value === formData.waktu)}
+            name="waktuSelesai"
+            value={pilihanData.waktuSelesai.find((option) => option.value === formData.waktuSelesai)}
             onChange={(selectedOption) => {
-              handleChange('waktu', selectedOption.value);
+              handleChange('waktuSelesai', selectedOption.value);
             }}
-            options={dummyData.waktu}
+            options={pilihanData.waktuSelesai}
             isSearchable
             required
           />
-          {isFormSubmitted && !formData.waktu && (
+          {isFormSubmitted && !formData.waktuSelesai && (
             <div className="invalid-feedback">Mohon pilih waktu!</div>
           )}
         </div>
