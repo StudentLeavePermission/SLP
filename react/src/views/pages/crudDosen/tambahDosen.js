@@ -24,34 +24,7 @@ const TambahDataDosen = () => {
 
   const [showKelasProdi, setShowKelasProdi] = useState(false);
   const [formErrors, setFormErrors] = useState({});
-  const [ID_Dosen_Wali, setID_Dosen_Wali] = useState(null);
   const navigate = useNavigate();
-
-  const fetchDataDosen = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/data-dosen');
-      const dataDosen = response.data;
-      console.log('dataDosen = ' + dataDosen.Nama_Dosen);
-      if (dataDosen.length > 0) {
-        // Ambil seluruh ID dari data-dosen
-        const allDosenIds = dataDosen.map((dosen) => dosen.id);
-        // Cari ID terbesar
-        const maxId = Math.max(...allDosenIds);
-        // Tambahkan 1 untuk mendapatkan ID baru
-        const newID_Dosen_Wali = maxId + 1;
-        setID_Dosen_Wali(newID_Dosen_Wali);
-      } else {
-        // Jika tidak ada data, set ID_Dosen_Wali ke 1
-        setID_Dosen_Wali(1);
-      }
-    } catch (error) {
-      console.error('Error fetching data-dosen:', error);
-    }
-  };  
-
-  useEffect(() => {
-    fetchDataDosen();
-  }, []);
 
   const handleChange = (name, value) => {
     setFormData({
@@ -118,7 +91,7 @@ const TambahDataDosen = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const errors = validateForm();
-
+  
     if (Object.keys(errors).length === 0) {
       try {
         // Membuat data dosen
@@ -129,26 +102,59 @@ const TambahDataDosen = () => {
           InitialID: formData.InitialID,
           Email_Dosen: formData.Email_Dosen,
         });
-
+  
         if (dosenResponse.status === 201) {
           if (formData.status === 'Dosen Wali') {
-            // Menggunakan ID_Dosen_Wali yang telah dihitung
-            const kelasResponse = await axios.post('http://localhost:3000/data-kelas/create', {
-              Nama_Kelas: formData.Nama_Kelas,
-              ID_Dosen_Wali: ID_Dosen_Wali,
-            });
-            console.log('ID DOSENN ADA GAA: ', + ID_Dosen_Wali);
-            if (kelasResponse.status === 201) {
-              console.log('Data Kelas berhasil ditambahkan:', kelasResponse.data);
-              alert('Data Kelas berhasil ditambahkan!');
-              // Redirect atau navigasi ke halaman lain jika diperlukan
-              navigate('/halaman-lain');
-            } else {
-              console.error('Gagal menambahkan data Kelas:', kelasResponse.data.error);
-              alert('Gagal menambahkan data Kelas. Error: ' + kelasResponse.data.error);
+            try {
+              // Ambil seluruh data dosen
+              const allDosenResponse = await axios.get('http://localhost:3000/data-dosen');
+              const allDosenData = allDosenResponse.data.data;
+
+              console.log('Data Dosen:', allDosenData);
+              let ID_Dosen_Wali = null; // Inisialisasi ID_Dosen_Wali dengan null
+              let ID_Dosen = null;
+
+              allDosenData.forEach((item) => {
+                if (item.NIP === formData.NIP) {
+                  console.log('ID_Dosen_Wali:', item.id);
+                  ID_Dosen_Wali = item.id; // Jika NIP sesuai, isi ID_Dosen_Wali dengan item.id
+                  ID_Dosen = item.id;
+                }
+              });
+
+              if (ID_Dosen_Wali !== null) {
+                // Sekarang ID_Dosen_Wali telah diisi dengan nilai yang sesuai
+                const kelasResponse = await axios.post('http://localhost:3000/data-kelas/create', {
+                  Nama_Kelas: formData.Nama_Kelas,
+                  ID_Dosen_Wali: ID_Dosen_Wali, // Gunakan nilai ID_Dosen_Wali yang telah ditemukan
+                });
+  
+              } 
+              if (ID_Dosen !== null) {
+                const dosenResponse = await axios.post('http://localhost:3000/data-dosen-wali/create', {
+                  Password: formData.Password,
+                  ID_Dosen: ID_Dosen, // Gunakan nilai ID_Dosen_Wali yang telah ditemukan
+                });
+  
+                if (dosenResponse.status === 201) {
+                  console.log('Data Dosen berhasil ditambahkan:', dosenResponse.data);
+                  alert('Data Dosen berhasil ditambahkan!');
+                } else {
+                  console.error('Gagal menambahkan data Dosen:', dosenResponse.data.error);
+                  alert('Gagal menambahkan data Dosen. Error: ' + dosenResponse.data.error);
+                }
+              } else {
+                console.error('Tidak dapat menemukan Dosen berdasarkan NIP:', formData.NIP);
+                alert('Tidak dapat menemukan Dosen berdasarkan NIP: ' + formData.NIP);
+              }
+            } catch (allDosenError) {
+              console.error('Gagal mengambil data dosen:', allDosenError);
+              alert('Gagal mengambil data dosen. Error: ' + allDosenError.message);
             }
           } else {
             // Handle ketika bukan Dosen Wali
+            console.log('Bukan Dosen Wali');
+            alert('Data Kelas berhasil ditambahkan!');
           }
         } else {
           console.error('Gagal menambahkan data Dosen:', dosenResponse.data.error);
@@ -161,7 +167,7 @@ const TambahDataDosen = () => {
     } else {
       alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
     }
-  };
+  };      
 
   return (
     <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>

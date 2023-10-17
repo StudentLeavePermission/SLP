@@ -7,7 +7,6 @@ import {
   CCol,
   CRow,
 } from '@coreui/react';
-import './editDosen.css';
 import { useParams } from 'react-router-dom';
 
 const EditDataDosen = () => {
@@ -17,6 +16,9 @@ const EditDataDosen = () => {
     Kode_Dosen: '',
     InitialID: '',
     Email_Dosen: '',
+    Nama_Kelas: '',
+    Password: '',
+    ID_Dosen_Wali: '',
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -28,26 +30,103 @@ const EditDataDosen = () => {
 
   const fetchData = async (key) => {
     try {
-      const response = await axios.get(`http://localhost:3000/data-dosen/get/${key}`);
-      const data = response.data.data; // Ambil data dari response
+      // Fetch data for Data_Dosen menggunakan ID yang sesuai di tabel
+      const dataDosenResponse = await axios.get(`http://localhost:3000/data-dosen/get/${key}`);
+      const dataDosen = dataDosenResponse.data.data;
   
-      if (response.status === 200) {
-        console.log('Data yang telah diambil dari server:', data);
-        // Atur formData dengan data dari database
-        setFormData({
-          Nama_Dosen: data.Nama_Dosen,
-          NIP: data.NIP,
-          Kode_Dosen: data.Kode_Dosen,
-          InitialID: data.InitialID,
-          Email_Dosen: data.Email_Dosen,
-        });
+      if (dataDosenResponse.status === 200) {
+        setFormData((prevData) => ({
+          ...prevData,
+          Nama_Dosen: dataDosen.Nama_Dosen,
+          NIP: dataDosen.NIP,
+          Kode_Dosen: dataDosen.Kode_Dosen,
+          InitialID: dataDosen.InitialID,
+          Email_Dosen: dataDosen.Email_Dosen,
+        }));
       } else {
         console.error('Gagal mengambil data dosen');
       }
+  
+      // Fetch data for Data_Kelas menggunakan ID yang sesuai di tabel
+      console.log('nyobain apa ajasii2', key);
+
+      const allKelasResponse = await axios.get('http://localhost:3000/data-kelas');
+      const allKelasData = allKelasResponse.data.data;
+
+      console.log('Data Kelas:', allKelasData);
+      let IDKelas = null;
+      console.log('nyobain apa ajasii222', key);
+
+      for (let i = 0; i < allKelasData.length; i++) {
+        const item = allKelasData[i];
+        // console.log('Data Kelas:', item.ID_Dosen_Wali);
+      
+        if (item.ID_Dosen_Wali.toString() === key.toString()) {
+          console.log('ID_Kelas:', item.id);
+          IDKelas = item.id;
+          break; 
+        }
+      }
+
+      if (IDKelas === null) {
+        console.log('Tidak ditemukan data yang sesuai dengan ID_Dosen_Wali:', key);
+      }
+
+      const kelasResponse = await axios.get(`http://localhost:3000/data-kelas/get/${IDKelas}`);
+      const kelasData = kelasResponse.data.data;
+  
+      if (kelasResponse.status === 200) {
+        setFormData((prevData) => ({
+          ...prevData,
+          Nama_Kelas: kelasData.Nama_Kelas,
+        }));
+      } else {
+        console.error('Gagal mengambil data kelas');
+      }
+
+      const allDosenResponse = await axios.get('http://localhost:3000/data-dosen-wali');
+      const allDosenData = allDosenResponse.data.data;
+
+      console.log('Data Kelas:', allDosenData);
+      let IDDosen = null;
+      console.log('nyobain apa ajasii111', key);
+
+      for (let i = 0; i < allDosenData.length; i++) {
+        const indeks = allDosenData[i];
+        // console.log('Data Dosen Wali:', indeks.ID_Dosen);
+      
+        if (indeks.ID_Dosen.toString() === key.toString()) {
+          console.log('ID_Dosen_Wali:', indeks.id);
+          IDDosen = indeks.id;
+          break; 
+        }
+      }
+
+      if (IDDosen === null) {
+        console.log('Tidak ditemukan data yang sesuai dengan ID_Dosen_Wali:', key);
+      }
+  
+      // Fetch data for Data_Dosen_Wali menggunakan ID yang sesuai di tabel
+      const dosenWaliResponse = await axios.get(`http://localhost:3000/data-dosen-wali/get/${IDDosen}`);
+      const dosenWaliData = dosenWaliResponse.data.data;
+  
+      if (dosenWaliResponse.status === 200) {
+        setFormData((prevData) => ({
+          ...prevData,
+          Password: dosenWaliData.Password,
+        }));
+      } else {
+        console.error('Gagal mengambil data dosen wali');
+      }
+  
+      console.log('Data_Dosen URL:', `http://localhost:3000/data-dosen/get/${key}`);
+      console.log('Data_Kelas URL:', `http://localhost:3000/data-kelas/get/${IDKelas}`);
+      console.log('Data_Dosen_Wali URL:', `http://localhost:3000/data-dosen-wali/get/${IDDosen}`);
     } catch (error) {
       console.error('Terjadi kesalahan:', error);
     }
-  };
+  };  
+  
 
   const handleChange = (name, value) => {
     setFormData({
@@ -78,6 +157,13 @@ const EditDataDosen = () => {
     if (!formData.Email_Dosen) {
       errors.Email_Dosen = 'Email Dosen harus diisi.';
     }
+    if (!formData.Nama_Kelas) {
+      errors.Nama_Kelas = 'Nama Kelas harus diisi.';
+    }
+    if (!formData.Password) {
+      errors.Password = 'Password harus diisi.';
+    }
+
     setFormErrors(errors);
     return errors;
   };
@@ -88,17 +174,75 @@ const EditDataDosen = () => {
 
     if (Object.keys(errors).length === 0) {
       try {
-        const response = await axios.patch(`http://localhost:3000/data-dosen/patch/${key}`, formData);
+        // Panggil endpoint untuk mengubah data di tabel Data_Dosen
+        await axios.patch(`http://localhost:3000/data-dosen/patch/${key}`, {
+          Kode_Dosen: formData.Kode_Dosen,
+          InitialID: formData.InitialID,
+          Nama_Dosen: formData.Nama_Dosen,
+          NIP: formData.NIP,
+          Email_Dosen: formData.Email_Dosen,
+        });
+        console.log('kuncinya:', key);
 
-        if (response.status === 200) {
-          console.log('Data berhasil diubah di database:', response.data);
-          alert('Data berhasil diubah!');
-        } else {
-          console.error('Gagal mengubah data di database');
-          alert('Gagal mengubah data di database');
+        const allKelasResponse = await axios.get('http://localhost:3000/data-kelas');
+        const allKelasData = allKelasResponse.data.data;
+
+        console.log('Data Kelas:', allKelasData);
+        let IDKelas = null;
+        console.log('nyobain apa ajasii222', key);
+
+        for (let i = 0; i < allKelasData.length; i++) {
+          const item = allKelasData[i];
+          // console.log('Data Kelas:', item.ID_Dosen_Wali);
+        
+          if (item.ID_Dosen_Wali.toString() === key.toString()) {
+            console.log('ID_Kelas:', item.id);
+            IDKelas = item.id;
+            break; 
+          }
         }
+
+        if (IDKelas === null) {
+          console.log('Tidak ditemukan data yang sesuai dengan ID_Dosen_Wali:', key);
+        }
+
+        // Panggil endpoint untuk mengubah data di tabel Data_Kelas
+        await axios.patch(`http://localhost:3000/data-kelas/patch/${IDKelas}`, {
+          Nama_Kelas: formData.Nama_Kelas,
+        });
+        console.log('kuncinya2:', formData.Nama_Kelas);
+
+        const allDosenResponse = await axios.get('http://localhost:3000/data-dosen-wali');
+        const allDosenData = allDosenResponse.data.data;
+
+        console.log('Data Dosen Wali:', allDosenData);
+        let IDDosen = null;
+        console.log('nyobain apa ajasii111', key);
+
+        for (let i = 0; i < allDosenData.length; i++) {
+          const indeks = allDosenData[i];
+          // console.log('Data Dosen Wali:', indeks.ID_Dosen);
+        
+          if (indeks.ID_Dosen.toString() === key.toString()) {
+            console.log('ID_Dosen_Wali:', indeks.id);
+            IDDosen = indeks.id;
+            break; 
+          }
+        }
+
+        if (IDDosen === null) {
+          console.log('Tidak ditemukan data yang sesuai dengan ID_Dosen_Wali:', key);
+        }
+
+        // Panggil endpoint untuk mengubah data di tabel Data_Dosen_Wali
+        await axios.patch(`http://localhost:3000/data-dosen-wali/patch/${IDDosen}`, {
+          Password: formData.Password,
+        });
+        console.log('kuncinya1:', formData.Password);
+
+        alert('Data berhasil diubah!');
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Terjadi kesalahan saat mengubah data:', error);
         alert('Terjadi kesalahan saat mengubah data.');
       }
     } else {
@@ -165,6 +309,32 @@ const EditDataDosen = () => {
             />
             {formErrors.Email_Dosen && <div className="text-danger">{formErrors.Email_Dosen}</div>}
           </div>
+          {formData.ID_Dosen_Wali !== 'Bukan Dosen Wali' && (
+            <div>
+              <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
+              <CFormInput
+                className="input"
+                type="text"
+                id="Nama_Kelas"
+                value={formData.Nama_Kelas}
+                onChange={(e) => handleChange('Nama_Kelas', e.target.value)}
+              />
+              {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
+            </div>
+          )}
+          {formData.ID_Dosen_Wali !== 'Bukan Dosen Wali' && (
+            <div>
+              <CFormLabel htmlFor="Password">Password</CFormLabel>
+              <CFormInput
+                className="input"
+                type="password"
+                id="Password"
+                value={formData.Password}
+                onChange={(e) => handleChange('Password', e.target.value)}
+              />
+              {formErrors.Password && <div className="text-danger">{formErrors.Password}</div>}
+            </div>
+          )}
         </CCol>
       </CRow>
       <div>

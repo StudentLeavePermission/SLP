@@ -9,4 +9,6 @@ router.get('/get/:id', dataKelasController.getOneDataKelas);
 
 router.post('/create', dataKelasController.createDataKelas);
 
+router.patch('/patch/:id', dataKelasController.editDataKelas);
+
 module.exports = router;

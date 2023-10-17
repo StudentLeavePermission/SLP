@@ -66,3 +66,22 @@ exports.createDataKelas = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.editDataKelas = async (req, res) => {
+  try {
+    const { id } = req.params; // Ambil ID dari parameter URL
+    const newData = req.body; // Data yang akan digunakan untuk mengganti data yang ada
+    const whereClause = { id }; // Kriteria untuk menentukan data yang akan diedit
+
+    const [updatedRowCount] = await Data_Kelas.patch(newData, whereClause);
+
+    if (updatedRowCount === 0) {
+      return res.status(404).json({ msg: 'Data Kelas not found' });
+    }
+
+    res.status(200).json({ msg: 'Data Kelas updated' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

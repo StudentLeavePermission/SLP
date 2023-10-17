@@ -12,18 +12,6 @@ const DocsExample = (props) => {
   return (
     <div className="example">
       <CNav variant="tabs">
-        <CNavItem>
-          <CNavLink href="#" active>
-            <CIcon icon={cilMediaPlay} className="me-2" />
-            Preview
-          </CNavLink>
-        </CNavItem>
-        <CNavItem>
-          <CNavLink href={_href} target="_blank">
-            <CIcon icon={cilCode} className="me-2" />
-            Code
-          </CNavLink>
-        </CNavItem>
       </CNav>
       <CTabContent className="rounded-bottom">
         <CTabPane className="p-3 preview" visible>
