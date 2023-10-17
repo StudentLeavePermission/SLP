@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   CRow,
   CCol,
@@ -10,13 +10,18 @@ import {
   CContainer,
   CButton,
   CImage,
-} from '@coreui/react';
-import img from '../../../assets/images/mntp.png';
-import pencil from '../../../assets/images/pencil-solid.svg';
-import './style.css';
+} from "@coreui/react";
+import pencil from "../../../assets/images/pencil-solid.svg";
+import "./style.css";
+
+const baseURL = "http://localhost:3000/data-mahasiswa/students/edit/2";
 
 const EditMahasiswa = () => {
+  const [NoTelp, setNoTelp] = useState("");
+  const [NoTelpOrtu, setNoTelpOrtu] = useState("");
+  const [file, setFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -26,30 +31,49 @@ const EditMahasiswa = () => {
         setSelectedImage(e.target.result);
       };
       reader.readAsDataURL(file);
+      setFile(file);
     }
   };
-  const [post, setPost] = React.useState(null);
+
+  const createPost = () => {
+    const data = new FormData();
+    data.append("Nama_img", file.name);
+    data.append("Nomor_Telp", NoTelp);
+    data.append("Nomor_Telp_Ortu", NoTelpOrtu);
+    data.append("photo", file);
+
+    axios
+      .post(baseURL, data)
+      .then((response) => {
+        setPost(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
+  const [post, setPost] = useState(null);
 
   React.useEffect(() => {
-    axios.get('http://localhost:3000/data-mahasiswa/students/1').then((response) => {
+    axios.get("http://localhost:3000/data-mahasiswa/students/2").then((response) => {
       setPost(response.data.data);
     });
   }, []);
 
+
   if (!post) return null;
 
 
+
+  let imgSrc = `../../../assets/ProfilPic/${post.Nama}`;
   return (
-
-
-
     <div className="c-app c-default-layout">
       <div className="c-wrapper">
         <main className="c-main">
           <div className="container-fluid">
             <CContainer>
               <CRow>
-                <CForm enctype="multipart/form-data" action="#" method="GET">
+                <CForm method="POST">
                   <CCol className="my-col">
                     <CRow>
                       <CCol xs="6" className="my-col-inner">
@@ -67,10 +91,7 @@ const EditMahasiswa = () => {
                             />
                           </CCol>
                           <CCol>
-                            <CFormLabel
-                              htmlFor="programStudi"
-                              className="label"
-                            >
+                            <CFormLabel htmlFor="programStudi" className="label">
                               Program Studi
                             </CFormLabel>
                             <CFormInput
@@ -90,7 +111,7 @@ const EditMahasiswa = () => {
                           id="jurusan"
                           name="jurusan"
                           defaultValue="Teknik Komputer dan Informatika"
-                            disabled
+                          disabled
                         />
                         <CFormLabel htmlFor="email" className="label">
                           Email
@@ -100,7 +121,7 @@ const EditMahasiswa = () => {
                           id="email"
                           name="email"
                           defaultValue={post.Email}
-                              disabled
+                          disabled
                         />
                         <CFormLabel htmlFor="noHandphone" className="label">
                           No Handphone
@@ -110,14 +131,11 @@ const EditMahasiswa = () => {
                           id="noHandphone"
                           name="noHandphone"
                           defaultValue={post.Nomor_Telp}
-
+                          onChange={(event) => setNoTelp(event.target.value)}
                         />
                         <br />
                         <p className="header-text">Data Orang Tua Wali</p>
-                        <CFormLabel
-                          htmlFor="namaOrangTuaWali"
-                          className="label"
-                        >
+                        <CFormLabel htmlFor="namaOrangTuaWali" className="label">
                           Nama Orang Tua Wali
                         </CFormLabel>
                         <CFormInput
@@ -127,10 +145,7 @@ const EditMahasiswa = () => {
                           defaultValue={post.Nomor_Telp_Ortu}
                           disabled
                         />
-                        <CFormLabel
-                          htmlFor="noHandphoneOrangTuaWali"
-                          className="label"
-                        >
+                        <CFormLabel htmlFor="noHandphoneOrangTuaWali" className="label">
                           No Handphone Orang Tua Wali
                         </CFormLabel>
                         <CFormInput
@@ -138,6 +153,7 @@ const EditMahasiswa = () => {
                           id="noHandphoneOrangTuaWali"
                           name="noHandphoneOrangTuaWali"
                           defaultValue={post.Nomor_Telp_Ortu}
+                          onChange={(event) => setNoTelpOrtu(event.target.value)}
                         />
                       </CCol>
                       <CCol xs="6" className="my-col-inner">
@@ -150,12 +166,11 @@ const EditMahasiswa = () => {
                                 className="image-style"
                               />
                             ) : (
-                              <CImage src={img} fluid className="image-style" />
+                              <CImage src={require(`../../../assets/ProfilPic/${post.Nama}`)} fluid className="image-style" />
+
+
                             )}
-                            <CImage
-                              src={pencil}
-                              className="pencil-icon-style"
-                            />
+                            <CImage src={pencil} className="pencil-icon-style" />
                           </div>
                           <input
                             type="file"
@@ -173,7 +188,7 @@ const EditMahasiswa = () => {
                         <CFormLabel htmlFor="nim" className="label">
                           NIM
                         </CFormLabel>
-                        <CFormInput type="text" id="nim" name="nim" defaultValue={post.NIM} disabled/>
+                        <CFormInput type="text" id="nim" name="nim" defaultValue={post.NIM} disabled />
                         <CFormLabel htmlFor="waliDosen" className="label">
                           Wali Dosen
                         </CFormLabel>
@@ -186,9 +201,9 @@ const EditMahasiswa = () => {
                         />
                         <CButton
                           component="input"
-                          type="submit"
                           value="Submit"
                           className="submitButtonStyle"
+                          onClick={createPost}
                         />
                       </CCol>
                     </CRow>

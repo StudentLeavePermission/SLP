@@ -135,29 +135,35 @@ const logoutStudent = async (req, res) => {
 
 const editStudent = async (req, res) => {
   try {
-    const {Nomor_Telp,Nomor_Telp_Ortu} = req.body;
     const { id } = req.params; // Assuming NIM is passed as a route parameter
     const student = await Data_Mahasiswa.get({
       where: { id: id },
     });
-   
+
     if (!student) {
       return res.status(404).json({ error: 'Mahasiswa tidak ditemukan' });
     }
 
 
-    student.Nomor_Telp = Nomor_Telp;
-    student.Nomor_Telp_Ortu = Nomor_Telp_Ortu
 
-    
+
+    // Menangani data lainnya
+    const { Nama_img, Nomor_Telp, Nomor_Telp_Ortu } = req.body;
+    const filename = req.body.filename;
+    student.Nama = filename;
+    student.Nomor_Telp = Nomor_Telp;
+    student.Nomor_Telp_Ortu = Nomor_Telp_Ortu;
+
     await student.save();
-    
-    res.json(student);
+
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
 
 module.exports = {
   getAllStudents,
