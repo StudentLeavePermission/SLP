@@ -7,4 +7,6 @@ router.get('/', dataKelasController.getAllClasses);
 
 router.get('/get/:id', dataKelasController.getOneDataKelas);
 
+router.post('/create', dataKelasController.createDataKelas);
+
 module.exports = router;

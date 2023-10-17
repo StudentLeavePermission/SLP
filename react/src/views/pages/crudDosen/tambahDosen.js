@@ -1,18 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   CForm,
   CFormLabel,
   CFormInput,
-  CCard,
   CFormCheck,
-  CImage,
   CCol,
   CRow,
 } from '@coreui/react';
-import img from '../../../assets/images/profile.jpg';
-import './tambahDosen.css';
-import { useHistory } from 'react-router-dom'; // Import useHistory
 
 const TambahDataDosen = () => {
   const [formData, setFormData] = useState({
@@ -21,11 +17,41 @@ const TambahDataDosen = () => {
     Kode_Dosen: '',
     InitialID: '',
     Email_Dosen: '',
+    Nama_Kelas: '',
+    Password: '',
+    status: 'Bukan Dosen Wali',
   });
 
-  const [selectedImage, setSelectedImage] = useState(null);
   const [showKelasProdi, setShowKelasProdi] = useState(false);
   const [formErrors, setFormErrors] = useState({});
+  const [ID_Dosen_Wali, setID_Dosen_Wali] = useState(null);
+  const navigate = useNavigate();
+
+  const fetchDataDosen = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-dosen');
+      const dataDosen = response.data;
+      console.log('dataDosen = ' + dataDosen.Nama_Dosen);
+      if (dataDosen.length > 0) {
+        // Ambil seluruh ID dari data-dosen
+        const allDosenIds = dataDosen.map((dosen) => dosen.id);
+        // Cari ID terbesar
+        const maxId = Math.max(...allDosenIds);
+        // Tambahkan 1 untuk mendapatkan ID baru
+        const newID_Dosen_Wali = maxId + 1;
+        setID_Dosen_Wali(newID_Dosen_Wali);
+      } else {
+        // Jika tidak ada data, set ID_Dosen_Wali ke 1
+        setID_Dosen_Wali(1);
+      }
+    } catch (error) {
+      console.error('Error fetching data-dosen:', error);
+    }
+  };  
+
+  useEffect(() => {
+    fetchDataDosen();
+  }, []);
 
   const handleChange = (name, value) => {
     setFormData({
@@ -33,19 +59,29 @@ const TambahDataDosen = () => {
       [name]: value,
     });
 
-    // Clear the error message for the field when it's updated
     setFormErrors({
       ...formErrors,
-      [name]: '', // Clear the error message for the field
+      [name]: '',
     });
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
+  const handleStatusChange = (status) => {
+    setFormData({
+      ...formData,
+      status: status,
+    });
 
-    if (file) {
-      setSelectedImage(URL.createObjectURL(file));
+    if (status === 'Dosen Wali') {
+      setShowKelasProdi(true);
+    } else {
+      setShowKelasProdi(false);
     }
+
+    setFormErrors({
+      ...formErrors,
+      Nama_Kelas: '',
+      Password: '',
+    });
   };
 
   const validateForm = () => {
@@ -65,8 +101,17 @@ const TambahDataDosen = () => {
     if (!formData.Email_Dosen) {
       errors.Email_Dosen = 'Email Dosen harus diisi.';
     }
-    // Add more validations for other fields as needed
-    setFormErrors(errors); // Set the formErrors state
+
+    if (formData.status === 'Dosen Wali') {
+      if (!formData.Nama_Kelas) {
+        errors.Nama_Kelas = 'Nama Kelas harus diisi.';
+      }
+      if (!formData.Password) {
+        errors.Password = 'Password harus diisi.';
+      }
+    }
+
+    setFormErrors(errors);
     return errors;
   };
 
@@ -74,10 +119,10 @@ const TambahDataDosen = () => {
     event.preventDefault();
     const errors = validateForm();
 
-    // Check if there are any errors in the form
     if (Object.keys(errors).length === 0) {
       try {
-        const response = await axios.post('http://localhost:3000/data-dosen/create', {
+        // Membuat data dosen
+        const dosenResponse = await axios.post('http://localhost:3000/data-dosen/create', {
           Nama_Dosen: formData.Nama_Dosen,
           NIP: formData.NIP,
           Kode_Dosen: formData.Kode_Dosen,
@@ -85,16 +130,33 @@ const TambahDataDosen = () => {
           Email_Dosen: formData.Email_Dosen,
         });
 
-        if (response.status === 201) {
-          console.log('Data berhasil ditambahkan ke database:', response.data);
-          alert('Data berhasil ditambahkan!');
+        if (dosenResponse.status === 201) {
+          if (formData.status === 'Dosen Wali') {
+            // Menggunakan ID_Dosen_Wali yang telah dihitung
+            const kelasResponse = await axios.post('http://localhost:3000/data-kelas/create', {
+              Nama_Kelas: formData.Nama_Kelas,
+              ID_Dosen_Wali: ID_Dosen_Wali,
+            });
+            console.log('ID DOSENN ADA GAA: ', + ID_Dosen_Wali);
+            if (kelasResponse.status === 201) {
+              console.log('Data Kelas berhasil ditambahkan:', kelasResponse.data);
+              alert('Data Kelas berhasil ditambahkan!');
+              // Redirect atau navigasi ke halaman lain jika diperlukan
+              navigate('/halaman-lain');
+            } else {
+              console.error('Gagal menambahkan data Kelas:', kelasResponse.data.error);
+              alert('Gagal menambahkan data Kelas. Error: ' + kelasResponse.data.error);
+            }
+          } else {
+            // Handle ketika bukan Dosen Wali
+          }
         } else {
-          console.error('Gagal menambahkan data ke database');
-          alert('Gagal menambahkan data ke database');
+          console.error('Gagal menambahkan data Dosen:', dosenResponse.data.error);
+          alert('Gagal menambahkan data Dosen. Error: ' + dosenResponse.data.error);
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Terjadi kesalahan saat menambahkan data.');
+        alert('Terjadi kesalahan saat menambahkan data. Error: ' + error.message);
       }
     } else {
       alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
@@ -161,7 +223,49 @@ const TambahDataDosen = () => {
             {formErrors.Email_Dosen && <div className="text-danger">{formErrors.Email_Dosen}</div>}
           </div>
         </CCol>
-        {/* Rest of your form fields */}
+        <div>
+          <CFormLabel>Status</CFormLabel>
+          <CFormCheck
+            type="radio"
+            id="flexCheckDefault1"
+            label="Dosen Wali"
+            checked={formData.status === 'Dosen Wali'}
+            onChange={() => handleStatusChange('Dosen Wali')}
+          />
+          <CFormCheck
+            type="radio"
+            id="flexCheckDefault2"
+            label="Bukan Dosen Wali"
+            checked={formData.status === 'Bukan Dosen Wali'}
+            onChange={() => handleStatusChange('Bukan Dosen Wali')}
+          />
+        </div>
+        {showKelasProdi && (
+          <>
+            <div>
+              <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
+              <CFormInput
+                className="input"
+                type="text"
+                id="Nama_Kelas"
+                value={formData.Nama_Kelas}
+                onChange={(e) => handleChange('Nama_Kelas', e.target.value)}
+              />
+              {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
+            </div>
+            <div>
+              <CFormLabel htmlFor="Password">Password</CFormLabel>
+              <CFormInput
+                className="input"
+                type="password"
+                id="Password"
+                value={formData.Password}
+                onChange={(e) => handleChange('Password', e.target.value)}
+              />
+              {formErrors.Password && <div className="text-danger">{formErrors.Password}</div>}
+            </div>
+          </>
+        )}
       </CRow>
       <div>
         <button type="submit" className="btn btn-primary float-end">
