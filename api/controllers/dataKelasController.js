@@ -41,3 +41,28 @@ exports.getOneDataKelas = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+//Insert
+// Create Data Kelas
+exports.createDataKelas = async (req, res) => {
+  try {
+    const { Nama_Kelas, ID_Dosen_Wali } = req.body;
+
+    if (!Nama_Kelas || !ID_Dosen_Wali) {
+      return res.status(400).json({ error: 'Nama Kelas and ID Dosen Wali are required' });
+    }
+
+    const newKelas = await Data_Kelas.post({
+      Nama_Kelas,
+      ID_Dosen_Wali,
+    });
+
+    res.status(201).json({
+      message: 'Data Kelas created successfully',
+      data: newKelas,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
