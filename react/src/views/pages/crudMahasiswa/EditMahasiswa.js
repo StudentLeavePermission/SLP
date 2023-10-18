@@ -13,15 +13,16 @@ import {
 } from "@coreui/react";
 import pencil from "../../../assets/images/pencil-solid.svg";
 import "./style.css";
+import { useParams } from 'react-router-dom';
 
-const baseURL = "http://localhost:3000/data-mahasiswa/students/edit/2";
+
 
 const EditMahasiswa = () => {
   const [NoTelp, setNoTelp] = useState("");
   const [NoTelpOrtu, setNoTelpOrtu] = useState("");
   const [file, setFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const { id } = useParams();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -34,7 +35,7 @@ const EditMahasiswa = () => {
       setFile(file);
     }
   };
-
+  const baseURL = `http://localhost:3000/data-mahasiswa/students/edit/${id}`;
   const createPost = () => {
     const data = new FormData();
     data.append("Nama_img", file.name);
@@ -55,7 +56,7 @@ const EditMahasiswa = () => {
   const [post, setPost] = useState(null);
 
   React.useEffect(() => {
-    axios.get("http://localhost:3000/data-mahasiswa/students/2").then((response) => {
+    axios.get(`http://localhost:3000/data-mahasiswa/students/${id}`).then((response) => {
       setPost(response.data.data);
     });
   }, []);
@@ -64,8 +65,13 @@ const EditMahasiswa = () => {
   if (!post) return null;
 
 
+  if (post.Foto_Profil != null){
+    var imgSrc = `${post.Foto_Profil}`;
+  }
+  else{
+    var imgSrc = `blank.jpeg`
+  }
 
-  let imgSrc = `../../../assets/ProfilPic/${post.Nama}`;
   return (
     <div className="c-app c-default-layout">
       <div className="c-wrapper">
@@ -166,7 +172,7 @@ const EditMahasiswa = () => {
                                 className="image-style"
                               />
                             ) : (
-                              <CImage src={require(`../../../assets/ProfilPic/${post.Nama}`)} fluid className="image-style" />
+                              <CImage src={require(`../../../assets/ProfilPic/${imgSrc}`)} fluid className="image-style" />
 
 
                             )}

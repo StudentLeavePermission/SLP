@@ -68,6 +68,7 @@ const getStudentId = async (req, res) => {
 
 
 const loginStudent = async (req, res) => {
+  
   try {
     const {NIM, Password} = req.body;
     const mhs = await Data_Mahasiswa.get({
@@ -151,7 +152,7 @@ const editStudent = async (req, res) => {
     // Menangani data lainnya
     const { Nomor_Telp, Nomor_Telp_Ortu } = req.body;
     const filename = req.body.filename;
-    student.Nama = filename;
+    student.Foto_Profil = filename;
     student.Nomor_Telp = Nomor_Telp;
     student.Nomor_Telp_Ortu = Nomor_Telp_Ortu;
 
