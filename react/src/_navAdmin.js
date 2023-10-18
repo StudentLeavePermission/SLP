@@ -9,62 +9,62 @@ const _nav = [
     to: '/dashboard',
     icon: cilBarChart,
   },
-  {
-    component: CNavGroup,
-    name: 'Data Siswa',
-    to: '/buttons',
-    icon: cibHackhands,
-    items: [
-      {
-        component: CNavItem,
-        name: '1A-JTK',
-        to: '/dashboard',
-      },
-      {
-        component: CNavItem,
-        name: '1B-JTK',
-        to: '/buttons/buttons',
-      },
-      {
-        component: CNavItem,
-        name: '2A-JTK',
-        to: '/buttons/buttons',
-      },
-      {
-        component: CNavItem,
-        name: '2B-JTK',
-        to: '/buttons/buttons',
-      },
-      {
-        component: CNavItem,
-        name: '3A-JTK',
-        to: '/buttons/buttons',
-      },
-      {
-        component: CNavItem,
-        name: '3B-JTK',
-        to: '/buttons/buttons',
-      },
-    ],
-  },
+  // {
+  //   component: CNavGroup,
+  //   name: 'Data Siswa',
+  //   to: '/buttons',
+  //   icon: cibHackhands,
+  //   items: [
+  //     {
+  //       component: CNavItem,
+  //       name: '1A-JTK',
+  //       to: '/dashboard',
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: '1B-JTK',
+  //       to: '/buttons/buttons',
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: '2A-JTK',
+  //       to: '/buttons/buttons',
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: '2B-JTK',
+  //       to: '/buttons/buttons',
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: '3A-JTK',
+  //       to: '/buttons/buttons',
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: '3B-JTK',
+  //       to: '/buttons/buttons',
+  //     },
+  //   ],
+  // },
   {
     component: CNavItem,
     name: 'Data Dosen',
-    to: '/dashboard',
+    to: '/dataDosen',
     icon: cilBarChart,
   },
   {
     component: CNavItem,
     name: 'Data Jadwal',
-    to: '/dashboard',
+    to: '/dataJadwal',
     icon: cilBarChart,
   },
-  {
-    component: CNavItem,
-    name: 'History Pengajuan',
-    to: '/dashboard',
-    icon: cilBarChart,
-  },
+  // {
+  //   component: CNavItem,
+  //   name: 'History Pengajuan',
+  //   to: '/dashboard',
+  //   icon: cilBarChart,
+  // },
 ]
 
 export default _nav

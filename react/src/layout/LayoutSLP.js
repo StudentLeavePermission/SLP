@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { AppContent, AppSidebar, AppFooter, AppHeader } from '../componentSLP/index'
 
-const DefaultLayout = () => {
+const LayoutSLP = () => {
   const [Value, setValue] = useState('');
 
   useEffect(() => {
@@ -24,4 +24,4 @@ const DefaultLayout = () => {
   )
 }
 
-export default DefaultLayout
+export default LayoutSLP 

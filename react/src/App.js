@@ -44,17 +44,7 @@ class App extends Component {
             <Route exact path="/404" name="Page 404" element={<Page404 />} />
             <Route exact path="/500" name="Page 500" element={<Page500 />} />
             <Route exact path="/tu/mahasiswa/edit" name="EditMahasiswa" element={<EditMahasiswa />} />
-            <Route exact path="/formPengajuan" name="form pengajuan" element={<FormPengajuan />} />
             <Route index name="landing page" element={<LandingPage />} />
-            <Route exact path="/dataDosen" name="TabelDosen" element={<CrudDosen />} />
-            <Route exact path="/detailDosen/:key" name="DetailDosen" element={<DetailDosen />} />
-            <Route exact path="/tambahDosen" name="TambahDosen" element={<TambahDosen />} />
-            <Route exact path="/editDosen/:key" name="EditDosen" element={<EditDosen />} />
-            <Route exact path="/verifyPengajuan/:key" name="VerifyPengajuan" element={<VerifyPengajuan />} />
-            <Route exact path="/tabelPengajuan" name="tabelPengajuan" element={<TabelPengajuan />} />
-            <Route exact path="/dataJadwal" name="TabelJadwal" element={<CrudJadwal />} />
-            <Route exact path="/tambahJadwal" name="TambahJadwal" element={<TambahJadwal />} />
-            <Route exact path="/detailJadwal/:key" name="DetailJadwal" element={<DetailJadwal />} />
             <Route path="*" name="Home" element={<LayoutSLP />} />
           </Routes>
         </Suspense>
