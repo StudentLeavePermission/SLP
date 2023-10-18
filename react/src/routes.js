@@ -52,6 +52,8 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // SLP
 const EditMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/EditMahasiswa'))
+const DetailMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/DetailMahasiswa'))
+const TabelMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/tabelMahasiswa'))
 const FormPengajuan = React.lazy(() => import('./views/pages/formPengajuan/FormPengajuan'))
 const CrudDosen = React.lazy(() => import('./views/pages/crudDosen/tabelDosen'))
 const DetailDosen= React.lazy(() => import('./views/pages/crudDosen/DetailDosen'))
@@ -117,6 +119,9 @@ const routes = [
   { path: '/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
   { path: '/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
   { path: '/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
+  { path: '/tu/mahasiswa/', name: 'TabelMahasiswa', element: TabelMahasiswa},
+  { path: '/tu/mahasiswa/edit/:id', name: 'EditMahasiswa', element: EditMahasiswa},
+  { path: '/tu/mahasiswa/detail/:id', name: 'DetailMahasiswa', element: DetailMahasiswa},
 ]
 
 export default routes
