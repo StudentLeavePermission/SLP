@@ -30,7 +30,7 @@ const CustomCheckboxTable = () => {
   const [mahasiswa, setMahasiswa] = useState([]);
   const [mataKuliah, setMataKuliah] = useState([]);
   const [jamPelajaran, setJamPelajaran] = useState([]);
-  const [id, setIdMahasiswa] = useState(1)
+  const [id, setIdMahasiswa] = useState(idMahasiswa)
   const [nama, setNama] = useState("")
   const [NIM, setNIM] = useState("")
   const [kelas, setKelas] = useState(1)
