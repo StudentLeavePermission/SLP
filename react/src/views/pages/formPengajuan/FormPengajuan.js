@@ -414,11 +414,10 @@ const CustomCheckboxTable = () => {
 
   const cancelSelectedDate = (date) => {
     const updatedSelectedDates = selectedDates.filter((d) => d.date !== date);
-    setSelectedDates(updatedSelectedDates, () => {
-      // Callback ini akan dijalankan setelah pembaruan state selesai
-      console.log('banyak', updatedSelectedDates.length);
+    
+    setSelectedDates(updatedSelectedDates);
       if (updatedSelectedDates.length === 1) {
-        const harihari = getDayName(updatedSelectedDates[0]);
+        const harihari = getDayName(updatedSelectedDates[0].date);
         const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${kelas}/${harihari}`;
         console.log(urlJadwalKelasGetOne);
         fetch(urlJadwalKelasGetOne)
@@ -432,8 +431,6 @@ const CustomCheckboxTable = () => {
             console.log(err);
           });
       }
-    });
-  
     const updatedCheckboxStatus = { ...checkboxStatus };
     delete updatedCheckboxStatus[date.toDateString()];
     setCheckboxStatus(updatedCheckboxStatus);
