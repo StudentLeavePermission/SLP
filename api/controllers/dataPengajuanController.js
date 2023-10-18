@@ -108,3 +108,17 @@ exports.editLeaveRequest = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.downloadFile = async (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.resolve(__dirname, '../../react/src/assets/files', filename);
+
+  console.log(filePath)
+
+  res.download(filePath, (err) => {
+      if (err) {
+          console.error(`Error downloading file: ${err}`);
+          res.status(500).send('Error downloading file');
+      }
+  });
+};

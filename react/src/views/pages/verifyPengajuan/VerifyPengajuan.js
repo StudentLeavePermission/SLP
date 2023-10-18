@@ -61,7 +61,7 @@ const CustomCheckboxTable = () => {
   const handleketeranganChange = (event) => {
     setKeterangan(event.target.value);
   };
-  
+
   const handleKeteranganPenolakanChange = (event) => {
     setKeteranganPenolakan(event.target.value);
   }
@@ -82,7 +82,7 @@ const CustomCheckboxTable = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const { key } = useParams();
-  const nav = useNavigate(); 
+  const nav = useNavigate();
 
   useEffect(() => {
     fetchData(key);
@@ -124,9 +124,27 @@ const CustomCheckboxTable = () => {
 
   }
 
-  function downloadRequestFile() {
-    
-  }
+  const downloadRequestFile = async (filename) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/download/${filename}`, { responseType: 'blob' });
+  
+      if (response.status === 200) {
+        const blob = new Blob([response.data]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.error('Error downloading file');
+        // Handle the error, e.g., show an error message to the user
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      // Handle the error, e.g., show an error message to the user
+    }
+  };
 
 
   const getDayName = (date) => {
@@ -332,6 +350,7 @@ const CustomCheckboxTable = () => {
             </table>
           </>
         )}
+        <CCol style={{ marginLeft: '95px', fontStyle: 'italic', color: 'gray' }}>Logging ID_Jadwal_Kelas: {formData.ID_Jadwal_Kelas}</CCol>
       </CCol>
       <CCol md={4}>
         <div className="mb-5">
@@ -418,7 +437,7 @@ const CustomCheckboxTable = () => {
           value={formData.File_Pengajuan} // nyambung ke backend
           readOnly
         />
-        <CButton color="primary" type='button' onClick={downloadRequestFile}>
+        <CButton color="primary" type='button' onClick={() => downloadRequestFile(formData.File_Pengajuan)}>
           Unduh
         </CButton>
       </div>

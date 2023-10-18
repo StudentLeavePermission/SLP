@@ -7,14 +7,14 @@ const cors = require('cors');
 //middleware untuk file
 const uploadFile = require('../middleware/multerFile');
 
-// Get all leave requests
 router.get('/', dataPengajuanController.getAllLeaveRequests);
 
 router.get('/:id', dataPengajuanController.getLeaveRequest);
 
 router.patch('/update/:id', dataPengajuanController.editLeaveRequest);
 
-// Create a new leave request
+router.get('/download/:filename', dataPengajuanController.downloadFile);
+
 router.post('/', uploadFile.single('File_Pengajuan'), dataPengajuanController.createLeaveRequest);
 
 module.exports = router;
