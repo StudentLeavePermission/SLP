@@ -68,7 +68,7 @@ const CustomCheckboxTable = () => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       setFileBukti(file)
-      
+
     }
   };
 
@@ -97,30 +97,30 @@ const CustomCheckboxTable = () => {
 
     setIdJadwalKelas(1);
     fetch(urlMahasiswaGetOne)
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    setMahasiswa(data);
-    setNama(data.data.Nama);
-    setNIM(data.data.NIM);
-    setKelas(data.data.ID_Kelas);
-    console.log('kelasnya', data.data.ID_Kelas);
-    setIdMahasiswa(data.data.id);
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setMahasiswa(data);
+        setNama(data.data.Nama);
+        setNIM(data.data.NIM);
+        setKelas(data.data.ID_Kelas);
+        console.log('kelasnya', data.data.ID_Kelas);
+        setIdMahasiswa(data.data.id);
 
-    // Setelah mendapatkan data Mahasiswa, lakukan permintaan kedua
-    const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${data.data.ID_Kelas}/${hari}`;
-    return fetch(urlJadwalKelasGetOne);
-  })
-  .then((response) => response.json())
-  .then((data) => {
-    console.log('hai', data);
-    setJadwalKelasAll(data);
-    setJadwalKelas(data.data);
-    setMataKuliah(data.mata_kuliah);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+        // Setelah mendapatkan data Mahasiswa, lakukan permintaan kedua
+        const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${data.data.ID_Kelas}/${hari}`;
+        return fetch(urlJadwalKelasGetOne);
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('hai', data);
+        setJadwalKelasAll(data);
+        setJadwalKelas(data.data);
+        setMataKuliah(data.mata_kuliah);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
 
   }, []);
@@ -148,58 +148,58 @@ const CustomCheckboxTable = () => {
 
     if (selectedDates.length === 0) {
       selectedDates.push({ date: new Date() });
-    }else if(selectedDates.length >1){
+    } else if (selectedDates.length > 1) {
       console.log('lebih dr 1')
       selectedDates.forEach((item) => {
         const tanggal = item.date;
         const hariSelected = getDayName(tanggal);
         urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${kelas}/${hariSelected}`;
-        
-          fetch(urlJadwalKelasGetOne)
-            .then((response) => response.json())
-            .then((data) => {
-                const jadwalKelasArray = data.data;
-                jadwalKelasArray.forEach(item => {
-                  const data = new FormData();
-                  data.append("ID_Mahasiswa",  id);
-                  data.append("Keterangan", keterangan);
-                  data.append("Jenis_Izin", jenisIzin);
-                  data.append("Tanggal_Pengajuan", tanggalPengajuan);
-                  data.append("Tanggal_Izin", tanggal);
-                  data.append("ID_Jadwal_Kelas", item.id);
-                  data.append("File_Pengajuan", fileBukti);
-                  data.append("Status_Pengajuan", statusPengajuan);
 
-                  axios
-                  .post(baseURL, data)
-                  .then((response) => {
-                    setPost(response.data);
-                  })
-                  .catch((error) => {
-                    console.error("Error:", error);
-                  });
-      
-                });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-        });
-    }else{
-      selectedDates.forEach((item) => {
-        const tanggal = item.date;
-        if(selectedjadwal.length === 0){
-          const hariSelected = getDayName(tanggal);
-          urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${kelas}/${hariSelected}`;
-          fetch(urlJadwalKelasGetOne)
+        fetch(urlJadwalKelasGetOne)
           .then((response) => response.json())
           .then((data) => {
-            setJadwalKelas(data.data);
+            const jadwalKelasArray = data.data;
+            jadwalKelasArray.forEach(item => {
+              const data = new FormData();
+              data.append("ID_Mahasiswa", id);
+              data.append("Keterangan", keterangan);
+              data.append("Jenis_Izin", jenisIzin);
+              data.append("Tanggal_Pengajuan", tanggalPengajuan);
+              data.append("Tanggal_Izin", tanggal);
+              data.append("ID_Jadwal_Kelas", item.id);
+              data.append("File_Pengajuan", fileBukti);
+              data.append("Status_Pengajuan", statusPengajuan);
 
+              axios
+                .post(baseURL, data)
+                .then((response) => {
+                  setPost(response.data);
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                });
+
+            });
           })
           .catch((err) => {
             console.log(err);
           });
+      });
+    } else {
+      selectedDates.forEach((item) => {
+        const tanggal = item.date;
+        if (selectedjadwal.length === 0) {
+          const hariSelected = getDayName(tanggal);
+          urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${kelas}/${hariSelected}`;
+          fetch(urlJadwalKelasGetOne)
+            .then((response) => response.json())
+            .then((data) => {
+              setJadwalKelas(data.data);
+
+            })
+            .catch((err) => {
+              console.log(err);
+            });
 
           jadwalKelas.forEach((item) => {
             selectedjadwal.push(item.id)
@@ -207,28 +207,28 @@ const CustomCheckboxTable = () => {
         }
         selectedjadwal.forEach((item) => {
           const data = new FormData();
-                  data.append("ID_Mahasiswa",  id);
-                  data.append("Keterangan", keterangan);
-                  data.append("Jenis_Izin", jenisIzin);
-                  data.append("Tanggal_Pengajuan", tanggalPengajuan);
-                  data.append("Tanggal_Izin", tanggal);
-                  data.append("ID_Jadwal_Kelas", item);
-                  data.append("File_Pengajuan", fileBukti);
-                  data.append("Status_Pengajuan", statusPengajuan);
-  
-                  axios
-                  .post(baseURL, data)
-                  .then((response) => {
-                    setPost(response.data);
-                  })
-                  .catch((error) => {
-                    console.error("Error:", error);
-                  });
-            
+          data.append("ID_Mahasiswa", id);
+          data.append("Keterangan", keterangan);
+          data.append("Jenis_Izin", jenisIzin);
+          data.append("Tanggal_Pengajuan", tanggalPengajuan);
+          data.append("Tanggal_Izin", tanggal);
+          data.append("ID_Jadwal_Kelas", item);
+          data.append("File_Pengajuan", fileBukti);
+          data.append("Status_Pengajuan", statusPengajuan);
+
+          axios
+            .post(baseURL, data)
+            .then((response) => {
+              setPost(response.data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+
         });
       });
     }
-    
+
   }
 
   // const sendDataToAPI = async (e) => {
@@ -414,11 +414,30 @@ const CustomCheckboxTable = () => {
 
   const cancelSelectedDate = (date) => {
     const updatedSelectedDates = selectedDates.filter((d) => d.date !== date);
-    setSelectedDates(updatedSelectedDates);
+    setSelectedDates(updatedSelectedDates, () => {
+      // Callback ini akan dijalankan setelah pembaruan state selesai
+      console.log('banyak', updatedSelectedDates.length);
+      if (updatedSelectedDates.length === 1) {
+        const harihari = getDayName(updatedSelectedDates[0]);
+        const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${kelas}/${harihari}`;
+        console.log(urlJadwalKelasGetOne);
+        fetch(urlJadwalKelasGetOne)
+          .then((response) => response.json())
+          .then((data) => {
+            setJadwalKelasAll(data);
+            setJadwalKelas(data.data);
+            setMataKuliah(data.mata_kuliah);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+  
     const updatedCheckboxStatus = { ...checkboxStatus };
     delete updatedCheckboxStatus[date.toDateString()];
     setCheckboxStatus(updatedCheckboxStatus);
-  }
+  };
 
   const [validated, setValidated] = useState(false)
   const handleSubmit = (event) => {
@@ -502,37 +521,37 @@ const CustomCheckboxTable = () => {
         <table className="table table-bordered custom-table">
           <thead>
             {selectedDates.length < 2 && (
-  <>
-    <tr>
-              <th>
-                {/* <CFormCheck
+              <>
+                <tr>
+                  <th>
+                    {/* <CFormCheck
                   type="checkbox"
                   id="selectAllCheckbox"
                   checked={selectAll}
                   onChange={() => handleSelectAllChange(selectedDate)}
                 /> */}
-              </th>
-              <th>Jam Pelajaran</th>
-              <th>Nama Mata Kuliah</th>
-            </tr>
-    {jadwalKelas.map((item, index) => {
-      return (
-        <tr key={index}>
-          <td>
-            <CFormCheck
-              type="checkbox"
-              id={item.id.toString()}
-              checked={checkboxStatus[item.id]}
-              onChange={() => handleCheckboxChange(item.id)}
-            />
-          </td>
-          <td><p>{jamPelajaran[item.ID_Jam_Pelajaran_Start - 1].Waktu_Mulai}</p></td>
-          <td>{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
-        </tr>
-      );
-    })}
-  </>
-)}
+                  </th>
+                  <th>Jam Pelajaran</th>
+                  <th>Nama Mata Kuliah</th>
+                </tr>
+                {jadwalKelas.map((item, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>
+                        <CFormCheck
+                          type="checkbox"
+                          id={item.id.toString()}
+                          checked={checkboxStatus[item.id]}
+                          onChange={() => handleCheckboxChange(item.id)}
+                        />
+                      </td>
+                      <td><p>{jamPelajaran[item.ID_Jam_Pelajaran_Start - 1].Waktu_Mulai}</p></td>
+                      <td>{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
+                    </tr>
+                  );
+                })}
+              </>
+            )}
           </thead>
           <tbody>
             {/* {jadwalKelas.data.map((jadwal) => (
