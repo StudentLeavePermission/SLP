@@ -30,7 +30,7 @@ const CustomCheckboxTable = () => {
   const [mahasiswa, setMahasiswa] = useState([]);
   const [mataKuliah, setMataKuliah] = useState([]);
   const [jamPelajaran, setJamPelajaran] = useState([]);
-  const [id, setIdMahasiswa] = useState(4)
+  const [id, setIdMahasiswa] = useState(1)
   const [nama, setNama] = useState("")
   const [NIM, setNIM] = useState("")
   const [kelas, setKelas] = useState(1)
@@ -414,6 +414,14 @@ const CustomCheckboxTable = () => {
     }
   }
 
+  const cancelSelectedDate = (date) => {
+    const updatedSelectedDates = selectedDates.filter((d) => d.date !== date);
+    setSelectedDates(updatedSelectedDates);
+    const updatedCheckboxStatus = { ...checkboxStatus };
+    delete updatedCheckboxStatus[date.toDateString()];
+    setCheckboxStatus(updatedCheckboxStatus);
+  }
+
   const [validated, setValidated] = useState(false)
   const handleSubmit = (event) => {
     const form = event.currentTarget
@@ -464,7 +472,8 @@ const CustomCheckboxTable = () => {
               id="validationCustom06"
               selected={selectedDate}
               onChange={(date) => handleDateChange(date)}
-              dateFormat="dd/MM/yyyy" // Format tanggal sesuai keinginan Anda
+              dateFormat="dd/MM/yyyy"
+              minDate={new Date()} // Menonaktifkan tanggal sebelum hari ini
               required
               className="form-control margin-tanggal1"
             />
@@ -496,12 +505,12 @@ const CustomCheckboxTable = () => {
           <thead>
             <tr>
               <th>
-                <CFormCheck
+                {/* <CFormCheck
                   type="checkbox"
                   id="selectAllCheckbox"
                   checked={selectAll}
                   onChange={() => handleSelectAllChange(selectedDate)}
-                />
+                /> */}
               </th>
               <th>Jam Pelajaran</th>
               <th>Nama Mata Kuliah</th>
@@ -570,12 +579,15 @@ const CustomCheckboxTable = () => {
                 <div key={index}>
                   <CButton
                     color="info"
-                    className="detail-tanggal"
+                    className="detail-tanggal table-font"
                     onClick={() => toggleExpandedDate(date.date)}
-                  >{`Detail: ${getDayName(date.date)},
-                  ${date.date.getDate()} ${date.date.toLocaleString('id-ID', { month: 'long' })}
-                  ${date.date.getFullYear()}`}</CButton>
-                  {expandedDates.includes(date.date) && (
+                  >{`Detail: ${getDayName(date.date)}, ${date.date.getDate()} ${date.date.toLocaleString('id-ID', { month: 'long' })} ${date.date.getFullYear()}`}</CButton>
+                  <CButton
+                    color="danger"
+                    className="cancel-tanggal table-font"
+                    onClick={() => cancelSelectedDate(date.date)}
+                  >Batal</CButton>
+                  {/* {expandedDates.includes(date.date) && (
                     <table className="tabel-detail table table-bordered custom-table">
                       <thead>
                         <tr>
@@ -611,7 +623,7 @@ const CustomCheckboxTable = () => {
                         })}
                       </tbody>
                     </table>
-                  )}
+                  )} */}
                 </div>
               ))}
             </ul>
@@ -633,7 +645,8 @@ const CustomCheckboxTable = () => {
           label="Saya mengajukan sakit/izin dengan data yang benar"
           required
         />
-        <CFormFeedback invalid>You must agree before submitting.</CFormFeedback>
+        <CFormFeedback valid>Pernyataan sudah diceklis!</CFormFeedback>
+        <CFormFeedback invalid>Mohon ceklis pernyataan ini!</CFormFeedback>
       </CCol>
       <CCol xs={12}>
         <CButton color="primary" type="submit" onClick={createPost}>

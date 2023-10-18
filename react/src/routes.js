@@ -50,6 +50,17 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
+// SLP
+const EditMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/EditMahasiswa'))
+const FormPengajuan = React.lazy(() => import('./views/pages/formPengajuan/FormPengajuan'))
+const CrudDosen = React.lazy(() => import('./views/pages/crudDosen/tabelDosen'))
+const DetailDosen= React.lazy(() => import('./views/pages/crudDosen/DetailDosen'))
+const TambahDosen = React.lazy(() => import('./views/pages/crudDosen/tambahDosen'))
+const EditDosen = React.lazy(() => import('./views/pages/crudDosen/editDosen'))
+const VerifyPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/VerifyPengajuan'));
+const TabelPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/tabelPengajuan'));
+const CrudJadwal = React.lazy(() => import('./views/pages/crudJadwal/TabelCRUD'))
+const TambahJadwal = React.lazy(() => import('./views/pages/crudJadwal/TambahData'))
 
 
 const routes = [
@@ -97,6 +108,16 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
+  { path: '/tu/mahasiswa/edit', name: 'EditMahasiswa', element: EditMahasiswa },
+  { path: '/formPengajuan', name: 'formPengajuan', element: FormPengajuan },
+  { path: '/dataDosen', name: 'TabelDosen', element: CrudDosen },
+  { path: '/detailDosen/:key', name: 'DetailDosen', element: DetailDosen },
+  { path: '/tambahDosen', name: 'TambahDosen', element: TambahDosen },
+  { path: '/editDosen/:key', name: 'EditDosen', element: EditDosen },
+  { path: '/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
+  { path: '/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
+  { path: '/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
+  { path: '/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
 ]
 
 export default routes

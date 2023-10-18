@@ -1,9 +1,12 @@
 .input{
-    width: 300px;
+    width: 400px;
+    border-color: #324567;
 }
-.box-1{
+.box-1, .box-2{
+    margin-top: 30px;
     margin-left: 150px;
 }
-.box-2{
+.header-form{
+    margin-top: 50px;
     margin-left: 100px;
 }

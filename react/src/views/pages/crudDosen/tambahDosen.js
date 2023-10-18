@@ -171,6 +171,11 @@ const TambahDataDosen = () => {
 
   return (
     <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>
+      <div className="header-form">
+        <div>
+          <h2>Tambah Data Dosen</h2>
+        </div>
+      </div>
       <CRow>
         <CCol className='box-1'>
           <div>
@@ -229,6 +234,7 @@ const TambahDataDosen = () => {
             {formErrors.Email_Dosen && <div className="text-danger">{formErrors.Email_Dosen}</div>}
           </div>
         </CCol>
+        <CCol className='box-2'>
         <div>
           <CFormLabel>Status</CFormLabel>
           <CFormCheck
@@ -272,6 +278,7 @@ const TambahDataDosen = () => {
             </div>
           </>
         )}
+      </CCol>
       </CRow>
       <div>
         <button type="submit" className="btn btn-primary float-end">
