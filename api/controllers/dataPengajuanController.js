@@ -80,6 +80,7 @@ exports.createLeaveRequest = async (req, res) => {
         Tanggal_Izin : Tanggal_Izin,
         File_Pengajuan: filename,
         Status_Pengajuan :  Status_Pengajuan,
+        Alasan_Penolakan : ''
       }
     );
     res.status(201).json({ msg: 'Leave Request created' });
