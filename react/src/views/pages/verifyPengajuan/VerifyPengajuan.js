@@ -55,7 +55,7 @@ const CustomCheckboxTable = () => {
     ID_Jadwal_Kelas: '',
     File_Pengajuan: '',
     Status_Pengajuan: '',
-    // Alasan_Penolakan: ''
+    Alasan_Penolakan: ''
   });
   const selectedDatesExist = selectedDates.length > 0
   const handleketeranganChange = (event) => {
@@ -82,6 +82,7 @@ const CustomCheckboxTable = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const { key } = useParams();
+  const nav = useNavigate(); 
 
   useEffect(() => {
     fetchData(key);
@@ -104,7 +105,7 @@ const CustomCheckboxTable = () => {
           ID_Jadwal_Kelas: data.ID_Jadwal_Kelas,
           File_Pengajuan: data.File_Pengajuan,
           Status_Pengajuan: data.Status_Pengajuan,
-          // Alasan_Penolakan: data.Alasan_Penolakan
+          Alasan_Penolakan: data.Alasan_Penolakan
         });
         // setSelectedDate(data.Tanggal_Izin);
       } else {
@@ -124,7 +125,7 @@ const CustomCheckboxTable = () => {
   }
 
   function downloadRequestFile() {
-
+    
   }
 
 
@@ -220,8 +221,9 @@ const CustomCheckboxTable = () => {
 
       if (response.status === 200) {
         console.log('Data berhasil diubah di database:', response.data);
-        alert("Berhasil mengubah data! " + formData.Status_Pengajuan);
+        alert("Berhasil mengubah data! " + formData.Status_Pengajuan + "Alasan Ditolak: " + formData.Alasan_Penolakan);
         setValidated(true)
+        nav('../tabelPengajuan');
       } else {
         console.error('Gagal mengubah data di database');
         alert('Gagal mengubah data di database');
@@ -442,7 +444,7 @@ const CustomCheckboxTable = () => {
                 </CFormLabel>
                 <CFormTextarea
                   id="validationTextarea"
-                  placeholder={statusPengajuan}
+                  value={keteranganPenolakan}
                   onChange={handleKeteranganPenolakanChange}
                   rows={7}
                   required
@@ -459,13 +461,15 @@ const CustomCheckboxTable = () => {
               <CButton color="danger" onClick={() => {
                 setVisible(false)
                 setRejectConfirmVisible(true)
+                handleChange('Status_Pengajuan', 'Rejected')
+                handleChange('Alasan_Penolakan', keteranganPenolakan)
               }}>Tolak pengajuan</CButton>
             </CModalFooter>
           </CModal>
           <CModal
             backdrop="static"
             visible={rejectConfirmVisible}
-            onClick={() => {
+            onClose={() => {
               setVisible(true)
               setRejectConfirmVisible(false)
             }}
@@ -485,10 +489,15 @@ const CustomCheckboxTable = () => {
               <CButton color="secondary" onClick={() => {
                 setVisible(true)
                 setRejectConfirmVisible(false)
+                handleChange('Status_Pengajuan', 'Delivered');
               }}>
-                Batalkan
+                Tidak, kembali
               </CButton>
-              <CButton color="danger" onClick={() => handleChange('Status_Pengajuan', 'Rejected')}>Tolak pengajuan</CButton>
+              <CButton color="danger" onClick={(e) => {
+                console.log(formData.Status_Pengajuan)
+                handleSubmit(e);
+                console.log(formData.Status_Pengajuan)
+              }}>Ya, tolak pengajuan</CButton>
             </CModalFooter>
           </CModal>
         </>
