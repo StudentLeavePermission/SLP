@@ -161,7 +161,6 @@ const CustomCheckboxTable = () => {
                 const jadwalKelasArray = data.data;
                 jadwalKelasArray.forEach(item => {
                   const data = new FormData();
-                  console.log('namaaaa', fileBukti.name)
                   data.append("ID_Mahasiswa",  id);
                   data.append("Keterangan", keterangan);
                   data.append("Jenis_Izin", jenisIzin);
@@ -208,7 +207,6 @@ const CustomCheckboxTable = () => {
         }
         selectedjadwal.forEach((item) => {
           const data = new FormData();
-                  console.log('namaaaa', fileBukti.name)
                   data.append("ID_Mahasiswa",  id);
                   data.append("Keterangan", keterangan);
                   data.append("Jenis_Izin", jenisIzin);
@@ -498,12 +496,14 @@ const CustomCheckboxTable = () => {
         <CFormFeedback invalid>Mohon pilih jenis surat</CFormFeedback>
       </CCol>
       <CCol md={7}>
-        <CFormLabel htmlFor="validationCustom04" className="table-font margin-jadwal">
+        {/* <CFormLabel htmlFor="validationCustom04" className="table-font margin-jadwal">
           Pilih Jadwal Absen:
-        </CFormLabel>
+        </CFormLabel> */}
         <table className="table table-bordered custom-table">
           <thead>
-            <tr>
+            {selectedDates.length < 2 && (
+  <>
+    <tr>
               <th>
                 {/* <CFormCheck
                   type="checkbox"
@@ -515,22 +515,24 @@ const CustomCheckboxTable = () => {
               <th>Jam Pelajaran</th>
               <th>Nama Mata Kuliah</th>
             </tr>
-            {jadwalKelas.map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>
-                    <CFormCheck
-                      type="checkbox"
-                      id={item.id.toString()}
-                      checked={checkboxStatus[item.id]}
-                      onChange={() => handleCheckboxChange(item.id)}
-                    />
-                  </td>
-                  <td><p>{jamPelajaran[item.ID_Jam_Pelajaran_Start - 1].Waktu_Mulai}</p></td>
-                  <td>{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
-                </tr>
-              );
-            })}
+    {jadwalKelas.map((item, index) => {
+      return (
+        <tr key={index}>
+          <td>
+            <CFormCheck
+              type="checkbox"
+              id={item.id.toString()}
+              checked={checkboxStatus[item.id]}
+              onChange={() => handleCheckboxChange(item.id)}
+            />
+          </td>
+          <td><p>{jamPelajaran[item.ID_Jam_Pelajaran_Start - 1].Waktu_Mulai}</p></td>
+          <td>{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
+        </tr>
+      );
+    })}
+  </>
+)}
           </thead>
           <tbody>
             {/* {jadwalKelas.data.map((jadwal) => (
