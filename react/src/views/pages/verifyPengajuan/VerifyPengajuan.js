@@ -127,7 +127,7 @@ const CustomCheckboxTable = () => {
   const downloadRequestFile = async (filename) => {
     try {
       const response = await axios.get(`http://localhost:3000/data-pengajuan/download/${filename}`, { responseType: 'blob' });
-  
+
       if (response.status === 200) {
         const blob = new Blob([response.data]);
         const url = window.URL.createObjectURL(blob);
@@ -219,6 +219,10 @@ const CustomCheckboxTable = () => {
     setTableData(dataForSelectedDay)
   }, [selectedDate, dayName]) // Sertakan dayName dalam dependency array
 
+  useEffect(() => {
+    setStatusPengajuan(formData.Status_Pengajuan);
+  }, [formData.Status_Pengajuan]);
+
   const handleChange = (name, value) => {
     setFormData({
       ...formData,
@@ -235,7 +239,10 @@ const CustomCheckboxTable = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.patch(`http://localhost:3000/data-pengajuan/update/${key}`, formData);
+      const response = await axios.patch(`http://localhost:3000/data-pengajuan/update/${key}`, {
+        Status_Pengajuan: formData.Status_Pengajuan,
+        Alasan_Penolakan: formData.Alasan_Penolakan
+      });
 
       if (response.status === 200) {
         console.log('Data berhasil diubah di database:', response.data);
@@ -478,10 +485,12 @@ const CustomCheckboxTable = () => {
                 Batalkan
               </CButton>
               <CButton color="danger" onClick={() => {
+                handleChange('Status_Pengajuan', 'Rejected') // THE STATUS DID NOT CHANGE AT ALL
+                setStatusPengajuan('Rejected')
+                handleChange('Alasan_Penolakan', keteranganPenolakan)
                 setVisible(false)
                 setRejectConfirmVisible(true)
-                handleChange('Status_Pengajuan', 'Rejected')
-                handleChange('Alasan_Penolakan', keteranganPenolakan)
+                console.log("Status = "+formData.Status_Pengajuan+", Alasan = "+formData.Alasan_Penolakan)
               }}>Tolak pengajuan</CButton>
             </CModalFooter>
           </CModal>
@@ -506,9 +515,10 @@ const CustomCheckboxTable = () => {
             </CModalBody>
             <CModalFooter>
               <CButton color="secondary" onClick={() => {
+                handleChange('Status_Pengajuan', 'Delivered');
+                handleChange('Alasan_Penolakan', '');
                 setVisible(true)
                 setRejectConfirmVisible(false)
-                handleChange('Status_Pengajuan', 'Delivered');
               }}>
                 Tidak, kembali
               </CButton>

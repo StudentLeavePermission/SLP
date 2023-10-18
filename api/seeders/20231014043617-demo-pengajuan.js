@@ -37,6 +37,32 @@ module.exports = {
       Alasan_Penolakan: '-',
       createdAt: new Date(),
       updatedAt: new Date()
+    },
+    {
+      ID_Mahasiswa: 3,
+      Keterangan: 'Sakit Hati',
+      Jenis_Izin: 'Sakit',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file3.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      ID_Mahasiswa: 4,
+      Keterangan: 'Izin Off',
+      Jenis_Izin: 'Izin',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file4.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
     }])
   },
 
