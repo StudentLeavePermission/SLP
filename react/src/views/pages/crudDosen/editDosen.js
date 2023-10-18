@@ -7,7 +7,7 @@ import {
   CCol,
   CRow,
 } from '@coreui/react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const EditDataDosen = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +23,7 @@ const EditDataDosen = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const { key } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData(key);
@@ -241,6 +242,8 @@ const EditDataDosen = () => {
         console.log('kuncinya1:', formData.Password);
 
         alert('Data berhasil diubah!');
+
+        navigate('/datadosen');
       } catch (error) {
         console.error('Terjadi kesalahan saat mengubah data:', error);
         alert('Terjadi kesalahan saat mengubah data.');

@@ -3,15 +3,15 @@ import './tabelDosen.css'; // Import your CSS file
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton } from '@coreui/react';
-import axios from "axios";
+import axios from 'axios';
 
 function TabelCRUD() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(5);
   const [searchText, setSearchText] = useState('');
   const [sortBy, setSortBy] = useState('Nama');
-  const [sortOrder, setSortOrder] = useState('asc'); 
+  const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
     getAllDataDosen();
@@ -29,18 +29,18 @@ function TabelCRUD() {
   // Function to delete data
   const hapusData = async (id) => {
     const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
-  
+
     if (confirmation) {
       try {
         await axios.delete(`http://localhost:3000/data-dosen/delete/${id}`);
-        const newData = data.filter(item => item.id !== id);
+        const newData = data.filter((item) => item.id !== id);
         setData(newData);
       } catch (error) {
         console.error('Error deleting data:', error);
       }
     }
   };
-  
+
   const handleSort = (criteria) => {
     if (criteria === sortBy) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -50,13 +50,19 @@ function TabelCRUD() {
     }
   };
 
-  const sortedData = [...data].sort((a, b) => {
+  // Function to filter data based on search text
+  const filteredData = data.filter((item) =>
+    item.Kode_Dosen.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.Nama_Dosen.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  const sortedData = [...filteredData].sort((a, b) => {
     const order = sortOrder === 'asc' ? 1 : -1;
-  
+
     if (sortBy === 'Nama') {
       return order * a.Nama_Dosen.localeCompare(b.Nama_Dosen);
     } else if (sortBy === 'ID Dosen') {
-      return order * a.InitialID.localeCompare(b.InitialID);;
+      return order * a.InitialID.localeCompare(b.InitialID);
     } else if (sortBy === 'Kode Dosen') {
       return order * a.Kode_Dosen.localeCompare(b.Kode_Dosen);
     } else if (sortBy === 'NIP') {
@@ -64,15 +70,7 @@ function TabelCRUD() {
     }
   });
 
-  // JSX for the header section
-  const headerSection = (
-    <div className="font-header table-font">
-      <div>
-        <h2>Data Dosen</h2>
-      </div>
-    </div>
-  );
-
+  // Calculate the number of pages
   const pageNumbers = Math.ceil(sortedData.length / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -90,9 +88,9 @@ function TabelCRUD() {
       setCurrentPage(currentPage - 1);
     }
   };
+
   return (
     <>
-      {headerSection}
       <div className="container">
         <div className="table-box">
           <CButton href={`/#/tambahDosen/`} className="btn-tambah table-font">

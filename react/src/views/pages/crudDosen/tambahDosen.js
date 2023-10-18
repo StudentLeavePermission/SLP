@@ -109,11 +109,11 @@ const TambahDataDosen = () => {
               // Ambil seluruh data dosen
               const allDosenResponse = await axios.get('http://localhost:3000/data-dosen');
               const allDosenData = allDosenResponse.data.data;
-
+  
               console.log('Data Dosen:', allDosenData);
               let ID_Dosen_Wali = null; // Inisialisasi ID_Dosen_Wali dengan null
               let ID_Dosen = null;
-
+  
               allDosenData.forEach((item) => {
                 if (item.NIP === formData.NIP) {
                   console.log('ID_Dosen_Wali:', item.id);
@@ -121,15 +121,15 @@ const TambahDataDosen = () => {
                   ID_Dosen = item.id;
                 }
               });
-
+  
               if (ID_Dosen_Wali !== null) {
                 // Sekarang ID_Dosen_Wali telah diisi dengan nilai yang sesuai
                 const kelasResponse = await axios.post('http://localhost:3000/data-kelas/create', {
                   Nama_Kelas: formData.Nama_Kelas,
                   ID_Dosen_Wali: ID_Dosen_Wali, // Gunakan nilai ID_Dosen_Wali yang telah ditemukan
                 });
-  
               } 
+  
               if (ID_Dosen !== null) {
                 const dosenResponse = await axios.post('http://localhost:3000/data-dosen-wali/create', {
                   Password: formData.Password,
@@ -139,6 +139,7 @@ const TambahDataDosen = () => {
                 if (dosenResponse.status === 201) {
                   console.log('Data Dosen berhasil ditambahkan:', dosenResponse.data);
                   alert('Data Dosen berhasil ditambahkan!');
+                  navigate('/dataDosen');
                 } else {
                   console.error('Gagal menambahkan data Dosen:', dosenResponse.data.error);
                   alert('Gagal menambahkan data Dosen. Error: ' + dosenResponse.data.error);
@@ -155,6 +156,9 @@ const TambahDataDosen = () => {
             // Handle ketika bukan Dosen Wali
             console.log('Bukan Dosen Wali');
             alert('Data Kelas berhasil ditambahkan!');
+  
+            // Redirect to the dataDosen route
+            navigate('/dataDosen');
           }
         } else {
           console.error('Gagal menambahkan data Dosen:', dosenResponse.data.error);
@@ -167,7 +171,7 @@ const TambahDataDosen = () => {
     } else {
       alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
     }
-  };      
+  };        
 
   return (
     <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>

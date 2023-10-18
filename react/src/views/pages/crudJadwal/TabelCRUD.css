@@ -32,7 +32,8 @@
 }
 
 .tabel {
-    width: 80%;
+    margin-top: 20px;
+    width: 100%;
     border-collapse: collapse;
   }
   
@@ -190,7 +191,7 @@
   
   .page-button {
     background-color: #e7e7e7;
-    color: #333;
+    color: #ff0000;
     padding: 8px 16px;
     border: none;
     cursor: pointer;
@@ -198,7 +199,7 @@
   
   .page-button.active {
     background-color: #2196f3;
-    color: white;
+    color: rgb(0, 0, 0);
   }
   
   /* CSS untuk tampilan detail */
@@ -274,9 +275,9 @@
 
   .container {
     position: absolute;
-    width: 900px;
-    height: 460px;
-    left: 190px;
+    width: 1000px;
+    height: 500px;
+    left: 250px;
     top: 110px;
     background: #5A719D;
     box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.25);
@@ -285,8 +286,8 @@
   
   .table-box {
     position: absolute;
-    width: 900px;
-    height: 460px;
+    width: 1000px;
+    height: 500px;
     padding: 30px;
     left: 15px;
     background: #FFFFFF;
@@ -294,18 +295,28 @@
     border-radius: 10px;
   }
 
+  /* Gaya untuk pesan validasi */
+.invalid-feedback {
+  color: red; /* Warna teks merah untuk pesan validasi */
+  font-size: 14px; /* Ukuran font pesan validasi */
+  margin-top: 4px; /* Jarak antara input dan pesan validasi */
+}
+
+/* Gaya untuk input yang tidak valid */
+.has-error .select__control,
+.has-error .form-control {
+  border-color: red !important; /* Border merah untuk input yang tidak valid */
+}
 
 /* Gaya untuk tombol Kirim */
 .btn-primary {
-  background-color: #2662FF; /* Warna latar belakang tombol */
+  background-color: #007bff; /* Warna latar belakang tombol */
   color: #fff; /* Warna teks tombol */
   border: none; /* Hapus border tombol */
-  padding: 8px 15px; /* Padding tombol */
+  padding: 10px 20px; /* Padding tombol */
   cursor: pointer; /* Ganti kursor saat di atas tombol */
-  border-radius: 10px; /* Sudut bulat pada tombol */
+  border-radius: 4px; /* Sudut bulat pada tombol */
   transition: background-color 0.3s; /* Animasi perubahan warna latar belakang */
-  margin-right: 50px;
-  margin-top:20px;
 }
 
 /* Gaya untuk tombol Kirim saat di atasnya */
@@ -319,28 +330,64 @@
   margin-bottom: 20px; /* Jarak antara form dan elemen lainnya */
 }
 
-/* Gaya untuk form */
-.center-form {
-  display: flex;
-  justify-content: center; /* Menengahkan secara horizontal */
-  align-items: center; /* Menengahkan secara vertikal */
-  height: 100vh; /* Menyesuaikan tinggi form ke tampilan layar */
-}
-
-/* Hapus margin-left pada elemen col-md-4 */
-.col-md-4 {
-  margin-top: 30px;
-  /* margin-left: 10px; */
-}
-
+/* Gaya untuk elemen yang memiliki margin atas */
+.col-md-4,
 .col-xs-12 {
-  margin-top: 20px; /* Jarak atas antara elemen */
+  margin-top: 10px; /* Jarak atas antara elemen */
 }
 
-/* .margin-right{
-  margin-right: 90px;
-} */
+.search-input-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  width: 250px;
+  height: 40px;
+  margin-left: 690px;
+}
 
-.action-button {
+.search-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  padding: 5px;
+}
+
+.search-icon {
+  margin-right: 5px; /* Adjust the margin as needed */
+}
+
+
+.search-icon {
+  margin-left: 8px; /* Jarak antara ikon dan input */
+  color: #888;/* Warna ikon */
+}
+.sort-icon {
+  float: right;
+  margin-left: 15px; /* Adjust the margin as needed */
+}
+.pagination{
+  justify-content: end;
+}
+.btn-pagination {
+  margin: 5px;
+  background-color: transparent;
+  border: 1px solid white;
+  background-color: transparent;
   color: black;
+  cursor: pointer;
+  border: none;
+}
+
+/* Hover effect */
+.btn-pagination:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Selected button style */
+.btn-pagination.active {
+  background-color: #007bff;
+  color: white;
 }
