@@ -9,6 +9,12 @@ const _nav = [
     to: '/dashboard',
     icon: cilBarChart,
   },
+  {
+    component: CNavItem,
+    name: 'Data Siswa',
+    to: '/tu/mahasiswa/',
+    icon: cilBarChart,
+  },
   // {
   //   component: CNavGroup,
   //   name: 'Data Siswa',
