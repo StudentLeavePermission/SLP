@@ -139,6 +139,7 @@ const TambahDataDosen = () => {
                 if (dosenResponse.status === 201) {
                   console.log('Data Dosen berhasil ditambahkan:', dosenResponse.data);
                   alert('Data Dosen berhasil ditambahkan!');
+                  navigate('/dataDosen');
                 } else {
                   console.error('Gagal menambahkan data Dosen:', dosenResponse.data.error);
                   alert('Gagal menambahkan data Dosen. Error: ' + dosenResponse.data.error);
