@@ -108,7 +108,6 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
-  { path: '/tu/mahasiswa/edit', name: 'EditMahasiswa', element: EditMahasiswa },
   { path: '/formPengajuan', name: 'formPengajuan', element: FormPengajuan },
   { path: '/dataDosen', name: 'TabelDosen', element: CrudDosen },
   { path: '/detailDosen/:key', name: 'DetailDosen', element: DetailDosen },

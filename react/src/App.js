@@ -45,7 +45,7 @@ class App extends Component {
             <Route exact path="/500" name="Page 500" element={<Page500 />} />
             <Route exact path="/tu/mahasiswa/edit" name="EditMahasiswa" element={<EditMahasiswa />} />
             <Route index name="landing page" element={<LandingPage />} />
-            <Route path="*" name="Home" element={<LayoutSLP />} />
+            <Route path="*" name="Home" element={<LayoutSLP />} /> 
           </Routes>
         </Suspense>
       </HashRouter>
