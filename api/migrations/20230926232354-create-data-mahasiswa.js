@@ -39,6 +39,10 @@ module.exports = {
       Nomor_Telp_Ortu: {
         type: Sequelize.STRING
       },
+      Foto_Profil: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

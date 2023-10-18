@@ -23,6 +23,7 @@ module.exports = {
       ID_Kelas: 1,
       Nama_Ortu: 'Ortu Agam',
       Nomor_Telp_Ortu: '088888888888',
+      Foto_Profil: null,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -36,6 +37,7 @@ module.exports = {
       ID_Kelas: 1,
       Nama_Ortu: 'Ortu Agam',
       Nomor_Telp_Ortu: '088888888888',
+      Foto_Profil: null,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -49,6 +51,7 @@ module.exports = {
       ID_Kelas: 1,
       Nama_Ortu: 'Ortu Agam',
       Nomor_Telp_Ortu: '088888888888',
+      Foto_Profil: null,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -62,6 +65,7 @@ module.exports = {
       ID_Kelas: 2,
       Nama_Ortu: 'Ortu Agam',
       Nomor_Telp_Ortu: '088888888888',
+      Foto_Profil: null,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -75,6 +79,7 @@ module.exports = {
       ID_Kelas: 2,
       Nama_Ortu: 'Ortu Agam',
       Nomor_Telp_Ortu: '088888888888',
+      Foto_Profil: null,
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -88,6 +93,7 @@ module.exports = {
       ID_Kelas: 2,
       Nama_Ortu: 'Ortu Agam',
       Nomor_Telp_Ortu: '088888888888',
+      Foto_Profil: null,
       createdAt: new Date(),
       updatedAt: new Date()
     }])

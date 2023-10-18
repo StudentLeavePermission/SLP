@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     ID_Kelas: DataTypes.INTEGER,
     Nama_Ortu: DataTypes.STRING,
     Nomor_Telp_Ortu: DataTypes.STRING,
+    Foto_Profil: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Data_Mahasiswa',

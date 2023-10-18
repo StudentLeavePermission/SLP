@@ -98,7 +98,7 @@ const loginStudent = async (req, res) => {
 
 const registerStudent = async (req, res) => {
   try {
-    const {NIM, Nama, Password, Nomor_Telp, Email, ID_Kelas, Nama_Ortu, Nomor_Telp_Ortu} = req.body;
+    const {NIM, Nama, Password, Nomor_Telp, Email, ID_Kelas, Nama_Ortu, Nomor_Telp_Ortu, Foto_Profil} = req.body;
     const data = {
       NIM,
       Nama,
@@ -107,7 +107,8 @@ const registerStudent = async (req, res) => {
       Email,
       ID_Kelas,
       Nama_Ortu,
-      Nomor_Telp_Ortu
+      Nomor_Telp_Ortu,
+      Foto_Profil
     };
     const mhs = await Data_Mahasiswa.post(data);
     if (mhs) {
@@ -148,7 +149,7 @@ const editStudent = async (req, res) => {
 
 
     // Menangani data lainnya
-    const { Nama_img, Nomor_Telp, Nomor_Telp_Ortu } = req.body;
+    const { Nomor_Telp, Nomor_Telp_Ortu } = req.body;
     const filename = req.body.filename;
     student.Nama = filename;
     student.Nomor_Telp = Nomor_Telp;
