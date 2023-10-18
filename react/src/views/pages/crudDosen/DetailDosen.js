@@ -105,18 +105,22 @@ const DetailDosen = () => {
                 <div className="label">Status</div>
                 <div className="value">: {isDosenWali ? 'Dosen Wali' : 'Bukan Dosen Wali'}</div>
               </div>
-              <div className="item">
-                <div className="label">Kelas</div>
-                <div className="value">: {kelas}</div>
-              </div>
-              <div className="item">
-                <div className="label">Prodi</div>
-                <div className="value">: {prodi}</div>
-              </div>
-              <div className="item">
-                <div className="label">Password</div>
-                <div className="value">: {isDosenWali ? getPasswordForKey(key) : '-'}</div>
-              </div>
+              {isDosenWali && (
+                <>
+                  <div className="item">
+                    <div className="label">Kelas</div>
+                    <div className="value">: {kelas}</div>
+                  </div>
+                  <div className="item">
+                    <div className="label">Prodi</div>
+                    <div className="value">: {prodi}</div>
+                  </div>
+                  <div className="item">
+                    <div className="label">Password</div>
+                    <div className="value">: {isDosenWali ? getPasswordForKey(key) : '-'}</div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </CCol>
@@ -126,3 +130,5 @@ const DetailDosen = () => {
 };
 
 export default DetailDosen;
+
+

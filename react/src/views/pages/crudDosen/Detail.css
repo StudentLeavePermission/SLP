@@ -1,7 +1,7 @@
 .detail-container{
     position: absolute;
     width: 850px;
-    height: 400px;
+    height: 450px;
     left: 482px;
     top: 140px;
     background: #5A719D;
@@ -32,9 +32,10 @@
 }
 .details{
     position: absolute;
-    width: 852px;
-    height: 400px;
-    padding: 50px;
+    width: 850px;
+    height: 450px;
+    padding-left: 60px;
+    padding-top: 40px;
     background: #FFFFFF;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
     border-radius: 5px;

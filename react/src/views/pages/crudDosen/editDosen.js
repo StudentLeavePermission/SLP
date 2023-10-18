@@ -252,6 +252,11 @@ const EditDataDosen = () => {
 
   return (
     <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>
+      <div className="header-form">
+        <div>
+          <h2>Edit Data Dosen</h2>
+        </div>
+      </div>
       <CRow>
         <CCol className='box-1'>
           <div>
