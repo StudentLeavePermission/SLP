@@ -61,7 +61,7 @@ exports.editClassSchedule = async (req, res) => {
     const [updatedRowCount] = await Jadwal_Kelas.patch(newData, whereClause);
 
     if (updatedRowCount === 0) {
-      return res.status(404).json({ msg: 'New Schedule not found' });
+      return res.status(404).json({ msg: 'Schedule not found' });
     }
 
     res.status(200).json({ msg: 'New Schedule updated' });
