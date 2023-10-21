@@ -63,6 +63,8 @@ const VerifyPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/V
 const TabelPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/tabelPengajuan'));
 const CrudJadwal = React.lazy(() => import('./views/pages/crudJadwal/TabelCRUD'))
 const TambahJadwal = React.lazy(() => import('./views/pages/crudJadwal/TambahData'))
+const EditJadwal = React.lazy(() => import('./views/pages/crudJadwal/EditJadwal'))
+const DetailJadwal = React.lazy(() => import('./views/pages/crudJadwal/detailJadwal'))
 
 
 const routes = [
@@ -122,6 +124,8 @@ const routes = [
   { path: '/tu/mahasiswa/', name: 'TabelMahasiswa', element: TabelMahasiswa},
   { path: '/tu/mahasiswa/edit/:id', name: 'EditMahasiswa', element: EditMahasiswa},
   { path: '/tu/mahasiswa/detail/:id', name: 'DetailMahasiswa', element: DetailMahasiswa},
+  { path: '/editJadwal/:key', name: 'EditJadwal', element: EditJadwal},
+  { path: '/detailJadwal/:key', name: 'DetailJadwal', element: DetailJadwal},
 ]
 
 export default routes

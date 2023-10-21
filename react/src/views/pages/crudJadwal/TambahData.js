@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import './TabelCRUD.css';
 import axios from 'axios';
@@ -18,6 +19,8 @@ const TambahData = () => {
   const [dataMatkul, setDataMatkul] = useState([]);
   const [dataKelas, setDataKelas] = useState([]);
   const [dataJamPelajaran, setDataJamPelajaran] = useState([]);
+  const navigate = useNavigate();
+  const [ done, setDone ] = useState();
 
   const handleChange = (name, value) => {
     setFormData({
@@ -33,6 +36,12 @@ const TambahData = () => {
     getAllDataKelas();
     getAllDataJamPelajaran();
   }, []);
+
+  useEffect(() => {
+    if(done==1){
+      navigate('/dataJadwal');
+    }
+  }, [done]);
 
   const getAllDataDosen = async () => {
     try {
@@ -160,7 +169,8 @@ const TambahData = () => {
           ID_Dosen: formData.namaDosen,
           ID_Kelas: formData.kelas,
         })
-        console.log('Form valid. Data yang akan dikirim:', formData);
+        console.log('Form valid. Data sudah ditambahkan');
+        setDone(1);
       } catch (error) {
         console.error(error);
       }

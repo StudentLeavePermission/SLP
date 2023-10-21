@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   CRow,
@@ -26,10 +27,18 @@ const EditJadwal = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const { key } = useParams();
+  const [ done, setDone ] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData(key);
   }, [key]);
+
+  useEffect(() => {
+    if(done==1){
+      navigate('/dataJadwal');
+    }
+  }, [done]);
 
   const fetchData = async (key) => {
     try {
@@ -102,6 +111,7 @@ const EditJadwal = () => {
         if (response.status === 200) {
           console.log('Data berhasil diubah di database:', response.data);
           alert('Data berhasil diubah!');
+          setDone(1);
         } else {
           console.error('Gagal mengubah data di database');
           alert('Gagal mengubah data di database');

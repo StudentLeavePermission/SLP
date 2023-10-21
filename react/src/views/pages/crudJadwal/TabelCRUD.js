@@ -101,50 +101,6 @@ function TabelCRUD({}) {
         },
       },
     });
-
-    // Inisialisasi DataTables pada tabel menggunakan ref
-    // const dataTable = $(tableRef.current).DataTable({
-    //   paging: true,
-    //   searching: true,
-    //   lengthChange: false,
-    //   pageLength: 5,
-    //   data: dataJadwal,
-    //   columns: [
-    //     { data: "DT_RowId" },
-    //     { data: "Hari_Jadwal" },
-    //     { data: "Jam" },
-    //     { data: "Nama_Dosen" },
-    //     { data: "Mata_Kuliah" },
-    //     { data: "ID_Kelas" },
-    //     { 
-    //       data: null,
-    //       "render": function () {
-    //         return '<div class="aksi">' +
-    //         '<span class="action-button"><i class="cil cil-info"></i></span> ' +
-    //         '<span class="action-button"><i class="cil cil-pencil"></i></span> ' +
-    //         '<span class="action-button"><i class="cil cil-trash"></i></span>' +
-    //         '</div>'
-    //       }
-    //     }
-    //   ],
-    //   createdRow: (row, data, dataIndex) => {
-    //     // Tambahkan class atau atribut lainnya ke elemen tr (baris) sesuai kebutuhan
-    //     $(row).find(".custom-button").on("click", () => {
-    //       const id = $(row).find(".custom-button").data("id");
-    //       hapusData(id);
-    //     });
-    //   },
-    //   // Menggunakan columnDefs untuk menerapkan kelas CSS pada kolom tertentu
-    //   columnDefs: [
-    //     { targets: [0, 1, 2, 3, 4, 5], className: "rata table-font" }, // Kolom 0 hingga 5
-    //     { targets: [5], className: "aksi" }, // Kolom aksi
-    //   ],
-    // });    
-
-    // return () => {
-    //   // Hapus DataTables saat komponen unmount
-    //   dataTable.destroy();
-    // };
   }, [dataJadwal]);
 
   const [form, setForm] = useState({}); // Form data
@@ -207,44 +163,19 @@ function TabelCRUD({}) {
     }
   };
 
-  // Function to add new data
-  const tambahData = () => {
-    setData([...data, form]);
-    setForm({});
-  };
-
   // Function to delete data
-  const hapusData = (index) => {
-    const newData = [...data];
-    newData.splice(index, 1);
-    setData(newData);
+  const hapusData = async (id) => {
+    const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
 
-    // Setelah menghapus data, perlu memeriksa apakah data yang dihapus adalah data yang sedang diedit
-    // Jika ya, kita perlu menghentikan mode pengeditan.
-    if (editIndex === index) {
-      setEditIndex(-1);
-      setForm({});
+    if (confirmation) {
+      try {
+        await axios.delete(`http://localhost:3000/jadwal-kelas/delete/${id}`);
+        const newData = dataJadwal.filter((item) => item.id !== id);
+        setDataJadwal(newData);
+      } catch (error) {
+        console.error('Error deleting data:', error);
+      }
     }
-  };
-
-  // Function to display details
-  const tampilkanDetail = (item) => {
-    setDetailItem(item);
-  };
-
-  // Function to enable edit mode
-  const aktifkanEdit = (index) => {
-    setEditIndex(index);
-    setForm(data[index]);
-  };
-
-  // Function to save changes when editing data
-  const simpanPerubahan = () => {
-    const newData = [...data];
-    newData[editIndex] = form;
-    setData(newData);
-    setEditIndex(-1);
-    setForm({});
   };
 
   // JSX for the header section
@@ -332,27 +263,15 @@ function TabelCRUD({}) {
               <td className="cell rata table-font">{item.Mata_Kuliah}</td>
               <td className="cell rata table-font">{item.ID_Kelas}</td>
               <td className="cell aksi">
-                <button className="margin-button" style={{ backgroundColor: 'transparent' }} onClick={() => tampilkanDetail(item)}>
+                <CButton href={`/#/detailJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
                   <CIcon icon={cilInfo} />
-                </button>
-                <span className="vert-line"></span>
-                {editIndex === index ? (
-                  <>
-                    <button className="btn-simpan rata table-font" onClick={() => simpanPerubahan()}>
-                      Simpan
-                    </button>
-                    <button className="btn-batal rata table-font" onClick={() => setEditIndex(-1)}>
-                      Batal
-                    </button>
-                  </>
-                ) : (
-                  <button style={{ backgroundColor: 'transparent' }} onClick={() => aktifkanEdit(index)}>
+                </CButton>                
+                <CButton href={`/#/editJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
                     <CIcon icon={cilPencil} />
-                  </button>
-                )}
-                <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(index)}>
+                </CButton>
+                <CButton onClick={() => hapusData(item.id)} style={{ backgroundColor: 'transparent', color: 'black' }}>
                   <CIcon icon={cilTrash} />
-                </button>
+                </CButton>
               </td>
             </tr>
           ))}
