@@ -29,7 +29,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [formErrors, setFormErrors] = useState({});
-  const baseURL = 'http://localhost:3000/data-mahasiswa/login';
 
   const isEmail = (username) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@polban.ac.id$/;
@@ -67,19 +66,46 @@ const Login = () => {
     e.preventDefault();
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
-      axios
-        .post(baseURL, {
-          NIM: username,
-          Password: password,
-        })
-        .then(async () => { // Gunakan async di sini
-          const token = Cookies.get('jwt');
-          if (token !== 'undefined') {
-            if (isEmail(username)) {
+      if (isEmail(username)) {
+        axios
+          .post('http://localhost:3000/data-dosen-wali/login', {
+            Email_Dosen: username,
+            Password: password,
+          })
+          .then(async () => { // Gunakan async di sini
+            const token = Cookies.get('jwt');
+            if (token !== 'undefined') {
               setRole('dosen');
-            } else if (username === 'admin') {
-              setRole('admin');
+              // try {
+              //   const apiURL = `http://localhost:3000/data-dosen-wali/get/id/${username}`;
+              //   const response = await axios.get(apiURL);
+              //   const data = response.data.data;
+              //   idDosen = data.id;
+              //   console.log(idDosen);
+              //   setRole('dosen');
+              // } catch (error) {
+              //   console.error('Error fetching data:', error);
+              //   alert('Failed to fetch data');
+              // }
             } else {
+              alert('Coba lagi');
+            }
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('Email or password is invalid');
+          });
+      } else if (username === 'admin') {
+        setRole('admin'); 
+      } else {
+        axios
+          .post('http://localhost:3000/data-mahasiswa/login', {
+            NIM: username,
+            Password: password,
+          })
+          .then(async () => { // Gunakan async di sini
+            const token = Cookies.get('jwt');
+            if (token !== 'undefined') {
               try {
                 const apiURL = `http://localhost:3000/data-mahasiswa/students/getId/${username}`;
                 const response = await axios.get(apiURL);
@@ -91,15 +117,15 @@ const Login = () => {
                 console.error('Error fetching data:', error);
                 alert('Failed to fetch data');
               }
+            } else {
+              alert('Coba lagi');
             }
-          } else {
-            alert('Coba lagi');
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          alert('Username or password is invalid');
-        });
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            alert('NIM or password is invalid');
+          });
+      }
     }
   }  
 
