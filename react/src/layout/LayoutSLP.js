@@ -19,7 +19,6 @@ const LayoutSLP = () => {
         <div className="body flex-grow-1 px-3">
           <AppContent />
         </div>
-        <AppFooter />
       </div>
     </div>
   )
