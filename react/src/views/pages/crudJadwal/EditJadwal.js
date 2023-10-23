@@ -29,6 +29,10 @@ const EditJadwal = () => {
   const { key } = useParams();
   const [ done, setDone ] = useState();
   const navigate = useNavigate();
+  const [dataDosen, setDataDosen] = useState([]);
+  const [dataMatkul, setDataMatkul] = useState([]);
+  const [dataKelas, setDataKelas] = useState([]);
+  const [dataJamPelajaran, setDataJamPelajaran] = useState([]);
 
   useEffect(() => {
     fetchData(key);
@@ -39,6 +43,138 @@ const EditJadwal = () => {
       navigate('/dataJadwal');
     }
   }, [done]);
+
+  useEffect(() => {
+    // Fetch data
+    getAllDataDosen();
+    getAllDataMatkul();
+    getAllDataKelas();
+    getAllDataJamPelajaran();
+  }, []);
+
+  const getAllDataDosen = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-dosen');
+      setDataDosen(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaDosen () {
+    const namaDosen = [];
+    for (let i = 0; i < dataDosen.length; i++) {
+      namaDosen.push({value: dataDosen[i].id, label: dataDosen[i].Nama_Dosen});
+    }
+    return namaDosen;
+  };
+
+  const getAllDataMatkul = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-mata-kuliah');
+      setDataMatkul(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaMatkul () {
+    const namaMatkul = [];
+    for (let i = 0; i < dataMatkul.length; i++) {
+      namaMatkul.push({value: dataMatkul[i].id, label: dataMatkul[i].Nama_Mata_Kuliah});
+    }
+    return namaMatkul;
+  }
+
+  const getAllDataKelas = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-kelas');
+      setDataKelas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaKelas () {
+    const namaKelas = [];
+    for (let i = 0; i < dataKelas.length; i++) {
+      namaKelas.push({value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas});
+    }
+    return namaKelas;
+  }
+
+  const getAllDataJamPelajaran = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-jam-pelajaran');
+      setDataJamPelajaran(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getJamPelajaranStart () {
+    const jamPelajaran = [];
+    for (let i = 0; i < dataJamPelajaran.length; i++) {
+      jamPelajaran.push({value: dataJamPelajaran[i].id, label: dataJamPelajaran[i].Waktu_Mulai});
+    }
+    return jamPelajaran;
+  }
+
+  function getJamPelajaranEnd () {
+    const jamPelajaran = [];
+    for (let i = 0; i < dataJamPelajaran.length; i++) {
+      let alias = tambahIntervalWaktu(dataJamPelajaran[i].Waktu_Mulai, 50);
+      jamPelajaran.push({value: dataJamPelajaran[i].id, label: alias});
+    }
+    return jamPelajaran;
+  }
+
+  function tambahIntervalWaktu(time, intervalMenit) {
+    const [jam, menit, detik] = time.split(':').map(Number);
+  
+    const totalMenit = (jam * 60) + menit;
+  
+    const totalMenitBaru = totalMenit + intervalMenit;
+  
+    const jamBaru = Math.floor(totalMenitBaru / 60);
+    const sisaMenit = totalMenitBaru % 60;
+  
+    // Format hasil baru sebagai tipe data time (HH:MM:SS)
+    const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+  
+    return waktuBaru;
+  }
+
+  useEffect(() => {
+    console.log(dataDosen);
+  }, [dataDosen]);
+
+  useEffect(() => {
+    console.log(dataMatkul);
+  }, [dataMatkul]);
+
+  useEffect(() => {
+    console.log(dataKelas);
+  }, [dataKelas]);
+
+  useEffect(() => {
+    console.log(dataJamPelajaran);
+  }, [dataJamPelajaran]);
+
+  const pilihanData = {
+    kelas: getNamaKelas(),
+    mataKuliah: getNamaMatkul(),
+    hari: [
+      { value: 'Senin', label: 'Senin' },
+      { value: 'Selasa', label: 'Selasa' },
+      { value: 'Rabu', label: 'Rabu' },
+      { value: 'Kamis', label: 'Kamis' },
+      { value: 'Jumat', label: 'Jumat' },
+    ],
+    namaDosen: getNamaDosen(),
+    waktuMulai: getJamPelajaranStart(),
+    waktuSelesai: getJamPelajaranEnd(),
+  };
 
   const fetchData = async (key) => {
     try {
