@@ -7,7 +7,8 @@ const LayoutSLP = () => {
 
   useEffect(() => {
     const hashFragment = window.location.hash;
-    const value = hashFragment.split('/').pop();
+    const segments = hashFragment.split('/');
+    const value = segments[1];
     setValue(value);
   }, []);
   return (
