@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Select from 'react-select';
 import {
   CForm,
   CFormLabel,
@@ -19,12 +20,19 @@ const TambahDataDosen = () => {
     Email_Dosen: '',
     Nama_Kelas: '',
     Password: '',
-    status: 'Bukan Dosen Wali',
+    status: '',
   });
-
+  
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [showKelasProdi, setShowKelasProdi] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
+  const [dataKelas, setDataKelas] = useState([]);
+
+  useEffect(() => {
+    // Fetch data
+    getAllDataKelas();
+  }, []);
 
   const handleChange = (name, value) => {
     setFormData({
@@ -36,6 +44,13 @@ const TambahDataDosen = () => {
       ...formErrors,
       [name]: '',
     });
+
+    if (name === 'kelas' && value !== 'lainnya') {
+      updatedFormData = {
+        ...updatedFormData,
+        KelasLainnya: '', // Reset nilai KelasLainnya jika bukan "Lainnya" yang dipilih
+      };
+    }
   };
 
   const handleStatusChange = (status) => {
@@ -87,6 +102,27 @@ const TambahDataDosen = () => {
     setFormErrors(errors);
     return errors;
   };
+
+  const getAllDataKelas = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-kelas');
+      setDataKelas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaKelas () {
+    const namaKelas = [];
+    for (let i = 0; i < dataKelas.length; i++) {
+      namaKelas.push({value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas});
+    }
+    return namaKelas;
+  }
+
+  useEffect(() => {
+    console.log(dataKelas);
+  }, [dataKelas]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -173,6 +209,13 @@ const TambahDataDosen = () => {
     }
   };        
 
+  const pilihanData = {
+    kelas: [
+      ...getNamaKelas(),
+      { value: 'lainnya', label: 'Lainnya' }, // Opsi "Lainnya"
+    ],
+  };
+
   return (
     <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>
       <div className="header-form">
@@ -203,17 +246,6 @@ const TambahDataDosen = () => {
               onChange={(e) => handleChange('InitialID', e.target.value)}
             />
             {formErrors.InitialID && <div className="text-danger">{formErrors.InitialID}</div>}
-          </div>
-          <div>
-            <CFormLabel htmlFor="Nama_Dosen">Nama Dosen</CFormLabel>
-            <CFormInput
-              className="input"
-              type="text"
-              id="Nama_Dosen"
-              value={formData.Nama_Dosen}
-              onChange={(e) => handleChange('Nama_Dosen', e.target.value)}
-            />
-            {formErrors.Nama_Dosen && <div className="text-danger">{formErrors.Nama_Dosen}</div>}
           </div>
           <div>
             <CFormLabel htmlFor="NIP">NIP</CFormLabel>
@@ -258,17 +290,37 @@ const TambahDataDosen = () => {
         </div>
         {showKelasProdi && (
           <>
-            <div>
-              <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
-              <CFormInput
-                className="input"
-                type="text"
-                id="Nama_Kelas"
-                value={formData.Nama_Kelas}
-                onChange={(e) => handleChange('Nama_Kelas', e.target.value)}
+            <div className="col-md-4 margin-right">
+              <label className="table-font">Kelas</label>
+              <Select
+                name="kelas"
+                value={pilihanData.kelas.find((option) => option.value === formData.kelas)}
+                onChange={(selectedOption) => {
+                  handleChange('kelas', selectedOption.value);
+                }}
+                options={pilihanData.kelas}
+                isSearchable
+                required
               />
-              {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
+              {isFormSubmitted && !formData.kelas && (
+                <div className="invalid-feedback">Mohon pilih kelas!</div>
+              )}
             </div>
+            {formData.kelas === 'lainnya' && (
+              <div>
+                <CFormLabel htmlFor="KelasLainnya">Kelas Lainnya</CFormLabel>
+                <CFormInput
+                  className="input"
+                  type="text"
+                  id="KelasLainnya"
+                  value={formData.KelasLainnya}
+                  onChange={(e) => handleChange('KelasLainnya', e.target.value)}
+                />
+                {formErrors.KelasLainnya && (
+                  <div className="text-danger">{formErrors.KelasLainnya}</div>
+                )}
+              </div>
+            )}
             <div>
               <CFormLabel htmlFor="Password">Password</CFormLabel>
               <CFormInput

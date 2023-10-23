@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CCol, CRow } from '@coreui/react';
-import './Detail.css';
+import '../../../scss/style.scss';
 import axios from 'axios';
 
 const DetailDosen = () => {
@@ -13,7 +13,8 @@ const DetailDosen = () => {
   useEffect(() => {
     getAllDataDosenWali();
     getAllDataKelas();
-  }, []);
+  });
+
 
   const getAllDataDosenWali = async () => {
     try {
@@ -130,5 +131,3 @@ const DetailDosen = () => {
 };
 
 export default DetailDosen;
-
-

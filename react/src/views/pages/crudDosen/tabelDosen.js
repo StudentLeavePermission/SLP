@@ -154,10 +154,17 @@ function TabelCRUD() {
                   <td className="cell rata table-font">{item.NIP}</td>
                   <td className="cell rata table-font">{item.Nama_Dosen}</td>
                   <td className="cell aksi">
+<<<<<<< HEAD
                     <CButton href={`/#/admin/detailDosen/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
                       <CIcon icon={cilInfo} />
                     </CButton>
                     <CButton href={`/#/admin/editDosen/${item.id}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
+=======
+                    <CButton href={`/#/dosen/detailDosen/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                      <CIcon icon={cilInfo} />
+                    </CButton>
+                    <CButton href={`/#/dosen/editDosen/${item.id}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
+>>>>>>> 0a2d909 (memperbaiki tambah data dosen)
                       <CIcon icon={cilPencil} />
                     </CButton>
                     <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(item.id)}>

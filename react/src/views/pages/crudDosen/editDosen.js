@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Select from 'react-select';
 import {
   CForm,
   CFormLabel,
   CFormInput,
+  CFormCheck,
   CCol,
   CRow,
 } from '@coreui/react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const EditDataDosen = () => {
   const [formData, setFormData] = useState({
@@ -19,11 +21,13 @@ const EditDataDosen = () => {
     Nama_Kelas: '',
     Password: '',
     ID_Dosen_Wali: '',
+    Status: '',
   });
 
   const [formErrors, setFormErrors] = useState({});
+  const [showKelasProdi, setShowKelasProdi] = useState(false);
   const { key } = useParams();
-  const navigate = useNavigate();
+  const [dataKelas, setDataKelas] = useState([]);
 
   useEffect(() => {
     fetchData(key);
@@ -106,16 +110,28 @@ const EditDataDosen = () => {
       if (IDDosen === null) {
         console.log('Tidak ditemukan data yang sesuai dengan ID_Dosen_Wali:', key);
       }
-  
+      
+      
       // Fetch data for Data_Dosen_Wali menggunakan ID yang sesuai di tabel
       const dosenWaliResponse = await axios.get(`http://localhost:3000/data-dosen-wali/get/${IDDosen}`);
       const dosenWaliData = dosenWaliResponse.data.data;
   
       if (dosenWaliResponse.status === 200) {
-        setFormData((prevData) => ({
-          ...prevData,
-          Password: dosenWaliData.Password,
-        }));
+        if (dosenWaliData) {
+          // Jika iya, atur status menjadi "Dosen Wali"
+          setFormData((prevData) => ({
+            ...prevData,
+            Status: 'Dosen Wali',
+            Password: dosenWaliData.Password,
+          }));
+        } else {
+          // Jika tidak, atur status menjadi "Bukan Dosen Wali"
+          setFormData((prevData) => ({
+            ...prevData,
+            Status: 'Bukan Dosen Wali',
+            Password: '',
+          }));
+        }
       } else {
         console.error('Gagal mengambil data dosen wali');
       }
@@ -127,7 +143,19 @@ const EditDataDosen = () => {
       console.error('Terjadi kesalahan:', error);
     }
   };  
-  
+
+  const handleStatusChange = (status) => {
+    setFormData({
+      ...formData,
+      Status: status,
+    });
+
+    if (status === 'Dosen Wali') {
+      setShowKelasProdi(true);
+    } else {
+      setShowKelasProdi(false);
+    }
+  }
 
   const handleChange = (name, value) => {
     setFormData({
@@ -242,8 +270,6 @@ const EditDataDosen = () => {
         console.log('kuncinya1:', formData.Password);
 
         alert('Data berhasil diubah!');
-
-        navigate('/datadosen');
       } catch (error) {
         console.error('Terjadi kesalahan saat mengubah data:', error);
         alert('Terjadi kesalahan saat mengubah data.');
@@ -255,11 +281,6 @@ const EditDataDosen = () => {
 
   return (
     <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>
-      <div className="header-form">
-        <div>
-          <h2>Edit Data Dosen</h2>
-        </div>
-      </div>
       <CRow>
         <CCol className='box-1'>
           <div>
@@ -317,20 +338,58 @@ const EditDataDosen = () => {
             />
             {formErrors.Email_Dosen && <div className="text-danger">{formErrors.Email_Dosen}</div>}
           </div>
-          {formData.ID_Dosen_Wali !== 'Bukan Dosen Wali' && (
-            <div>
-              <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
-              <CFormInput
-                className="input"
-                type="text"
-                id="Nama_Kelas"
-                value={formData.Nama_Kelas}
-                onChange={(e) => handleChange('Nama_Kelas', e.target.value)}
+          <div>
+            <CFormLabel>Status</CFormLabel>
+            <CFormCheck
+              type="radio"
+              id="flexCheckDefault1"
+              name="status" // Tambahkan properti name
+              label="Dosen Wali"
+              checked={formData.Status === 'Dosen Wali'} // Perhatikan bahwa Anda harus menggunakan "Status" dengan huruf besar
+              onChange={() => handleStatusChange('Dosen Wali')}
+            />
+            <CFormCheck
+              type="radio"
+              id="flexCheckDefault2"
+              name="status" // Tambahkan properti name
+              label="Bukan Dosen Wali"
+              checked={formData.Status === 'Bukan Dosen Wali'} // Perhatikan bahwa Anda harus menggunakan "Status" dengan huruf besar
+              onChange={() => handleStatusChange('Bukan Dosen Wali')}
+            />
+          </div>
+          {showKelasProdi && (
+          <>
+            <div className="col-md-4 margin-right">
+              <label className="table-font">Kelas</label>
+              <Select
+                name="kelas"
+                value={pilihanData.kelas.find((option) => option.value === formData.kelas)}
+                onChange={(selectedOption) => {
+                  handleChange('kelas', selectedOption.value);
+                }}
+                options={pilihanData.kelas}
+                isSearchable
+                required
               />
-              {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
+              {isFormSubmitted && !formData.kelas && (
+                <div className="invalid-feedback">Mohon pilih kelas!</div>
+              )}
             </div>
-          )}
-          {formData.ID_Dosen_Wali !== 'Bukan Dosen Wali' && (
+            {formData.kelas === 'lainnya' && (
+              <div>
+                <CFormLabel htmlFor="KelasLainnya">Kelas Lainnya</CFormLabel>
+                <CFormInput
+                  className="input"
+                  type="text"
+                  id="KelasLainnya"
+                  value={formData.KelasLainnya}
+                  onChange={(e) => handleChange('KelasLainnya', e.target.value)}
+                />
+                {formErrors.KelasLainnya && (
+                  <div className="text-danger">{formErrors.KelasLainnya}</div>
+                )}
+              </div>
+            )}
             <div>
               <CFormLabel htmlFor="Password">Password</CFormLabel>
               <CFormInput
@@ -342,7 +401,8 @@ const EditDataDosen = () => {
               />
               {formErrors.Password && <div className="text-danger">{formErrors.Password}</div>}
             </div>
-          )}
+          </>
+        )}
         </CCol>
       </CRow>
       <div>
