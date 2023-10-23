@@ -15,6 +15,8 @@ router.patch('/patch/:id', dataDosenWaliController.editDataDosenWali);
 
 router.get('/get/:id', dataDosenWaliController.getOneDataDosenWali);
 
+router.get('/get/id/:email', dataDosenWaliController.getIdDosenWali);
+
 router.delete('/delete/:id', dataDosenWaliController.deleteDataDosenWali);
 
 module.exports = router;

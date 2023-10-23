@@ -53,6 +53,38 @@ exports.loginAdviserLecturer = async (req, res) => {
   }
 };
 
+exports.getIdDosenWali = async (req, res) => {
+  try {
+    const { Email_Dosen } = req.body;
+    const dosenWali = await Data_Dosen.get({
+      where: {
+        Email_Dosen: Email_Dosen
+      }
+    });
+    
+    if (!dosenWali) {
+      return res.status(401).json({message: 'Invalid username or password'});
+    } else {
+      const pwd = await Data_Dosen_Wali.get({
+        where: {
+          ID_Dosen: dosenWali.id
+        }
+      });
+
+      if (!pwd) {
+        return res.status(401).json({message: 'Data not found'});
+      } else {
+        res.send({
+          message: "Adviser Lecturers sent successfully",
+          data: pwd
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 exports.registerAdviserLecturer = async (req, res) => {
   try {
     const {Email_Dosen, Password} = req.body;
