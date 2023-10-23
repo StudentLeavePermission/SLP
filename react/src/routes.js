@@ -69,7 +69,9 @@ const DetailJadwal = React.lazy(() => import('./views/pages/crudJadwal/detailJad
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/mahasiswa/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/dosen/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

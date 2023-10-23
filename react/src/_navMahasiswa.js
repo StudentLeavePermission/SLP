@@ -6,7 +6,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Dashboard',
-    to: '/dashboard',
+    to: '/mahasiswa/dashboard',
     icon: cilBarChart,
   },
   {
