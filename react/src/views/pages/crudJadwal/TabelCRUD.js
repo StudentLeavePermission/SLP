@@ -23,17 +23,20 @@ function TabelCRUD({}) {
       console.log(dataJamPelajaran);
       const dataDosen = response.data.dosen;        
       const dataMatkul = response.data.mata_kuliah;
-      console.log(dataDosen);
+      const dataKelas = response.data.kelas;
+      console.log(dataKelas);
       const formattedData = response.data.data.map((item, index) => {
         const JamPelajaran = getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_Start)+" - "+ tambahIntervalWaktu(getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_End), 50); 
         const namaDosen = getNamaDosen(dataDosen, item.ID_Dosen);
         const namaMatkul = getNamaMatkul(dataMatkul, item.ID_Matkul);
+        const namaKelas = getNamaKelas(dataKelas, item.ID_Kelas);
         return {
           ...item,
           DT_RowId: `${index + 1}`,
           Jam: JamPelajaran,
           Nama_Dosen: namaDosen,
-          Mata_Kuliah: namaMatkul
+          Mata_Kuliah: namaMatkul,
+          Nama_Kelas: namaKelas
         };
       });
       setDataJadwal(formattedData);
@@ -85,6 +88,17 @@ function TabelCRUD({}) {
     while (i < data.length){
       if (data[i].Data_Mata_Kuliah.id == id_matkul){
         return data[i].Data_Mata_Kuliah.Nama_Mata_Kuliah;
+      }
+      i++;
+    }
+    return "NULL";
+  }
+
+  function getNamaKelas (data, id_kelas){
+    let i = 0;
+    while (i < data.length){
+      if (data[i].id == id_kelas){
+        return data[i].Nama_Kelas;
       }
       i++;
     }
@@ -261,7 +275,7 @@ function TabelCRUD({}) {
               <td className="cell rata table-font">{item.Jam}</td>
               <td className="cell rata table-font">{item.Nama_Dosen}</td>
               <td className="cell rata table-font">{item.Mata_Kuliah}</td>
-              <td className="cell rata table-font">{item.ID_Kelas}</td>
+              <td className="cell rata table-font">{item.Nama_Kelas}</td>
               <td className="cell aksi">
                 <CButton href={`/#/admin/detailJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
                   <CIcon icon={cilInfo} />
