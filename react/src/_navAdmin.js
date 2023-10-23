@@ -1,5 +1,5 @@
 import React from 'react'
-import { cilCursor, cilHistory, cibHackhands, cilBarChart } from '@coreui/icons'
+import { cilCursor, cilHistory, cibHackhands, cilBarChart , cilFolderOpen} from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
@@ -13,7 +13,7 @@ const _nav = [
     component: CNavItem,
     name: 'Data Siswa',
     to: '/admin/mahasiswa/',
-    icon: cilBarChart,
+    icon: cilFolderOpen,
   },
   // {
   //   component: CNavGroup,
@@ -57,13 +57,13 @@ const _nav = [
     component: CNavItem,
     name: 'Data Dosen',
     to: '/admin/dataDosen',
-    icon: cilBarChart,
+    icon: cilFolderOpen,
   },
   {
     component: CNavItem,
     name: 'Data Jadwal',
     to: '/admin/dataJadwal',
-    icon: cilBarChart,
+    icon: cilFolderOpen,
   },
   // {
   //   component: CNavItem,
