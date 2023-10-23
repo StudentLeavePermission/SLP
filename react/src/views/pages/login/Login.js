@@ -20,8 +20,10 @@ import axios from 'axios'
 import Cookies from 'js-cookie'
 
 let idMhs = '';
+let idDosen = '';
 
 export let idMahasiswa = '';
+export let idDosenWali = '';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -43,6 +45,12 @@ const Login = () => {
       }, 800); 
     }
   }, [role, navigate]);
+
+  useEffect(() => {
+    if (idDosen) {
+      idDosenWali = idDosen;
+    }
+  })
 
   useEffect(() => {
     if (idMhs) {

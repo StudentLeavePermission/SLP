@@ -55,10 +55,10 @@ exports.loginAdviserLecturer = async (req, res) => {
 
 exports.getIdDosenWali = async (req, res) => {
   try {
-    const { Email_Dosen } = req.body;
+    const { username } = req.params;
     const dosenWali = await Data_Dosen.get({
       where: {
-        Email_Dosen: Email_Dosen
+        Email_Dosen: username
       }
     });
     
