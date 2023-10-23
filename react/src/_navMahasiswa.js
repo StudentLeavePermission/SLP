@@ -12,7 +12,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Form Pengajuan',
-    to: '/formPengajuan',
+    to: '/mahasiswa/formPengajuan',
     icon: cibHackhands,
   },
   // {

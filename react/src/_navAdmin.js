@@ -12,7 +12,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Data Siswa',
-    to: '/tu/mahasiswa/',
+    to: '/admin/mahasiswa/',
     icon: cilBarChart,
   },
   // {
@@ -56,13 +56,13 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Data Dosen',
-    to: '/dataDosen',
+    to: '/admin/dataDosen',
     icon: cilBarChart,
   },
   {
     component: CNavItem,
     name: 'Data Jadwal',
-    to: '/dataJadwal',
+    to: '/admin/dataJadwal',
     icon: cilBarChart,
   },
   // {

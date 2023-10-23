@@ -12,7 +12,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Data Pengajuan',
-    to: '/tabelPengajuan',
+    to: '/dosen/tabelPengajuan',
     icon: cilBarChart,
   }
   // {
