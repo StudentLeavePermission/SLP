@@ -16,7 +16,7 @@ import 'simplebar/dist/simplebar.min.css'
 import navMahasiswa from '../_navMahasiswa'
 import navDosen from '../_navDosen'
 import navAdmin from '../_navAdmin'
-import logo from '../assets/images/logo.png'
+import logo from '../assets/images/logo3.png'
 import "../scss/style.scss"
 
 const AppSidebar = ({ role }) => {
