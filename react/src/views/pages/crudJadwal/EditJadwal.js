@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 import axios from 'axios';
 import {
   CRow,
@@ -13,7 +14,6 @@ import {
   CImage,
 } from '@coreui/react';
 import './style.css';
-import { useParams } from 'react-router-dom';
 
 const EditJadwal = () => {
   const [formData, setFormData] = useState({
@@ -27,22 +27,36 @@ const EditJadwal = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const { key } = useParams();
-  const [ done, setDone ] = useState();
-  const navigate = useNavigate();
-  const [dataDosen, setDataDosen] = useState([]);
-  const [dataMatkul, setDataMatkul] = useState([]);
+  const [isEditing, setIsEditing] = useState(false); // Menandakan apakah sedang dalam mode edit
+  const [done, setDone] = useState();
   const [dataKelas, setDataKelas] = useState([]);
+  const [dataMatkul, setDataMatkul] = useState([]);
+  const [dataDosen, setDataDosen] = useState([]);
   const [dataJamPelajaran, setDataJamPelajaran] = useState([]);
+  const navigate = useNavigate();
+
+  const pilihanData = {
+    kelas: getNamaKelas(),
+    mataKuliah: getNamaMatkul(),
+    hari: [
+      { value: 'Senin', label: 'Senin' },
+      { value: 'Selasa', label: 'Selasa' },
+      { value: 'Rabu', label: 'Rabu' },
+      { value: 'Kamis', label: 'Kamis' },
+      { value: 'Jumat', label: 'Jumat' },
+    ],
+    namaDosen: getNamaDosen(),
+    waktuMulai: getJamPelajaranStart(),
+    waktuSelesai: getJamPelajaranEnd(),
+  };
 
   useEffect(() => {
-    fetchData(key);
-  }, [key]);
-
-  useEffect(() => {
-    if(done==1){
-      navigate('/dataJadwal');
+    // Jika key ada dalam URL, berarti sedang dalam mode edit, maka ambil data berdasarkan key
+    if (key) {
+      fetchData(key);
+      setIsEditing(true);
     }
-  }, [done]);
+  }, [key]);
 
   useEffect(() => {
     // Fetch data
@@ -51,6 +65,12 @@ const EditJadwal = () => {
     getAllDataKelas();
     getAllDataJamPelajaran();
   }, []);
+
+  useEffect(() => {
+    if(done==1){
+      navigate('/dataJadwal');
+    }
+  }, [done]);
 
   const getAllDataDosen = async () => {
     try {
@@ -129,61 +149,13 @@ const EditJadwal = () => {
     return jamPelajaran;
   }
 
-  function tambahIntervalWaktu(time, intervalMenit) {
-    const [jam, menit, detik] = time.split(':').map(Number);
-  
-    const totalMenit = (jam * 60) + menit;
-  
-    const totalMenitBaru = totalMenit + intervalMenit;
-  
-    const jamBaru = Math.floor(totalMenitBaru / 60);
-    const sisaMenit = totalMenitBaru % 60;
-  
-    // Format hasil baru sebagai tipe data time (HH:MM:SS)
-    const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
-  
-    return waktuBaru;
-  }
-
-  useEffect(() => {
-    console.log(dataDosen);
-  }, [dataDosen]);
-
-  useEffect(() => {
-    console.log(dataMatkul);
-  }, [dataMatkul]);
-
-  useEffect(() => {
-    console.log(dataKelas);
-  }, [dataKelas]);
-
-  useEffect(() => {
-    console.log(dataJamPelajaran);
-  }, [dataJamPelajaran]);
-
-  const pilihanData = {
-    kelas: getNamaKelas(),
-    mataKuliah: getNamaMatkul(),
-    hari: [
-      { value: 'Senin', label: 'Senin' },
-      { value: 'Selasa', label: 'Selasa' },
-      { value: 'Rabu', label: 'Rabu' },
-      { value: 'Kamis', label: 'Kamis' },
-      { value: 'Jumat', label: 'Jumat' },
-    ],
-    namaDosen: getNamaDosen(),
-    waktuMulai: getJamPelajaranStart(),
-    waktuSelesai: getJamPelajaranEnd(),
-  };
-
   const fetchData = async (key) => {
     try {
       const response = await axios.get(`http://localhost:3000/jadwal-kelas/get/${key}`);
-      const data = response.data.data; // Ambil data dari response
-  
+      const data = response.data.data;
+
       if (response.status === 200) {
         console.log('Data yang telah diambil dari server:', data);
-        // Atur formData dengan data dari database
         setFormData({
           ID_Jam_Pelajaran_Start: data.ID_Jam_Pelajaran_Start,
           ID_Jam_Pelajaran_End: data.ID_Jam_Pelajaran_End,
@@ -199,6 +171,22 @@ const EditJadwal = () => {
       console.error('Terjadi kesalahan:', error);
     }
   };
+
+  function tambahIntervalWaktu(time, intervalMenit) {
+    const [jam, menit, detik] = time.split(':').map(Number);
+  
+    const totalMenit = (jam * 60) + menit;
+  
+    const totalMenitBaru = totalMenit + intervalMenit;
+  
+    const jamBaru = Math.floor(totalMenitBaru / 60);
+    const sisaMenit = totalMenitBaru % 60;
+  
+    // Format hasil baru sebagai tipe data time (HH:MM:SS)
+    const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+  
+    return waktuBaru;
+  }
 
   const handleChange = (name, value) => {
     setFormData({
@@ -242,19 +230,32 @@ const EditJadwal = () => {
 
     if (Object.keys(errors).length === 0) {
       try {
-        const response = await axios.patch(`http://localhost:3000/jadwal-kelas/update/${key}`, formData);
-        console.log('ini teks skdninsaign');
-        if (response.status === 200) {
-          console.log('Data berhasil diubah di database:', response.data);
-          alert('Data berhasil diubah!');
-          setDone(1);
+        if (isEditing) {
+          // Jika sedang dalam mode edit, lakukan permintaan patch ke endpoint yang sesuai
+          const response = await axios.patch(`http://localhost:3000/jadwal-kelas/update/${key}`, formData);
+          if (response.status === 200) {
+            console.log('Data berhasil diubah di database:', response.data);
+            alert('Data berhasil diubah!');
+            setDone(1);
+          } else {
+            console.error('Gagal mengubah data di database');
+            alert('Gagal mengubah data di database');
+          }
         } else {
-          console.error('Gagal mengubah data di database');
-          alert('Gagal mengubah data di database');
+          // Jika tidak dalam mode edit, lakukan permintaan POST untuk menambahkan data baru
+          const response = await axios.post('http://localhost:3000/jadwal-kelas/create', formData);
+          if (response.status === 201) {
+            console.log('Data berhasil ditambahkan ke database:', response.data);
+            alert('Data berhasil ditambahkan!');
+            setDone(1);
+          } else {
+            console.error('Gagal menambahkan data ke database');
+            alert('Gagal menambahkan data ke database');
+          }
         }
       } catch (error) {
         console.error('Error:', error);
-        alert('Terjadi kesalahan saat mengubah data.');
+        alert('Terjadi kesalahan saat mengubah/menambah data.');
       }
     } else {
       alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
@@ -263,100 +264,95 @@ const EditJadwal = () => {
 
   return (
     <div className="c-app c-default-layout">
-      <div className="c-wrapper">
-        <main className="c-main">
-          <div className="container-fluid">
-            <CContainer>
-              <CRow>
-                <CForm onSubmit={handleSubmit} encType="multipart/form-data" action="#" method="GET">
-                  <CCol className="my-col">
-                    <CRow>
-                      <CCol xs="6" className="my-col-inner">
-                        <CFormLabel htmlFor="ID_Kelas" className="label">
-                          Kelas
-                        </CFormLabel>
-                        <CFormInput
-                          type="text"
-                          id="ID_Kelas"
-                          name="ID_Kelas"
-                          value={formData.ID_Kelas}
-                          onChange={(e) => handleChange('ID_Kelas', e.target.value)}
-                        />
-                        {formErrors.ID_Kelas && <div className="text-danger">{formErrors.ID_Kelas}</div>}
-                        <CFormLabel htmlFor="Hari_Jadwal" className="label">
-                          Hari
-                        </CFormLabel>
-                        <CFormInput
-                          type="text"
-                          id="Hari_Jadwal"
-                          name="Hari_Jadwal"
-                          value={formData.Hari_Jadwal}
-                          onChange={(e) => handleChange("Hari_Jadwal", e.target.value)}
-                        />
-                        {formErrors.Hari_Jadwal && <div className="text-danger">{formErrors.Hari_Jadwal}</div>}
-                        <CFormLabel htmlFor="ID_Jam_Pelajaran_Start" className="label">
-                          Jam Awal
-                        </CFormLabel>
-                        <CFormInput
-                          type="text"
-                          id="ID_Jam_Pelajaran_Start"
-                          name="ID_Jam_Pelajaran_Start"
-                          value={formData.ID_Jam_Pelajaran_Start}
-                          onChange={(e) => handleChange('ID_Jam_Pelajaran_Start', e.target.value)}
-                        />
-                        {formErrors.ID_Jam_Pelajaran_Start && <div className="text-danger">{formErrors.ID_Jam_Pelajaran_Start}</div>}
-                        <CFormLabel
-                          htmlFor="ID_Jam_Pelajaran_End"
-                          className="label"
-                        >
-                          Jam Akhir
-                        </CFormLabel>
-                        <CFormInput
-                          type="text"
-                          id="ID_Jam_Pelajaran_End"
-                          name="ID_Jam_Pelajaran_End"
-                          value={formData.ID_Jam_Pelajaran_End}
-                          onChange={(e) => handleChange('ID_Jam_Pelajaran_End', e.target.value)}
-                        />
-                        {formErrors.ID_Jam_Pelajaran_End && <div className="text-danger">{formErrors.ID_Jam_Pelajaran_End}</div>}
-                      </CCol>
-                      <CCol xs="6" className="my-col-inner">
-                        <CFormLabel htmlFor="ID_Matkul" className="label">
-                          Mata Kuliah
-                        </CFormLabel>
-                        <CFormInput 
-                          type="text" 
-                          id="ID_Matkul" 
-                          name="ID_Matkul"
-                          value={formData.ID_Matkul}
-                          onChange={(e) => handleChange('ID_Matkul', e.target.value)}
-                        />
-                        {formErrors.ID_Matkul && <div className="text-danger">{formErrors.ID_Matkul}</div>}
-                        <CFormLabel htmlFor="ID_Dosen" className="label">
-                          Nama Dosen
-                        </CFormLabel>
-                        <CFormInput 
-                          type="text" 
-                          id="ID_Dosen" 
-                          name="ID_Dosen"
-                          value={formData.ID_Dosen}
-                          onChange={(e) => handleChange('ID_Dosen', e.target.value)}
-                        />
-                        {formErrors.ID_Dosen && <div className="text-danger">{formErrors.ID_Dosen}</div>}
-                        <CButton
-                          component="input"
-                          type="submit"
-                          value="Submit"
-                          className="submitButtonStyle"
-                        />
-                      </CCol>
-                    </CRow>
-                  </CCol>
-                </CForm>
-              </CRow>
-            </CContainer>
-          </div>
-        </main>
+      <div className="c-app">
+        <div className="c-body">
+          <main className="c-main">
+            <div className="container-fluid">
+              <div className="fade-in">
+                <div className="row">
+                  <div className="col-md-12">
+                    <div className="card">
+                      <div className="card-header">Form Jadwal</div>
+                      <div className="card-body">
+                        <form onSubmit={handleSubmit}>
+                          <div className="mb-3">
+                            <div className="row">
+                              <div className="col-md-6">
+                                <label htmlFor="ID_Kelas">Kelas</label>
+                                <Select
+                                  name="ID_Kelas"
+                                  options={pilihanData.kelas}
+                                  value={pilihanData.kelas.find((option) => option.value === formData.ID_Kelas)}
+                                  onChange={(selectedOption) => handleChange('ID_Kelas', selectedOption.value)}
+                                />
+                              </div>
+                              <div className="col-md-6">
+                                <label htmlFor="Hari_Jadwal">Hari</label>
+                                <Select
+                                  name="Hari_Jadwal"
+                                  options={pilihanData.hari}
+                                  value={pilihanData.hari.find((option) => option.value === formData.Hari_Jadwal)}
+                                  onChange={(selectedOption) => handleChange('Hari_Jadwal', selectedOption.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mb-3">
+                            <div className="row">
+                              <div className="col-md-6">
+                                <label htmlFor="ID_Matkul">Mata Kuliah</label>
+                                <Select
+                                  name="ID_Matkul"
+                                  options={pilihanData.mataKuliah}
+                                  value={pilihanData.mataKuliah.find((option) => option.value === formData.ID_Matkul)}
+                                  onChange={(selectedOption) => handleChange('ID_Matkul', selectedOption.value)}
+                                />
+                              </div>
+                              <div className="col-md-6">
+                                <label htmlFor="ID_Dosen">Dosen</label>
+                                <Select
+                                  name="ID_Dosen"
+                                  options={pilihanData.namaDosen}
+                                  value={pilihanData.namaDosen.find((option) => option.value === formData.ID_Dosen)}
+                                  onChange={(selectedOption) => handleChange('ID_Dosen', selectedOption.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="mb-3">
+                            <div className="row">
+                              <div className="col-md-6">
+                                <label htmlFor="ID_Jam_Pelajaran_Start">Jam Pelajaran Mulai</label>
+                                <Select
+                                  name="ID_Jam_Pelajaran_Start"
+                                  options={pilihanData.waktuMulai}
+                                  value={pilihanData.waktuMulai.find((option) => option.value === formData.ID_Jam_Pelajaran_Start)}
+                                  onChange={(selectedOption) => handleChange('ID_Jam_Pelajaran_Start', selectedOption.value)}
+                                />
+                              </div>
+                              <div className="col-md-6">
+                                <label htmlFor="ID_Jam_Pelajaran_End">Jam Pelajaran Selesai</label>
+                                <Select
+                                  name="ID_Jam_Pelajaran_End"
+                                  options={pilihanData.waktuSelesai}
+                                  value={pilihanData.waktuSelesai.find((option) => option.value === formData.ID_Jam_Pelajaran_End)}
+                                  onChange={(selectedOption) => handleChange('ID_Jam_Pelajaran_End', selectedOption.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <button type="submit" className="btn btn-primary">
+                            {isEditing ? 'Simpan Perubahan' : 'Tambahkan'}
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );
