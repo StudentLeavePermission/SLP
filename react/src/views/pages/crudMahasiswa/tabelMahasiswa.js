@@ -93,7 +93,7 @@ function TabelCRUD() {
       {headerSection}
       <div className="container">
         <div className="table-box">
-          <CButton href={`/#/tu/mahasiswa/tambah/`} className="btn-tambah table-font">
+          <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
           <div className="search-input-container">
@@ -147,10 +147,10 @@ function TabelCRUD() {
                   <td className="cell rata table-font">{item.ID_Kelas}</td>
 
                   <td className="cell aksi">
-                    <CButton href={`/#/tu/mahasiswa/detail/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                    <CButton href={`/#/admin/mahasiswa/detail/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
                       <CIcon icon={cilInfo} />
                     </CButton>
-                    <CButton href={`/#/tu/mahasiswa/edit/${item.id}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
+                    <CButton href={`/#/admin/mahasiswa/edit/${item.id}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
                       <CIcon icon={cilPencil} />
                     </CButton>
                     <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(item.id)}>

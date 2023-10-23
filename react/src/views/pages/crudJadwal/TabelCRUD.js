@@ -193,7 +193,7 @@ function TabelCRUD({}) {
     <>
       <div className="container">
         <div className="table-box">
-          <CButton href={`/#/tambahJadwal`} className="btn-tambah table-font">
+          <CButton href={`/#/admin/tambahJadwal`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
           <div className="search-input-container">
@@ -263,10 +263,10 @@ function TabelCRUD({}) {
               <td className="cell rata table-font">{item.Mata_Kuliah}</td>
               <td className="cell rata table-font">{item.ID_Kelas}</td>
               <td className="cell aksi">
-                <CButton href={`/#/detailJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                <CButton href={`/#/admin/detailJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
                   <CIcon icon={cilInfo} />
                 </CButton>                
-                <CButton href={`/#/editJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
+                <CButton href={`/#/admin/editJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
                     <CIcon icon={cilPencil} />
                 </CButton>
                 <CButton onClick={() => hapusData(item.id)} style={{ backgroundColor: 'transparent', color: 'black' }}>
