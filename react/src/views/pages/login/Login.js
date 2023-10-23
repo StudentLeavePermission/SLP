@@ -67,6 +67,7 @@ const Login = () => {
     const errors = validateForm();
     if (Object.keys(errors).length === 0) {
       if (isEmail(username)) {
+        console.log(username)
         axios
           .post('http://localhost:3000/data-dosen-wali/login', {
             Email_Dosen: username,
@@ -75,18 +76,18 @@ const Login = () => {
           .then(async () => { // Gunakan async di sini
             const token = Cookies.get('jwt');
             if (token !== 'undefined') {
-              // setRole('dosen');
-              try {
-                const apiURL = `http://localhost:3000/data-dosen-wali/get/id/${username}`;
-                const response = await axios.get(apiURL);
-                const data = response.data.data;
-                idDosen = data.id;
-                console.log(idDosen);
-                setRole('dosen');
-              } catch (error) {
-                console.error('Error fetching data:', error);
-                alert('Failed to fetch data');
-              }
+              setRole('dosen');
+              // try {
+              //   const apiURL = `http://localhost:3000/data-dosen-wali/get/id/${username}`;
+              //   const response = await axios.get(apiURL);
+              //   const data = response.data.data;
+              //   idDosen = data.id;
+              //   console.log(idDosen);
+              //   setRole('dosen');
+              // } catch (error) {
+              //   console.error('Error fetching data:', error);
+              //   alert('Failed to fetch data');
+              // }
             } else {
               alert('Coba lagi');
             }
