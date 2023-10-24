@@ -66,7 +66,7 @@ const DetailDosen = () => {
   // Logika pengecekan Dosen Wali
   const isDosenWali = dataDosenWali.some((dosenWali) => dosenWali.ID_Dosen.toString() === key);
 
-  const kelasData = dataKelas.find((kelas) => kelas.ID_Dosen_Wali.toString() === key);
+  const kelasData = dataKelas.find((kelas) => kelas.ID_Dosen_Wali !== null && kelas.ID_Dosen_Wali.toString() === key);
   let kelas = '-';
   let prodi = '-';
 
@@ -85,7 +85,7 @@ const DetailDosen = () => {
   };
   
   return (
-    <div className="container-detail">
+    <div className="container">
       <CRow>
         <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
           <div className="details">
