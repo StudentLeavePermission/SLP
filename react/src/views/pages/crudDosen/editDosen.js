@@ -20,7 +20,7 @@ const EditDataDosen = () => {
     Email_Dosen: '',
     Nama_Kelas: '',
     Password: '',
-    Status: 'Bukan Dosen Wali',
+    status: '',
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -31,6 +31,46 @@ const EditDataDosen = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [done, setDone] = useState();
   const navigate = useNavigate();
+
+  const pilihanData = {
+    kelas: getNamaKelas(),
+  };
+
+  useEffect(() => {
+    // Jika key ada dalam URL, berarti sedang dalam mode edit, maka ambil data berdasarkan key
+    if (key) {
+      fetchData(key);
+      setIsEditing(true);
+    }
+  }, [key]);
+
+  useEffect(() => {
+    // Fetch data
+    getAllDataKelas();
+  }, []);
+
+  useEffect(() => {
+    if(done==1){
+      navigate('/admin/dataDosen');
+    }
+  }, [done]);
+
+  const getAllDataKelas = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-kelas');
+      setDataKelas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaKelas () {
+    const namaKelas = [];
+    for (let i = 0; i < dataKelas.length; i++) {
+      namaKelas.push({value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas});
+    }
+    return namaKelas;
+  }
 
   const handleChange = (name, value) => {
     setFormData({
@@ -63,36 +103,6 @@ const EditDataDosen = () => {
     });
   };
 
-  const handleChangeKelas = (selectedOption) => {
-    setSelectedKelas(selectedOption);
-    handleChange('Nama_Kelas', selectedOption ? selectedOption.label : '');
-  };
-
-  useEffect(() => {
-    getAllDataKelas();
-  }, []);
-
-  const getAllDataKelas = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/data-kelas');
-      const filteredDataKelas = response.data.data.filter((kelas) => kelas.ID_Dosen_Wali.toString() === key.toString());
-      setDataKelas(filteredDataKelas);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData(key);
-    setIsEditing(true);
-  }, [key]);
-
-  useEffect(() => {
-    if (done === 1) {
-      navigate('/dataDosen');
-    }
-  }, [done]);
-
   const fetchData = async (key) => {
     try {
       const dataDosenResponse = await axios.get(`http://localhost:3000/data-dosen/get/${key}`);
@@ -100,7 +110,6 @@ const EditDataDosen = () => {
 
       if (dataDosenResponse.status === 200) {
         setFormData((prevData) => ({
-          ...prevData,
           Nama_Dosen: dataDosen.Nama_Dosen,
           NIP: dataDosen.NIP,
           Kode_Dosen: dataDosen.Kode_Dosen,
@@ -350,13 +359,9 @@ const EditDataDosen = () => {
                 <label className="table-font">Kelas</label>
                 <Select
                   name="kelas"
-                  value={selectedKelas}
-                  onChange={handleChangeKelas}
-                  options={dataKelas.map((kelas) => ({
-                    value: kelas.id,
-                    label: kelas.Nama_Kelas,
-                  }))}
-                  isSearchable
+                  options={pilihanData.kelas}
+                  value={pilihanData.kelas.find((option) => option.value === formData.kelas)}
+                  onChange={(selectedOption) => handleChange('kelas', selectedOption.value)}
                   required
                 />
                 {formErrors.Nama_Kelas && (
