@@ -55,6 +55,7 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // SLP
+const TambahMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/tambahMahasiswa.js'))
 const EditMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/EditMahasiswa'))
 const DetailMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/DetailMahasiswa'))
 const TabelMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/tabelMahasiswa'))
@@ -147,6 +148,7 @@ const routes = [
   { path: '/admin/mahasiswa/', name: 'TabelMahasiswa', element: TabelMahasiswa},
   { path: '/admin/mahasiswa/edit/:id', name: 'EditMahasiswa', element: EditMahasiswa},
   { path: '/admin/mahasiswa/detail/:id', name: 'DetailMahasiswa', element: DetailMahasiswa},
+  { path: '/admin/mahasiswa/tambah', name: 'TambahMahasiswa', element: TambahMahasiswa},
   { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
   { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
