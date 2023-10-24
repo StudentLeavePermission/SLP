@@ -139,7 +139,8 @@ function TabelCRUD({}) {
   const filteredData = dataJadwal.filter((item) =>
     item.Hari_Jadwal.toLowerCase().includes(searchText.toLowerCase()) ||
     item.Nama_Dosen.toLowerCase().includes(searchText.toLowerCase()) ||
-    item.Mata_Kuliah.toLowerCase().includes(searchText.toLowerCase())
+    item.Mata_Kuliah.toLowerCase().includes(searchText.toLowerCase()) ||
+    item.Nama_Kelas.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const sortedData = [...filteredData].sort((a, b) => {
