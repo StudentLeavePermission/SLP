@@ -68,7 +68,7 @@ const EditJadwal = () => {
 
   useEffect(() => {
     if(done==1){
-      navigate('/dataJadwal');
+      navigate('/admin/dataJadwal');
     }
   }, [done]);
 

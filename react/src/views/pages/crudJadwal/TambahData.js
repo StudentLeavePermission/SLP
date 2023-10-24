@@ -39,7 +39,7 @@ const TambahData = () => {
 
   useEffect(() => {
     if(done==1){
-      navigate('/dataJadwal');
+      navigate('/admin/dataJadwal');
     }
   }, [done]);
 
