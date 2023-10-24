@@ -14,4 +14,6 @@ router.patch('/patch/:id', dataDosenController.editDataDosen);
 
 router.get('/get/:id', dataDosenController.getOneDataDosen);
 
+router.get('/getformatted/:id', dataDosenController.getoneDosenFormatted);
+
 module.exports = router;

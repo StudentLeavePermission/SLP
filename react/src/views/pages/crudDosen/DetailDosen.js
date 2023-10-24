@@ -12,7 +12,6 @@ const DetailDosen = () => {
 
   useEffect(() => {
     getAllDataDosenWali();
-    getAllDataKelas();
   });
 
 
@@ -37,17 +36,7 @@ const DetailDosen = () => {
     }
   };
 
-  const getAllDataKelas = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/data-kelas');
-      setDataKelas(response.data.data);
-      console.log('Data Kelas:', response.data.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  const apiUrl = `http://localhost:3000/data-dosen/get/${key}`;
+  const apiUrl = `http://localhost:3000/data-dosen/getformatted/${key}`;
 
   useEffect(() => {
     fetch(apiUrl)
@@ -55,6 +44,7 @@ const DetailDosen = () => {
       .then((data) => {
         console.log(data.data);
         setDosen(data.data);
+        setDataKelas(data.dataKelas);
       })
       .catch((error) => console.error('Error fetching data:', error));
   }, [apiUrl]);

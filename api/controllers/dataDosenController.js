@@ -3,6 +3,7 @@ const path = require('path');
 const basename = path.basename(__filename);
 const {mainModel} = require('../common/models');
 const Data_Dosen = new mainModel("Data_Dosen");
+const Data_Kelas = new mainModel("Data_Kelas");
 
 // Mengambil semua data dosen
 exports.getAllDataDosen = async (req, res) => {
@@ -99,6 +100,32 @@ exports.getOneDataDosen = async (req, res) => {
     } else {
       res.status(404).json({ message: "Data Dosen not found" });
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+exports.getoneDosenFormatted = async (req, res) => {
+  try {
+    const { id } = req.params; // Ambil ID dari parameter URL
+    const dataDosen = await Data_Dosen.get({ // Menggunakan metode 'get' dengan kriteria ID
+      where: { id: id },
+    });
+
+    const dataKelas = await Data_Kelas.getAll();
+
+    if (dataDosen) {
+      res.send({
+        message: "Data Dosen found successfully",
+        data: dataDosen,
+        dataKelas: dataKelas,
+      });
+      console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+    } else {
+      res.status(404).json({ message: "Data Dosen not found" });
+    }    
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
