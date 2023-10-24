@@ -144,7 +144,7 @@ function TabelCRUD() {
                   <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
                   <td className="cell rata table-font">{item.NIM}</td>
                   <td className="cell rata table-font">{item.Nama}</td>
-                  <td className="cell rata table-font">{item.ID_Kelas}</td>
+                  <td className="cell rata table-font">{item.Kelas.Nama_Kelas}</td>
 
                   <td className="cell aksi">
                     <CButton href={`/#/admin/mahasiswa/detail/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>

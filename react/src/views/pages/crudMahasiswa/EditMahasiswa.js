@@ -57,7 +57,7 @@ const EditMahasiswa = () => {
 
   React.useEffect(() => {
     axios.get(`http://localhost:3000/data-mahasiswa/students/${id}`).then((response) => {
-      setPost(response.data.data);
+      setPost(response.data);
     });
   }, []);
 
@@ -65,8 +65,8 @@ const EditMahasiswa = () => {
   if (!post) return null;
 
 
-  if (post.Foto_Profil != null){
-    var imgSrc = `${post.Foto_Profil}`;
+  if (post.data.Foto_Profil != null){
+    var imgSrc = `${post.data.Foto_Profil}`;
   }
   else{
     var imgSrc = `blank.jpeg`
@@ -92,7 +92,7 @@ const EditMahasiswa = () => {
                               type="text"
                               id="kelas"
                               name="kelas"
-                              defaultValue={post.ID_Kelas}
+                              defaultValue={post.kelas.Nama_kelas}
                               disabled
                             />
                           </CCol>
@@ -104,7 +104,7 @@ const EditMahasiswa = () => {
                               type="text"
                               id="programStudi"
                               name="programStudi"
-                              defaultValue={post.ID_Kelas}
+                              defaultValue={post.kelas.prodi}
                               disabled
                             />
                           </CCol>
@@ -126,7 +126,7 @@ const EditMahasiswa = () => {
                           type="email"
                           id="email"
                           name="email"
-                          defaultValue={post.Email}
+                          defaultValue={post.data.Email}
                           disabled
                         />
                         <CFormLabel htmlFor="noHandphone" className="label">
@@ -136,7 +136,7 @@ const EditMahasiswa = () => {
                           type="text"
                           id="noHandphone"
                           name="noHandphone"
-                          defaultValue={post.Nomor_Telp}
+                          defaultValue={post.data.Nomor_Telp}
                           onChange={(event) => setNoTelp(event.target.value)}
                         />
                         <br />
@@ -148,7 +148,7 @@ const EditMahasiswa = () => {
                           type="text"
                           id="namaOrangTuaWali"
                           name="namaOrangTuaWali"
-                          defaultValue={post.Nomor_Telp_Ortu}
+                          defaultValue={post.data.Nomor_Telp_Ortu}
                           disabled
                         />
                         <CFormLabel htmlFor="noHandphoneOrangTuaWali" className="label">
@@ -158,7 +158,7 @@ const EditMahasiswa = () => {
                           type="text"
                           id="noHandphoneOrangTuaWali"
                           name="noHandphoneOrangTuaWali"
-                          defaultValue={post.Nomor_Telp_Ortu}
+                          defaultValue={post.data.Nomor_Telp_Ortu}
                           onChange={(event) => setNoTelpOrtu(event.target.value)}
                         />
                       </CCol>
@@ -190,11 +190,11 @@ const EditMahasiswa = () => {
                         <CFormLabel htmlFor="nama" className="label">
                           Nama
                         </CFormLabel>
-                        <CFormInput type="text" id="nama" name="nama" defaultValue={post.Nama} disabled />
+                        <CFormInput type="text" id="nama" name="nama" defaultValue={post.data.Nama} disabled />
                         <CFormLabel htmlFor="nim" className="label">
                           NIM
                         </CFormLabel>
-                        <CFormInput type="text" id="nim" name="nim" defaultValue={post.NIM} disabled />
+                        <CFormInput type="text" id="nim" name="nim" defaultValue={post.data.NIM} disabled />
                         <CFormLabel htmlFor="waliDosen" className="label">
                           Wali Dosen
                         </CFormLabel>
@@ -202,7 +202,7 @@ const EditMahasiswa = () => {
                           type="text"
                           id="waliDosen"
                           name="waliDosen"
-                          defaultValue={post.ID_Kelas}
+                          defaultValue={post.WaliDosen.Nama_Dosen}
                           disabled
                         />
                         <CButton
