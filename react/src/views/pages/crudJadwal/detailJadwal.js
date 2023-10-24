@@ -108,7 +108,7 @@ const DetailJadwal = () => {
       };
     console.log(formatted);
     return (
-      <div className="container">
+      <div className="container-detail">
         <CRow>
           <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
             <div className="details">

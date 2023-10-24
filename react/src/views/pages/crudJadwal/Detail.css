@@ -59,7 +59,7 @@ h3{
 }
 
 @media (max-width: 768px) {
-    .container {
+    .container-detail {
         display: flex;
         flex-direction: column;
         align-items: center;
