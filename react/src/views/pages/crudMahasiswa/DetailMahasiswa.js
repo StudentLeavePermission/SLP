@@ -10,14 +10,14 @@ const DetailMahasiswa = () => {
   const [post, setPost] = React.useState(null);
   React.useEffect(() => {
     axios.get(`http://localhost:3000/data-mahasiswa/students/${id}`).then((response) => {
-      setPost(response.data.data);
+      setPost(response.data);
     });
   }, []);
 
   if (!post) return null;
 
-  if (post.Foto_Profil != null){
-    var imgSrc = `${post.Foto_Profil}`;
+  if (post.data.Foto_Profil != null){
+    var imgSrc = `${post.data.Foto_Profil}`;
   }
   else{
     var imgSrc = `blank.jpeg`
@@ -37,31 +37,31 @@ const DetailMahasiswa = () => {
             <div className="label-data">
               <div className="item">
                 <div className="label">NIM</div>
-                <div className="value">: {post.NIM}</div>
+                <div className="value">: {post.data.NIM}</div>
               </div>
               <div className="item">
                 <div className="label">ID</div>
-                <div className="value">: {post.id}</div>
+                <div className="value">: {post.data.id}</div>
               </div>
               <div className="item">
                 <div className="label">Nama</div>
-                <div className="value">: {post.Nama}</div>
+                <div className="value">: {post.data.Nama}</div>
               </div>
               <div className="item">
                 <div className="label">Nomor Telepon</div>
-                <div className="value">: {post.Nomor_Telp}</div>
+                <div className="value">: {post.data.Nomor_Telp}</div>
               </div>
               <div className="item">
                 <div className="label">Email</div>
-                <div className="value">: {post.Email}</div>
+                <div className="value">: {post.data.Email}</div>
               </div>
               <div className="item">
                 <div className="label">Kelas</div>
-                <div className="value">: {post.ID_Kelas}</div>
+                <div className="value">: {post.kelas.kelas.Nama_Kelas}</div>
               </div>
               <div className="item">
                 <div className="label">No Telp Ortu</div>
-                <div className="value">: {post.Nomor_Telp_Ortu}</div>
+                <div className="value">: {post.data.Nomor_Telp_Ortu}</div>
               </div>
             </div>
           </div>
