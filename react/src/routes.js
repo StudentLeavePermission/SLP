@@ -1,4 +1,8 @@
 import React from 'react'
+import { ProtectedRoute } from './componentSLP'
+import Cookies from 'js-cookie'
+
+const authToken = Cookies.get('jwt');
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -66,6 +70,23 @@ const TambahJadwal = React.lazy(() => import('./views/pages/crudJadwal/TambahDat
 const EditJadwal = React.lazy(() => import('./views/pages/crudJadwal/EditJadwal'))
 const DetailJadwal = React.lazy(() => import('./views/pages/crudJadwal/detailJadwal'))
 
+const wrapComponent = (Component, isProtected, props) => {
+  // Return a component that wraps the provided Component
+  return () => {
+    if (isProtected) {
+      // Render the ProtectedRoute component if it's a protected route
+      console.log('Props: ', props)
+      return (
+        <ProtectedRoute {...props}>
+          <Component />
+        </ProtectedRoute>
+      );
+    } else {
+      // Render the Component without protection
+      return <Component />;
+    }
+  };
+};
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -128,6 +149,7 @@ const routes = [
   { path: '/admin/mahasiswa/detail/:id', name: 'DetailMahasiswa', element: DetailMahasiswa},
   { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
   { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
+  // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
 ]
 
 export default routes
