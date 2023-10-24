@@ -38,33 +38,21 @@ exports.getLeaveRequest = async (req, res) => {
   }
 }
 
-// //Create a new leave request
-// exports.createLeaveRequest = async (req, res) => {
-//   try {
-//     const { ID_Mahasiswa,
-//       Keterangan,
-//       Jenis_Izin,
-//       ID_Jadwal_Kelas,
-//       Tanggal_Pengajuan,
-//       Tanggal_Izin,
-//       File_Pengajuan,
-//       Status_Pengajuan} = req.body;
-//     const newRequest = await Data_Pengajuan.post({
-//       ID_Mahasiswa,
-//       Keterangan,
-//       Jenis_Izin,
-//       ID_Jadwal_Kelas,
-//       Tanggal_Pengajuan,
-//       Tanggal_Izin,
-//       File_Pengajuan,
-//       Status_Pengajuan,
-//     });
-//     res.status(201).json({ msg: 'Leave Request created' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
+exports.getAllFormattedLeaveRequests = async (req, res) => {
+  try {
+    const leaveRequests = await Data_Pengajuan.getAll();
+    if (leaveRequests) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: leaveRequests
+      })
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 
 exports.createLeaveRequest = async (req, res) => {
   try {

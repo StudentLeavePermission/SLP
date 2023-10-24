@@ -1,4 +1,8 @@
 import React from 'react'
+import { ProtectedRoute } from './componentSLP'
+import Cookies from 'js-cookie'
+
+const authToken = Cookies.get('jwt');
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -66,10 +70,29 @@ const TambahJadwal = React.lazy(() => import('./views/pages/crudJadwal/TambahDat
 const EditJadwal = React.lazy(() => import('./views/pages/crudJadwal/EditJadwal'))
 const DetailJadwal = React.lazy(() => import('./views/pages/crudJadwal/detailJadwal'))
 
+const wrapComponent = (Component, isProtected, props) => {
+  // Return a component that wraps the provided Component
+  return () => {
+    if (isProtected) {
+      // Render the ProtectedRoute component if it's a protected route
+      console.log('Props: ', props)
+      return (
+        <ProtectedRoute {...props}>
+          <Component />
+        </ProtectedRoute>
+      );
+    } else {
+      // Render the Component without protection
+      return <Component />;
+    }
+  };
+};
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/mahasiswa/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard },
+  { path: '/dosen/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
@@ -113,19 +136,20 @@ const routes = [
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/mahasiswa/formPengajuan', name: 'formPengajuan', element: FormPengajuan },
-  { path: '/dosen/dataDosen', name: 'TabelDosen', element: CrudDosen },
-  { path: '/dosen/detailDosen/:key', name: 'DetailDosen', element: DetailDosen },
-  { path: '/dosen/tambahDosen', name: 'TambahDosen', element: TambahDosen },
-  { path: '/dosen/editDosen/:key', name: 'EditDosen', element: EditDosen },
-  { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
-  { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
+  { path: '/admin/dataDosen', name: 'TabelDosen', element: CrudDosen },
+  { path: '/admin/detailDosen/:key', name: 'DetailDosen', element: DetailDosen },
+  { path: '/admin/tambahDosen', name: 'TambahDosen', element: TambahDosen },
+  { path: '/admin/editDosen/:key', name: 'EditDosen', element: EditDosen },
   { path: '/admin/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
   { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
+  { path: '/admin/editJadwal/:key', name: 'EditJadwal', element: EditJadwal},
+  { path: '/admin/detailJadwal/:key', name: 'DetailJadwal', element: DetailJadwal},
   { path: '/admin/mahasiswa/', name: 'TabelMahasiswa', element: TabelMahasiswa},
   { path: '/admin/mahasiswa/edit/:id', name: 'EditMahasiswa', element: EditMahasiswa},
   { path: '/admin/mahasiswa/detail/:id', name: 'DetailMahasiswa', element: DetailMahasiswa},
-  { path: '/admin/editJadwal/:key', name: 'EditJadwal', element: EditJadwal},
-  { path: '/admin/detailJadwal/:key', name: 'DetailJadwal', element: DetailJadwal},
+  { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
+  { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
+  // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
 ]
 
 export default routes

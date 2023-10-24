@@ -23,17 +23,20 @@ function TabelCRUD({}) {
       console.log(dataJamPelajaran);
       const dataDosen = response.data.dosen;        
       const dataMatkul = response.data.mata_kuliah;
-      console.log(dataDosen);
+      const dataKelas = response.data.kelas;
+      console.log(dataKelas);
       const formattedData = response.data.data.map((item, index) => {
         const JamPelajaran = getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_Start)+" - "+ tambahIntervalWaktu(getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_End), 50); 
         const namaDosen = getNamaDosen(dataDosen, item.ID_Dosen);
         const namaMatkul = getNamaMatkul(dataMatkul, item.ID_Matkul);
+        const namaKelas = getNamaKelas(dataKelas, item.ID_Kelas);
         return {
           ...item,
           DT_RowId: `${index + 1}`,
           Jam: JamPelajaran,
           Nama_Dosen: namaDosen,
-          Mata_Kuliah: namaMatkul
+          Mata_Kuliah: namaMatkul,
+          Nama_Kelas: namaKelas
         };
       });
       setDataJadwal(formattedData);
@@ -90,6 +93,17 @@ function TabelCRUD({}) {
     }
     return "NULL";
   }
+
+  function getNamaKelas (data, id_kelas){
+    let i = 0;
+    while (i < data.length){
+      if (data[i].id == id_kelas){
+        return data[i].Nama_Kelas;
+      }
+      i++;
+    }
+    return "NULL";
+  }
   
   useEffect(() => {
     // Mengatur opsi bahasa DataTables
@@ -135,13 +149,11 @@ function TabelCRUD({}) {
       return order * a.Mata_Kuliah.localeCompare(b.Mata_Kuliah);
     } else if (sortBy === 'Hari Jadwal') {
       return order * a.Hari_Jadwal.localeCompare(b.Hari_Jadwal);
-    } else if (sortBy === 'Nama Dosen') {
-      return order * a.Nama_Dosen.localeCompare(b.Nama_Dosen);
     } else if (sortBy === 'Jam') {
       return order * a.Jam.localeCompare(b.Jam);
-    } else if (sortBy === 'Kelas') {
-      return order * a.ID_Kelas.localeCompare(b.ID_Kelas);
-    }
+    } if (sortBy === 'Kelas') {
+      return order * a.Nama_Kelas.localeCompare(b.Nama_Kelas);
+    }    
   });
 
   // Calculate the number of pages
@@ -193,7 +205,7 @@ function TabelCRUD({}) {
     <>
       <div className="container">
         <div className="table-box">
-          <CButton href={`/#/tambahJadwal`} className="btn-tambah table-font">
+          <CButton href={`/#/admin/tambahJadwal`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
           <div className="search-input-container">
@@ -209,7 +221,6 @@ function TabelCRUD({}) {
           <table className="tabel">
             <thead>
               <tr>
-                <th className="header-cell rata table-font">Nomor</th>
                 <th className="header-cell rata table-font">
                   <div onClick={() => handleSort('Hari Jadwal')}>
                     Hari
@@ -223,14 +234,6 @@ function TabelCRUD({}) {
                     Jam
                     <span className="sort-icon">
                       {sortBy === 'Jam' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Nama Dosen')}>
-                    Nama Dosen
-                    <span className="sort-icon">
-                      {sortBy === 'Nama Dosen' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                     </span>
                   </div>
                 </th>
@@ -256,17 +259,15 @@ function TabelCRUD({}) {
             <tbody>
             {currentData.map((item, index) => (
             <tr key={index}>
-              <td className="cell rata table-font">{index + 1}</td>
               <td className="cell rata table-font">{item.Hari_Jadwal}</td>
               <td className="cell rata table-font">{item.Jam}</td>
-              <td className="cell rata table-font">{item.Nama_Dosen}</td>
               <td className="cell rata table-font">{item.Mata_Kuliah}</td>
-              <td className="cell rata table-font">{item.ID_Kelas}</td>
+              <td className="cell rata table-font">{item.Nama_Kelas}</td>
               <td className="cell aksi">
-                <CButton href={`/#/detailJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                <CButton href={`/#/admin/detailJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
                   <CIcon icon={cilInfo} />
                 </CButton>                
-                <CButton href={`/#/editJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
+                <CButton href={`/#/admin/editJadwal/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
                     <CIcon icon={cilPencil} />
                 </CButton>
                 <CButton onClick={() => hapusData(item.id)} style={{ backgroundColor: 'transparent', color: 'black' }}>

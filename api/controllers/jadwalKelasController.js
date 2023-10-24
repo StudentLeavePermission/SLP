@@ -3,6 +3,7 @@ const basename = path.basename(__filename);
 const {mainModel} = require('../common/models');
 const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const Data_Jam_Pelajaran = new mainModel("Data_Jam_Pelajaran");
+const Data_Kelas = new mainModel("Data_Kelas");
 
 // console.log(Jadwal_Kelas);
 // const Jadwal_Kelas = require('../models/models/jadwalKelas');
@@ -144,9 +145,7 @@ exports.getClassScheduleFormatted = async (req, res) => {
       include: ['Data_Mata_Kuliah']
     });
 
-    // const dataKelas = await Jadwal_Kelas.getAllJustInclude({
-    //   include: ['Data_Kelas']
-    // });
+    const dataKelas = await Data_Kelas.getAll();
 
     if (schedules) {
       res.send({
@@ -154,8 +153,8 @@ exports.getClassScheduleFormatted = async (req, res) => {
         data: schedules,
         jam_pelajaran: dataJamPelajaran,
         dosen: dataDosen,
-        mata_kuliah: dataMatkul
-        // kelas: dataKelas
+        mata_kuliah: dataMatkul,
+        kelas: dataKelas
       });
       
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");

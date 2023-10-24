@@ -6,13 +6,13 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Dashboard',
-    to: '/dashboard',
+    to: '/mahasiswa/dashboard',
     icon: cilBarChart,
   },
   {
     component: CNavItem,
     name: 'Form Pengajuan',
-    to: '/formPengajuan',
+    to: '/mahasiswa/formPengajuan',
     icon: cibHackhands,
   },
   // {

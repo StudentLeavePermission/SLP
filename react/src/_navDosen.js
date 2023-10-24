@@ -1,19 +1,19 @@
 import React from 'react'
-import { cilCursor, cilHistory, cibHackhands, cilBarChart } from '@coreui/icons'
+import { cilCursor, cilHistory, cibHackhands, cilBarChart, cilClipboard, cilFolderOpen } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
 const _nav = [
   {
     component: CNavItem,
     name: 'Dashboard',
-    to: '/dashboard',
+    to: '/dosen/dashboard',
     icon: cilBarChart,
   },
   {
     component: CNavItem,
     name: 'Data Pengajuan',
-    to: '/tabelPengajuan',
-    icon: cilBarChart,
+    to: '/dosen/tabelPengajuan',
+    icon: cilClipboard,
   }
   // {
   //   component: CNavItem,
