@@ -149,13 +149,11 @@ function TabelCRUD({}) {
       return order * a.Mata_Kuliah.localeCompare(b.Mata_Kuliah);
     } else if (sortBy === 'Hari Jadwal') {
       return order * a.Hari_Jadwal.localeCompare(b.Hari_Jadwal);
-    } else if (sortBy === 'Nama Dosen') {
-      return order * a.Nama_Dosen.localeCompare(b.Nama_Dosen);
     } else if (sortBy === 'Jam') {
       return order * a.Jam.localeCompare(b.Jam);
-    } else if (sortBy === 'Kelas') {
-      return order * a.ID_Kelas.localeCompare(b.ID_Kelas);
-    }
+    } if (sortBy === 'Kelas') {
+      return order * a.Nama_Kelas.localeCompare(b.Nama_Kelas);
+    }    
   });
 
   // Calculate the number of pages
@@ -223,7 +221,6 @@ function TabelCRUD({}) {
           <table className="tabel">
             <thead>
               <tr>
-                <th className="header-cell rata table-font">Nomor</th>
                 <th className="header-cell rata table-font">
                   <div onClick={() => handleSort('Hari Jadwal')}>
                     Hari
@@ -237,14 +234,6 @@ function TabelCRUD({}) {
                     Jam
                     <span className="sort-icon">
                       {sortBy === 'Jam' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Nama Dosen')}>
-                    Nama Dosen
-                    <span className="sort-icon">
-                      {sortBy === 'Nama Dosen' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                     </span>
                   </div>
                 </th>
@@ -270,10 +259,8 @@ function TabelCRUD({}) {
             <tbody>
             {currentData.map((item, index) => (
             <tr key={index}>
-              <td className="cell rata table-font">{index + 1}</td>
               <td className="cell rata table-font">{item.Hari_Jadwal}</td>
               <td className="cell rata table-font">{item.Jam}</td>
-              <td className="cell rata table-font">{item.Nama_Dosen}</td>
               <td className="cell rata table-font">{item.Mata_Kuliah}</td>
               <td className="cell rata table-font">{item.Nama_Kelas}</td>
               <td className="cell aksi">

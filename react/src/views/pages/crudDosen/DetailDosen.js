@@ -13,6 +13,18 @@ const DetailDosen = () => {
   useEffect(() => {
     getAllDataDosenWali();
     getAllDataKelas();
+  });
+
+
+  useEffect(() => {
+    const hasRefreshed = localStorage.getItem('hasRefreshed');
+  
+    if (hasRefreshed === 'false') {
+      window.location.reload();
+      localStorage.setItem('hasRefreshed', 'true');
+    }
+  
+    console.log('nih', hasRefreshed);
   }, []);
 
   const getAllDataDosenWali = async () => {
@@ -73,7 +85,7 @@ const DetailDosen = () => {
   };
   
   return (
-    <div className="container">
+    <div className="container-detail">
       <CRow>
         <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
           <div className="details">
@@ -130,5 +142,3 @@ const DetailDosen = () => {
 };
 
 export default DetailDosen;
-
-

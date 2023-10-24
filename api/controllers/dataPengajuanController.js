@@ -38,6 +38,21 @@ exports.getLeaveRequest = async (req, res) => {
   }
 }
 
+exports.getAllFormattedLeaveRequests = async (req, res) => {
+  try {
+    const leaveRequests = await Data_Pengajuan.getAll();
+    if (leaveRequests) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: leaveRequests
+      })
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 
 exports.createLeaveRequest = async (req, res) => {
   try {
