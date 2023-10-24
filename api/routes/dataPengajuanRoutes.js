@@ -9,6 +9,8 @@ const uploadFile = require('../middleware/multerFile');
 
 router.get('/', dataPengajuanController.getAllLeaveRequests);
 
+router.get('/formatted', dataPengajuanController.getAllFormattedLeaveRequests);
+
 router.get('/:id', dataPengajuanController.getLeaveRequest);
 
 router.patch('/update/:id', dataPengajuanController.editLeaveRequest);
