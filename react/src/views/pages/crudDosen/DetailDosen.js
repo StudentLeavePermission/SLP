@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CCol, CRow } from '@coreui/react';
-import '../../../scss/style.scss';
+import './Detail.css';
 import axios from 'axios';
 
 const DetailDosen = () => {
@@ -15,6 +15,17 @@ const DetailDosen = () => {
     getAllDataKelas();
   });
 
+
+  useEffect(() => {
+    const hasRefreshed = localStorage.getItem('hasRefreshed');
+  
+    if (hasRefreshed === 'false') {
+      window.location.reload();
+      localStorage.setItem('hasRefreshed', 'true');
+    }
+  
+    console.log('nih', hasRefreshed);
+  }, []);
 
   const getAllDataDosenWali = async () => {
     try {

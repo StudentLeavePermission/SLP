@@ -9,7 +9,7 @@ import {
   CCol,
   CRow,
 } from '@coreui/react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const EditDataDosen = () => {
   const [formData, setFormData] = useState({
@@ -21,24 +21,63 @@ const EditDataDosen = () => {
     Nama_Kelas: '',
     Password: '',
     ID_Dosen_Wali: '',
-    Status: '',
+    Status: '', // Gunakan "Status" dengan huruf besar
   });
 
   const [formErrors, setFormErrors] = useState({});
   const [showKelasProdi, setShowKelasProdi] = useState(false);
   const { key } = useParams();
+  const [isEditing, setIsEditing] = useState(false); // Menandakan apakah sedang dalam mode edit
+  const [done, setDone] = useState();
   const [dataKelas, setDataKelas] = useState([]);
+  const navigate = useNavigate();
+
+  const pilihanData = {
+    kelas: [
+      ...getNamaKelas(),
+      { value: 'lainnya', label: 'Lainnya' }, // Opsi "Lainnya"
+    ],
+  };
+
+  function getNamaKelas() {
+    const namaKelas = [];
+    for (let i = 0; i < dataKelas.length; i++) {
+      namaKelas.push({ value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas });
+    }
+    return namaKelas;
+  }
+
+  const getAllDataKelas = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-kelas');
+      setDataKelas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   useEffect(() => {
     fetchData(key);
+    setIsEditing(true);
   }, [key]);
+
+  useEffect(() => {
+    // Fetch data
+    getAllDataKelas();
+  }, []);
+
+  useEffect(() => {
+    if (done == 1) {
+      navigate('/dataDosen');
+    }
+  }, [done]);
 
   const fetchData = async (key) => {
     try {
       // Fetch data for Data_Dosen menggunakan ID yang sesuai di tabel
       const dataDosenResponse = await axios.get(`http://localhost:3000/data-dosen/get/${key}`);
       const dataDosen = dataDosenResponse.data.data;
-  
+
       if (dataDosenResponse.status === 200) {
         setFormData((prevData) => ({
           ...prevData,
@@ -51,43 +90,6 @@ const EditDataDosen = () => {
       } else {
         console.error('Gagal mengambil data dosen');
       }
-  
-      // Fetch data for Data_Kelas menggunakan ID yang sesuai di tabel
-      console.log('nyobain apa ajasii2', key);
-
-      const allKelasResponse = await axios.get('http://localhost:3000/data-kelas');
-      const allKelasData = allKelasResponse.data.data;
-
-      console.log('Data Kelas:', allKelasData);
-      let IDKelas = null;
-      console.log('nyobain apa ajasii222', key);
-
-      for (let i = 0; i < allKelasData.length; i++) {
-        const item = allKelasData[i];
-        // console.log('Data Kelas:', item.ID_Dosen_Wali);
-      
-        if (item.ID_Dosen_Wali.toString() === key.toString()) {
-          console.log('ID_Kelas:', item.id);
-          IDKelas = item.id;
-          break; 
-        }
-      }
-
-      if (IDKelas === null) {
-        console.log('Tidak ditemukan data yang sesuai dengan ID_Dosen_Wali:', key);
-      }
-
-      const kelasResponse = await axios.get(`http://localhost:3000/data-kelas/get/${IDKelas}`);
-      const kelasData = kelasResponse.data.data;
-  
-      if (kelasResponse.status === 200) {
-        setFormData((prevData) => ({
-          ...prevData,
-          Nama_Kelas: kelasData.Nama_Kelas,
-        }));
-      } else {
-        console.error('Gagal mengambil data kelas');
-      }
 
       const allDosenResponse = await axios.get('http://localhost:3000/data-dosen-wali');
       const allDosenData = allDosenResponse.data.data;
@@ -99,63 +101,73 @@ const EditDataDosen = () => {
       for (let i = 0; i < allDosenData.length; i++) {
         const indeks = allDosenData[i];
         // console.log('Data Dosen Wali:', indeks.ID_Dosen);
-      
+
         if (indeks.ID_Dosen.toString() === key.toString()) {
           console.log('ID_Dosen_Wali:', indeks.id);
           IDDosen = indeks.id;
-          break; 
+          break;
         }
       }
 
       if (IDDosen === null) {
         console.log('Tidak ditemukan data yang sesuai dengan ID_Dosen_Wali:', key);
       }
-      
-      
+
       // Fetch data for Data_Dosen_Wali menggunakan ID yang sesuai di tabel
       const dosenWaliResponse = await axios.get(`http://localhost:3000/data-dosen-wali/get/${IDDosen}`);
       const dosenWaliData = dosenWaliResponse.data.data;
-  
+
       if (dosenWaliResponse.status === 200) {
         if (dosenWaliData) {
           // Jika iya, atur status menjadi "Dosen Wali"
           setFormData((prevData) => ({
             ...prevData,
-            Status: 'Dosen Wali',
+            Status: 'Dosen Wali', // Gunakan "Status" dengan huruf besar
             Password: dosenWaliData.Password,
           }));
         } else {
           // Jika tidak, atur status menjadi "Bukan Dosen Wali"
           setFormData((prevData) => ({
             ...prevData,
-            Status: 'Bukan Dosen Wali',
+            Status: 'Bukan Dosen Wali', // Gunakan "Status" dengan huruf besar
             Password: '',
           }));
         }
       } else {
         console.error('Gagal mengambil data dosen wali');
       }
-  
+
       console.log('Data_Dosen URL:', `http://localhost:3000/data-dosen/get/${key}`);
       console.log('Data_Kelas URL:', `http://localhost:3000/data-kelas/get/${IDKelas}`);
       console.log('Data_Dosen_Wali URL:', `http://localhost:3000/data-dosen-wali/get/${IDDosen}`);
     } catch (error) {
       console.error('Terjadi kesalahan:', error);
     }
-  };  
+  };
 
   const handleStatusChange = (status) => {
     setFormData({
       ...formData,
       Status: status,
     });
-
+  
     if (status === 'Dosen Wali') {
       setShowKelasProdi(true);
     } else {
       setShowKelasProdi(false);
     }
   }
+  
+  // ...
+  
+  useEffect(() => {
+    if (formData.Status === 'Dosen Wali') {
+      setShowKelasProdi(true);
+    } else {
+      setShowKelasProdi(false);
+    }
+  }, [formData.Status]);
+  
 
   const handleChange = (name, value) => {
     setFormData({
@@ -223,11 +235,11 @@ const EditDataDosen = () => {
         for (let i = 0; i < allKelasData.length; i++) {
           const item = allKelasData[i];
           // console.log('Data Kelas:', item.ID_Dosen_Wali);
-        
+
           if (item.ID_Dosen_Wali.toString() === key.toString()) {
             console.log('ID_Kelas:', item.id);
             IDKelas = item.id;
-            break; 
+            break;
           }
         }
 
@@ -251,11 +263,11 @@ const EditDataDosen = () => {
         for (let i = 0; i < allDosenData.length; i++) {
           const indeks = allDosenData[i];
           // console.log('Data Dosen Wali:', indeks.ID_Dosen);
-        
+
           if (indeks.ID_Dosen.toString() === key.toString()) {
             console.log('ID_Dosen_Wali:', indeks.id);
             IDDosen = indeks.id;
-            break; 
+            break;
           }
         }
 
@@ -358,56 +370,51 @@ const EditDataDosen = () => {
             />
           </div>
           {showKelasProdi && (
-          <>
-            <div className="col-md-4 margin-right">
-              <label className="table-font">Kelas</label>
-              <Select
-                name="kelas"
-                value={pilihanData.kelas.find((option) => option.value === formData.kelas)}
-                onChange={(selectedOption) => {
-                  handleChange('kelas', selectedOption.value);
-                }}
-                options={pilihanData.kelas}
-                isSearchable
-                required
-              />
-              {isFormSubmitted && !formData.kelas && (
-                <div className="invalid-feedback">Mohon pilih kelas!</div>
+            <>
+              <div className="col-md-4 margin-right">
+                <label className="table-font">Kelas</label>
+                <Select
+                  name="kelas"
+                  options={pilihanData.kelas}
+                  value={pilihanData.kelas.find((option) => option.value === formData.ID_Kelas)}
+                  onChange={(selectedOption) => handleChange('kelas', selectedOption.value)}
+                  isSearchable
+                  required
+                />
+              </div>
+              {formData.kelas === 'lainnya' && (
+                <div>
+                  <CFormLabel htmlFor="KelasLainnya">Kelas Lainnya</CFormLabel>
+                  <CFormInput
+                    className="input"
+                    type="text"
+                    id="KelasLainnya"
+                    value={formData.KelasLainnya}
+                    onChange={(e) => handleChange('KelasLainnya', e.target.value)}
+                  />
+                  {formErrors.KelasLainnya && (
+                    <div className="text-danger">{formErrors.KelasLainnya}</div>
+                  )}
+                </div>
               )}
-            </div>
-            {formData.kelas === 'lainnya' && (
               <div>
-                <CFormLabel htmlFor="KelasLainnya">Kelas Lainnya</CFormLabel>
+                <CFormLabel htmlFor="Password">Password</CFormLabel>
                 <CFormInput
                   className="input"
-                  type="text"
-                  id="KelasLainnya"
-                  value={formData.KelasLainnya}
-                  onChange={(e) => handleChange('KelasLainnya', e.target.value)}
+                  type="password"
+                  id="Password"
+                  value={formData.Password}
+                  onChange={(e) => handleChange('Password', e.target.value)}
                 />
-                {formErrors.KelasLainnya && (
-                  <div className="text-danger">{formErrors.KelasLainnya}</div>
-                )}
+                {formErrors.Password && <div className="text-danger">{formErrors.Password}</div>}
               </div>
-            )}
-            <div>
-              <CFormLabel htmlFor="Password">Password</CFormLabel>
-              <CFormInput
-                className="input"
-                type="password"
-                id="Password"
-                value={formData.Password}
-                onChange={(e) => handleChange('Password', e.target.value)}
-              />
-              {formErrors.Password && <div className="text-danger">{formErrors.Password}</div>}
-            </div>
-          </>
-        )}
+            </>
+          )}
         </CCol>
       </CRow>
       <div>
-        <button type="submit" className="btn btn-primary float-end">
-          Kirim
+        <button type="submit" className="btn btn-primary">
+          {isEditing ? 'Simpan Perubahan' : 'Tambahkan'}
         </button>
       </div>
     </CForm>
