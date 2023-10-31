@@ -63,6 +63,7 @@ const FormPengajuan = React.lazy(() => import('./views/pages/formPengajuan/FormP
 const CrudDosen = React.lazy(() => import('./views/pages/crudDosen/tabelDosen'))
 const DetailDosen= React.lazy(() => import('./views/pages/crudDosen/DetailDosen'))
 const TambahDosen = React.lazy(() => import('./views/pages/crudDosen/tambahDosen'))
+const TabelImport = React.lazy(() => import('./views/pages/crudDosen/TabelImport'))
 const EditDosen = React.lazy(() => import('./views/pages/crudDosen/editDosen'))
 const VerifyPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/VerifyPengajuan'));
 const TabelPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/tabelPengajuan'));
@@ -140,6 +141,7 @@ const routes = [
   { path: '/admin/dataDosen', name: 'TabelDosen', element: CrudDosen },
   { path: '/admin/detailDosen/:key', name: 'DetailDosen', element: DetailDosen },
   { path: '/admin/tambahDosen', name: 'TambahDosen', element: TambahDosen },
+  { path: '/admin/TabelImport', name: 'TabelImport', element: TabelImport },
   { path: '/admin/editDosen/:key', name: 'EditDosen', element: EditDosen },
   { path: '/admin/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
   { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
