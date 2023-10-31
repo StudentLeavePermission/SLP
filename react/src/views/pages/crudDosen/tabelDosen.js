@@ -99,7 +99,7 @@ function TabelCRUD() {
           <CButton href={`/#/admin/TabelImport/`} className="btn-tambah table-font">
             Impor
           </CButton>
-          <CButton className="btn-tambah table-font">
+          <CButton href={`/#/admin/TabelEkspor/`} className="btn-tambah table-font">
             Ekspor
           </CButton>
           <div className="search-input-container">
