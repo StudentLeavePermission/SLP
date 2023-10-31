@@ -4,8 +4,8 @@ import $ from 'jquery';
 import 'datatables.net'; 
 import './TabelCRUD.css';
 import CIcon from '@coreui/icons-react';
-import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
-import { CButton } from '@coreui/react';
+import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, cilCloudUpload, cilCloudDownload } from '@coreui/icons';
+import { CButton, CCol, CRow } from '@coreui/react';
 import axios from 'axios';
 
 function TabelCRUD({}) {
@@ -205,20 +205,38 @@ function TabelCRUD({}) {
   // JSX untuk bagian isian tabel
   return (
     <>
-      <div className="container">
+      <div className="container-jadwal">
         <div className="table-box">
-          <CButton href={`/#/admin/tambahJadwal`} className="btn-tambah table-font">
-            + Tambah Data
-          </CButton>
-          <div className="search-input-container">
-            <input
-              type="text"
-              placeholder="Cari..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="search-input"
-            />
-            <CIcon icon={cilSearch} className="search-icon" />
+          <div className="top-table">
+            <CButton href={`/#/admin/tambahJadwal`} className="btn-tambah table-font">
+              + Tambah Data
+            </CButton>
+            <CButton href={`/#/`} className="upload" style={{ backgroundColor: '#EDEA96'}}>
+              <CCol>
+                <CIcon icon={cilCloudUpload} />
+              </CCol>
+              <CCol>
+                Upload file
+              </CCol>
+            </CButton>
+            <CButton href={`/#/`} className="upload" style={{ backgroundColor: '#EDEA96'}}>
+              <CCol>
+                <CIcon icon={cilCloudDownload} />
+              </CCol>
+              <CCol>
+                Download
+              </CCol>
+            </CButton>
+            <div className="search-input-container">
+                <input
+                  type="text"
+                  placeholder="Cari..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="search-input"
+                />
+                <CIcon icon={cilSearch} className="search-icon" />
+            </div>
           </div>
           <table className="tabel">
             <thead>
