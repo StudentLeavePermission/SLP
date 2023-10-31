@@ -110,7 +110,7 @@ exports.getClassScheduleWithTwoParams = async (req, res) => {
         Hari_Jadwal: hari,
         ID_Kelas: idKelas
       },
-      include: ['Data_Mata_Kuliah']
+      include: ['Data_Mata_Kuliah', 'Data_Dosen']
     });
 
     if (schedule) {

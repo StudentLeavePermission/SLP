@@ -72,6 +72,8 @@ const CrudJadwal = React.lazy(() => import('./views/pages/crudJadwal/TabelCRUD')
 const TambahJadwal = React.lazy(() => import('./views/pages/crudJadwal/TambahData'))
 const EditJadwal = React.lazy(() => import('./views/pages/crudJadwal/EditJadwal'))
 const DetailJadwal = React.lazy(() => import('./views/pages/crudJadwal/detailJadwal'))
+//dashboard
+const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardSiswa/dashboard'))
 
 const wrapComponent = (Component, isProtected, props) => {
   // Return a component that wraps the provided Component
@@ -155,6 +157,7 @@ const routes = [
   { path: '/admin/mahasiswa/tambah', name: 'TambahMahasiswa', element: TambahMahasiswa},
   { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
   { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
+  { path: '/mahasiswa/dashboardMahasiswa', name: 'DashboardMahasiswa', element: DashboardMahasiswa },
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
 ]
 
