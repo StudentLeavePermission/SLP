@@ -149,17 +149,17 @@ exports.createDataDosenFormatted = async (req, res) => {
     }
 
     // Data Kelas
-    const { Nama_Kelas, ID_Dosen_Wali } = req.body;
+    const { Nama_Kelas } = req.body;
 
-    if (!Nama_Kelas || !ID_Dosen_Wali) {
-      return res.status(400).json({ error: 'Nama Kelas and ID Dosen Wali are required' });
+    if (!Nama_Kelas) {
+      return res.status(400).json({ error: 'Nama Kelas is required' });
     }
 
     // Data Dosen Wali
-    const { Password, ID_Dosen } = req.body;
+    const { Password } = req.body;
 
-    if (!Password || !ID_Dosen) {
-      return res.status(400).json({ error: 'Password and ID Dosen are required' });
+    if (!Password) {
+      return res.status(400).json({ error: 'Password is required' });
     }
 
     // Simpan Data Dosen
@@ -171,24 +171,27 @@ exports.createDataDosenFormatted = async (req, res) => {
       Email_Dosen,
     });
 
-    // Simpan Data Kelas
-    const dataKelas = await Data_Kelas.post({
-      Nama_Kelas,
-      ID_Dosen_Wali,
-    });
+    // Cari ID_Dosen
+    const ID_Dosen = dataDosen.id;
 
     // Simpan Data Dosen Wali
     const dataDosenWali = await Data_Dosen_Wali.post({
       Password,
-      ID_Dosen,
+      ID_Dosen: ID_Dosen, // Menggunakan ID_Dosen yang ditemukan
+    });
+
+    // Simpan Data Kelas
+    const dataKelas = await Data_Kelas.post({
+      Nama_Kelas,
+      ID_Dosen_Wali: ID_Dosen, // Menggunakan ID_Dosen yang ditemukan
     });
 
     if (dataDosen && dataKelas && dataDosenWali) {
       res.status(201).json({
         message: 'Data Dosen Formatted created',
         data: dataDosen,
-        dataKelas: dataKelas,
         dataDosenWali: dataDosenWali,
+        dataKelas: dataKelas,
       });
     } else {
       res.status(404).json({ message: 'Data Dosen, Data Kelas, or Data Dosen Wali not found' });
@@ -198,3 +201,4 @@ exports.createDataDosenFormatted = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
