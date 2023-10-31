@@ -4,6 +4,7 @@ const basename = path.basename(__filename);
 const {mainModel} = require('../common/models');
 const Data_Dosen = new mainModel("Data_Dosen");
 const Data_Kelas = new mainModel("Data_Kelas");
+const Data_Dosen_Wali = new mainModel("Data_Dosen_Wali");
 
 // Mengambil semua data dosen
 exports.getAllDataDosen = async (req, res) => {
@@ -131,3 +132,73 @@ exports.getoneDosenFormatted = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.createDataDosenFormatted = async (req, res) => {
+  try {
+    // Data Dosen
+    const {
+      Nama_Dosen,
+      NIP,
+      Kode_Dosen,
+      InitialID,
+      Email_Dosen,
+    } = req.body;
+
+    if (!Nama_Dosen || !NIP || !Kode_Dosen || !InitialID || !Email_Dosen) {
+      return res.status(400).json({ error: 'Nama Dosen, NIP, Kode Dosen, InitialID, and Email_Dosen are required' });
+    }
+
+    // Data Kelas
+    const { Nama_Kelas } = req.body;
+
+    if (!Nama_Kelas) {
+      return res.status(400).json({ error: 'Nama Kelas is required' });
+    }
+
+    // Data Dosen Wali
+    const { Password } = req.body;
+
+    if (!Password) {
+      return res.status(400).json({ error: 'Password is required' });
+    }
+
+    // Simpan Data Dosen
+    const dataDosen = await Data_Dosen.post({
+      Nama_Dosen,
+      NIP,
+      Kode_Dosen,
+      InitialID,
+      Email_Dosen,
+    });
+
+    // Cari ID_Dosen
+    const ID_Dosen = dataDosen.id;
+
+    // Simpan Data Dosen Wali
+    const dataDosenWali = await Data_Dosen_Wali.post({
+      Password,
+      ID_Dosen: ID_Dosen, // Menggunakan ID_Dosen yang ditemukan
+    });
+
+    // Simpan Data Kelas
+    const dataKelas = await Data_Kelas.post({
+      Nama_Kelas,
+      ID_Dosen_Wali: ID_Dosen, // Menggunakan ID_Dosen yang ditemukan
+    });
+
+    if (dataDosen && dataKelas && dataDosenWali) {
+      res.status(201).json({
+        message: 'Data Dosen Formatted created',
+        data: dataDosen,
+        dataDosenWali: dataDosenWali,
+        dataKelas: dataKelas,
+      });
+    } else {
+      res.status(404).json({ message: 'Data Dosen, Data Kelas, or Data Dosen Wali not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+

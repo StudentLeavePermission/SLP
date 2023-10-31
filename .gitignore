@@ -137,3 +137,5 @@ dist
 **/config.json
 
 **/*.sql
+
+.idea

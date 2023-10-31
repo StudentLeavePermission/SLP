@@ -8,6 +8,8 @@ router.get('/', dataDosenController.getAllDataDosen);
 
 router.post('/create', dataDosenController.createDataDosen);
 
+router.post('/createformatted', dataDosenController.createDataDosenFormatted);
+
 router.delete('/delete/:id', dataDosenController.deleteDataDosen);
 
 router.patch('/patch/:id', dataDosenController.editDataDosen);
