@@ -9,6 +9,7 @@ import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, c
 const dashboardMahasiswa = () => {
     const [jadwalKelasAll, setJadwalKelasAll] = useState([]);
     const [daftarPengajuan, setDaftarPengajuan] = useState([]);
+    const [dataJadwal, setDataJadwal] = useState([]);
     const [jadwalKelas, setJadwalKelas] = useState([]);
     const [mahasiswa, setMahasiswa] = useState([]);
     const [mataKuliah, setMataKuliah] = useState([]);
@@ -31,14 +32,77 @@ const dashboardMahasiswa = () => {
         getAllClassHours();
         getAllScheduleToday();
       }, []);
+
+      function tambahIntervalWaktu(time, intervalMenit) {
+        const [jam, menit, detik] = time.split(':').map(Number);
+      
+        const totalMenit = (jam * 60) + menit;
+      
+        const totalMenitBaru = totalMenit + intervalMenit;
+      
+        const jamBaru = Math.floor(totalMenitBaru / 60);
+        const sisaMenit = totalMenitBaru % 60;
+      
+        // Format hasil baru sebagai tipe data time (HH:MM:SS)
+        const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+      
+        return waktuBaru;
+      }
+
+      function getJamPelajaran (data, id_jam){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].id == id_jam){
+            return data[i].Waktu_Mulai;
+          }
+          i++;
+        }
+        return "NULL";
+      }
+
+      function getNamaDosen (data, id_dosen){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].Data_Dosen.id == id_dosen){
+            return data[i].Data_Dosen.Nama_Dosen;
+          }
+          i++;
+        }
+        return "NULL";
+      }
+    
+      function getNamaMatkul (data, id_matkul){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].Data_Mata_Kuliah.id == id_matkul){
+            return data[i].Data_Mata_Kuliah.Nama_Mata_Kuliah;
+          }
+          i++;
+        }
+        return "NULL";
+      }
     
       const getAllScheduleToday = async () => {
         try {
             const mahasiswa = await axios.get(urlMahasiswaGetOne);
             const response = await axios.get(`http://localhost:3000/jadwal-kelas/${mahasiswa.data.data.ID_Kelas}/${hari}`);
-            console.log('ini jadwal',response.data.data);
-            setJadwalKelas(response.data.data);
-            setMataKuliah(response.data.mata_kuliah);
+            console.log('ini jadwal',response.data);
+            const dataMatkul = response.data.mata_kuliah;
+            const dataJamPelajaran = response.data.jam_pelajaran;
+            const dataDosen = response.data.dosen;
+            const formattedData = response.data.data.map((item, index) => {
+                const JamPelajaran = getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_Start)+" - "+ tambahIntervalWaktu(getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_End), 50); 
+                const namaDosen = getNamaDosen(dataDosen, item.ID_Dosen);
+                const namaMatkul = getNamaMatkul(dataMatkul, item.ID_Matkul);
+                return {
+                ...item,
+                DT_RowId: `${index + 1}`,
+                Jam: JamPelajaran,
+                Nama_Dosen: namaDosen,
+                Mata_Kuliah: namaMatkul,
+                };
+            });
+            setDataJadwal(formattedData);
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -49,7 +113,7 @@ const dashboardMahasiswa = () => {
             const jadwal = await axios.get(`http://localhost:3000/jadwal-kelas/`);
             console.log('jadwal',jadwal.data.data)
             const response = await axios.get(`http://localhost:3000/data-pengajuan/mahasiswa/${id}`);
-            console.log('pengajuan',response.data.data);
+            console.log('pengajuan',response.data);
             setDaftarPengajuan(response.data.data);
             const sakit = response.data.data.filter(item => item.Jenis_Izin === 'Sakit' && item.Status_Pengajuan === 'Accepted');
             const izin = response.data.data.filter(item => item.Jenis_Izin === 'Izin' && item.Status_Pengajuan === 'Accepted');
@@ -86,11 +150,11 @@ const dashboardMahasiswa = () => {
         }
       }
 
-      const pageNumbers = Math.ceil(jadwalKelas.length / itemsPerPage);
+      const pageNumbers = Math.ceil(dataJadwal.length / itemsPerPage);
 
       const indexOfLastItem = currentPage * itemsPerPage;
       const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-      const currentData = jadwalKelas.slice(indexOfFirstItem, indexOfLastItem);
+      const currentData = dataJadwal.slice(indexOfFirstItem, indexOfLastItem);
     
       const handleNextPage = () => {
         if (currentPage < pageNumbers) {
@@ -172,10 +236,10 @@ const dashboardMahasiswa = () => {
                         <tbody>
                             {currentData.map((item, index) => (
                                 <tr key={index}>
-                                    <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                                    <td className="cell rata table-font">{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
-                                    <td className="cell rata table-font">{jamPelajaran[item.ID_Jam_Pelajaran_Start - 1].Waktu_Mulai} - {jamPelajaran[item.ID_Jam_Pelajaran_End].Waktu_Mulai}</td>
-                                    <td className="cell rata table-font">{mataKuliah[index].Data_Dosen.Nama_Dosen}</td>
+                                    <td className="cell rata table-font">{index +1 + (currentPage - 1) * itemsPerPage}</td>
+                                    <td className="cell rata table-font">{item.Mata_Kuliah}</td>
+                                    <td className="cell rata table-font">{item.Jam}</td>
+                                    <td className="cell rata table-font">{item.Nama_Dosen}</td>
                                 </tr>
                             ))}
                         </tbody>
