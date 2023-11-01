@@ -220,7 +220,7 @@ const CustomCheckboxTable = () => {
           axios
             .post(baseURL, data)
             .then((response) => {
-              setPost(response.data);
+              //setPost(response.data);
             })
             .catch((error) => {
               console.error("Error:", error);
