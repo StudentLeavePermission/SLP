@@ -102,7 +102,7 @@ const dashboardMahasiswa = () => {
                     a
                 </div>
             </div>
-            <div className="font-header table-font">
+            <div className="font-title table-font">
                 <h2>Jadwal Kuliah Hari Ini</h2>
             </div>
             <div>

@@ -105,7 +105,9 @@ const TambahDataDosen = () => {
   function getNamaKelas() {
     const namaKelas = [];
     for (let i = 0; i < dataKelas.length; i++) {
-      namaKelas.push({ value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas });
+      if (dataKelas[i].ID_Dosen_Wali === null) {
+        namaKelas.push({ value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas });
+      }
     }
     return namaKelas;
   }
@@ -331,17 +333,7 @@ const TambahDataDosen = () => {
                   <div className="invalid-feedback">Mohon pilih kelas!</div>
                 )}
               </div>
-              <div>
-                <CFormLabel htmlFor="Password">Password</CFormLabel>
-                <CFormInput
-                  className="input"
-                  type="password"
-                  id="Password"
-                  value={formData.Password}
-                  onChange={(e) => handleChange('Password', e.target.value)}
-                />
-                {formErrors.Password && <div className="text-danger">{formErrors.Password}</div>}
-              </div>
+
             </>
           )}
         </CCol>
