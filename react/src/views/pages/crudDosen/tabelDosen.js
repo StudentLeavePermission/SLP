@@ -89,9 +89,18 @@ function TabelCRUD() {
     }
   };
 
+  const headerSection = (
+    <div className="font-title table-font">
+      <div>
+        <h2>Data Dosen</h2>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <div className="container">
+      {headerSection}
         <div className="containerTabel box-blue"></div>
         <div className="table-box">
         <CButton href={`/#/admin/tambahDosen/`} className="btn-tambah table-font">

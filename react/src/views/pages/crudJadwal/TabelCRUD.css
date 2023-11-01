@@ -105,12 +105,23 @@
     line-height: normal;
   }
 
-  .upload {
-    font-family: 'Montserrat', sans-serif; 
-    font-size: 12px;
-    color: black !important;
-    margin-left: 10px;
-    min-width: 100px;
+  .btn-imporEkspor {
+    background-color: #3C9A62 !important;
+    color: white;
+    float: left;
+    margin-left: 5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    padding-top: 12px !important;
+    width: 100px;
+    height: 40.542px;
+    flex-shrink: 0;
+    color: #FFF;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
   }
   
   /* Efek hover saat tombol dihover */
@@ -286,10 +297,11 @@
     font-size: 25px;
     font-family: 'Montserrat', sans-serif; 
   }
-  .font-header {
-    margin-left: 190px;
-    margin-top: 60px;
+  
+  .font-title {
+    margin-left: 50px;
   }
+
   .background-kuning { /* Atur warna latar belakang menjadi kuning */
     padding: 80px; /* Atur padding sesuai kebutuhan */
   }
@@ -371,8 +383,8 @@
   border-radius: 4px;
   padding: 5px;
   width: 250px;
-  height: 40px;
-  margin-left: 100px;
+  height: fit-content;
+  margin-left: 320px;
 }
 
 .search-input {
