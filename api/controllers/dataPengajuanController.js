@@ -15,6 +15,30 @@ exports.getAllLeaveRequests = async (req, res) => {
   }
 };
 
+exports.getLeaveRequestMahasiswa = async (req, res) => {
+  try {
+    const request = await Data_Pengajuan.getAll({
+      where: {
+        ID_Mahasiswa: req.params.idMahasiswa,
+      },
+    });
+
+    if (request) {
+      res.send({
+        message: "Request found successfully",
+        data: request,
+      });
+      console.log(request)
+      console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+    } else {
+      res.status(404).json({ message: "Request not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 exports.getLeaveRequest = async (req, res) => {
   try {
     const request = await Data_Pengajuan.get({
