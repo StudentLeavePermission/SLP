@@ -13,6 +13,9 @@ exports.getAllClassSchedules = async (req, res) => {
   try {
     const schedules = await Jadwal_Kelas.getAll(); // WHERE THE ERROR IS
     // res.json(schedules);
+    schedules.sort((a, b) => {
+      return a.id - b.id;
+    });
     res.send({
       message: "Schedule sent successfully",
       data: schedules
