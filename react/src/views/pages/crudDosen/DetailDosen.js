@@ -68,14 +68,9 @@ const DetailDosen = () => {
       prodi = `${combinedKelas.substring(2)} Teknik Informatika`; // Ambil 2 karakter berikutnya dan tambahkan "Teknik Informatika"
     }
   }
-
-  const getPasswordForKey = (key) => {
-    const dosenWali = dataDosenWali.find((dosen) => dosen.ID_Dosen.toString() === key);
-    return dosenWali ? dosenWali.Password : 'Not Found';
-  };
   
   return (
-    <div className="container">
+    <div className="container-detail">
       <CRow>
         <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
           <div className="details">
@@ -116,10 +111,6 @@ const DetailDosen = () => {
                   <div className="item">
                     <div className="label">Prodi</div>
                     <div className="value">: {prodi}</div>
-                  </div>
-                  <div className="item">
-                    <div className="label">Password</div>
-                    <div className="value">: {isDosenWali ? getPasswordForKey(key) : '-'}</div>
                   </div>
                 </>
               )}
