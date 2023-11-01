@@ -333,17 +333,7 @@ const TambahDataDosen = () => {
                   <div className="invalid-feedback">Mohon pilih kelas!</div>
                 )}
               </div>
-              <div>
-                <CFormLabel htmlFor="Password">Password</CFormLabel>
-                <CFormInput
-                  className="input"
-                  type="password"
-                  id="Password"
-                  value={formData.Password}
-                  onChange={(e) => handleChange('Password', e.target.value)}
-                />
-                {formErrors.Password && <div className="text-danger">{formErrors.Password}</div>}
-              </div>
+
             </>
           )}
         </CCol>

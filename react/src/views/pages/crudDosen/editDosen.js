@@ -47,39 +47,7 @@ const EditDataDosen = () => {
   useEffect(() => {
     // Fetch data
     getAllDataKelas();
-    getAllDataDosenWali();
   }, []);
-
-  const getAllDataDosenWali = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/data-dosen-wali');
-      setDataDosenWali(response.data.data);
-      console.log('Data Dosen Wali:', response.data.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-  const apiUrl = `http://localhost:3000/data-dosen/getformatted/${key}`;
-
-  useEffect(() => {
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data.data);
-        setDosen(data.data);
-        setDataKelas(data.dataKelas);
-      })
-      .catch((error) => console.error('Error fetching data:', error));
-  }, [apiUrl]);
-
-  if (!data || dataDosenWali.length === 0) {
-    return <div>Loading...</div>;
-  }
-
-  // Logika pengecekan Dosen Wali
-  const isDosenWali = dataDosenWali.some((dosenWali) => dosenWali.ID_Dosen.toString() === key);
-
-  const kelasData = dataKelas.find((kelas) => kelas.ID_Dosen_Wali !== null && kelas.ID_Dosen_Wali.toString() === key);
 
   useEffect(() => {
     if (done == 1) {
@@ -192,18 +160,6 @@ const EditDataDosen = () => {
       } else {
         console.error('Gagal mengambil data dosen wali');
       }
-      const dataKelasResponse = await axios.get(`http://localhost:3000/data-kelas/get/${IDDosen}`);
-      const dataKelas = dataKelasResponse.data.data;
-
-      if (dataKelasResponse.status === 200) {
-        if (dosenWaliData) {
-          setFormData((prevData) => ({
-            ...prevData,
-            Nama_Kelas: dataKelas.Nama_Kelas,
-          }))
-        }
-      }
-      console.log("Kelas:", formData.Nama_Kelas);
 
       console.log('Data_Dosen URL:', `http://localhost:3000/data-dosen/get/${key}`);
       console.log('Data_Kelas URL:', `http://localhost:3000/data-kelas/get/${IDDosen}`);
@@ -414,19 +370,6 @@ const EditDataDosen = () => {
                   <div className="text-danger">{formErrors.Nama_Kelas}</div>
                 )}
               </div>
-              {formData.Status === 'Dosen Wali' && (
-                <div>
-                  <CFormLabel htmlFor="Password">Password</CFormLabel>
-                  <CFormInput
-                    className="input"
-                    type="password"
-                    id="Password"
-                    value={formData.Password}
-                    onChange={(e) => handleChange('Password', e.target.value)}
-                  />
-                  {formErrors.Password && <div className="text-danger">{formErrors.Password}</div>}
-                </div>
-              )}
             </>
           )}
         </CCol>
