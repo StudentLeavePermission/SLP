@@ -101,6 +101,8 @@ exports.getClassScheduleWithTwoParams = async (req, res) => {
   try {
     const idKelas = req.params.idKelas
     const hari = req.params.hari
+    
+    const dataJamPelajaran = await Data_Jam_Pelajaran.getAll();
     const schedule = await Jadwal_Kelas.getAllWhere({
       where: {
         Hari_Jadwal: hari,
@@ -108,20 +110,31 @@ exports.getClassScheduleWithTwoParams = async (req, res) => {
       },
     });
 
-    const schedule2 = await Jadwal_Kelas.getAllInclude({
+    const dataMataKuliah = await Jadwal_Kelas.getAllInclude({
       where: {
         Hari_Jadwal: hari,
         ID_Kelas: idKelas
       },
-      include: ['Data_Mata_Kuliah', 'Data_Dosen']
+      include: ['Data_Mata_Kuliah']
+    });
+
+    const dataDosen = await Jadwal_Kelas.getAllInclude({
+      where: {
+        Hari_Jadwal: hari,
+        ID_Kelas: idKelas
+      },
+      include: ['Data_Dosen']
     });
 
     if (schedule) {
       res.send({
         message: "schedule found successfully",
         data: schedule,
-        mata_kuliah : schedule2
+        mata_kuliah : dataMataKuliah,
+        dosen : dataDosen,
+        jam_pelajaran: dataJamPelajaran,
       });
+      
       
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
     } else {
