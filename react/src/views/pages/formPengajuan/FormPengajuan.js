@@ -352,7 +352,7 @@ const CustomCheckboxTable = () => {
 
   // Fungsi untuk menangani perubahan checkbox "Pilih Semua Jadwal"
   const handleSelectAllChange = (date) => {
-    const updatedData = tableData.map((item) => {
+    const updatedData = tableData?.map((item) => {
       item.isChecked = !selectAll // Setel semua checkbox sesuai dengan nilai "Pilih Semua Jadwal"
       return item
     })
@@ -360,10 +360,10 @@ const CustomCheckboxTable = () => {
     setSelectAll(!selectAll) // Toggle nilai "Pilih Semua Jadwal"
 
     // Perbarui status checkbox sesuai dengan tanggal yang dipilih
-    const updatedDates = selectedDates.map((d) => {
+    const updatedDates = selectedDates?.map((d) => {
       if (d.date.toDateString() === date.toDateString()) {
         // Temukan tanggal yang sesuai
-        const dateData = updatedData.map((item) => item.isChecked)
+        const dateData = updatedData?.map((item) => item.isChecked)
         return { date: d.date, data: dateData }
       }
       return d
@@ -377,7 +377,7 @@ const CustomCheckboxTable = () => {
     if (!selectedDates.some((d) => d.date.toDateString() === date.toDateString())) {
       const updatedSelectedDates = [
         ...selectedDates,
-        { date, data: tableData.map((item) => item.isChecked) },
+        { date, data: tableData?.map((item) => item.isChecked) },
       ]
       setSelectedDates(updatedSelectedDates)
     }
@@ -531,7 +531,7 @@ const CustomCheckboxTable = () => {
                   <th>Jam Pelajaran</th>
                   <th>Nama Mata Kuliah</th>
                 </tr>
-                {jadwalKelas.map((item, index) => {
+                {jadwalKelas?.map((item, index) => {
                   return (
                     <tr key={index}>
                       <td>
@@ -551,7 +551,7 @@ const CustomCheckboxTable = () => {
             )}
           </thead>
           <tbody>
-            {/* {jadwalKelas.data.map((jadwal) => (
+            {/* {jadwalKelas.data?.map((jadwal) => (
                   <tr key={jadwal.id}>
                     <td>
                       <CFormCheck
@@ -593,7 +593,7 @@ const CustomCheckboxTable = () => {
               Tanggal yang Dipilih:
             </CFormLabel>
             <ul>
-              {selectedDates.map((date, index) => (
+              {selectedDates?.map((date, index) => (
                 <div key={index}>
                   <CButton
                     color="info"
@@ -622,7 +622,7 @@ const CustomCheckboxTable = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {date.data.map((isChecked, index) => {
+                        {date.data?.map((isChecked, index) => {
                           const item = tableData[index]
                           return (
                             <tr key={item.id}>
