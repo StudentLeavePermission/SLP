@@ -92,8 +92,9 @@ function TabelCRUD() {
   return (
     <>
       <div className="container">
+        <div className="containerTabel box-blue"></div>
         <div className="table-box">
-          <CButton href={`/#/admin/tambahDosen/`} className="btn-tambah table-font">
+        <CButton href={`/#/admin/tambahDosen/`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
           <CButton href={`/#/admin/TabelImport/`} className="btn-tambah table-font">
