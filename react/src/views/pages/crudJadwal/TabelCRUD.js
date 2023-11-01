@@ -205,7 +205,8 @@ function TabelCRUD({}) {
   // JSX untuk bagian isian tabel
   return (
     <>
-      <div className="container-jadwal">
+    <div className="container">
+        <div className="containerTabel box-blue"></div>
         <div className="table-box">
           <div className="top-table">
             <CButton href={`/#/admin/tambahJadwal`} className="btn-tambah table-font">
@@ -330,7 +331,8 @@ function TabelCRUD({}) {
             </button>
           </div>
         </div>
-      </div>
+        
+    </div>
     </>
   );
 }
