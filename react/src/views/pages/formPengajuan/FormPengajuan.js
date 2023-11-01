@@ -19,7 +19,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
 import { useNavigate, useParams } from 'react-router-dom'
-import { idMahasiswa } from '../login/Login'
+// import { idMahasiswa } from '../login/Login'
 
 const baseURL = "http://localhost:3000/data-pengajuan/";
 
@@ -30,7 +30,7 @@ const CustomCheckboxTable = () => {
   const [mahasiswa, setMahasiswa] = useState([]);
   const [mataKuliah, setMataKuliah] = useState([]);
   const [jamPelajaran, setJamPelajaran] = useState([]);
-  const [id, setIdMahasiswa] = useState(idMahasiswa)
+  const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs')) // fetch id mahasiswa dari session storage
   const [nama, setNama] = useState("")
   const [NIM, setNIM] = useState("")
   const [kelas, setKelas] = useState(1)
@@ -75,7 +75,8 @@ const CustomCheckboxTable = () => {
   const dayName = getDayName(selectedDate)
 
   useEffect(() => {
-    console.log('id', id)
+    setIdMahasiswa(sessionStorage.getItem('idMhs'))
+    console.log('id MAHASISWA: ', id)
 
     // Lakukan apa pun yang Anda butuhkan dengan URL ini, misalnya, permintaan API.
     console.log(urlJadwalKelasGetOne);
@@ -105,7 +106,7 @@ const CustomCheckboxTable = () => {
         setNIM(data.data.NIM);
         setKelas(data.data.ID_Kelas);
         console.log('kelasnya', data.data.ID_Kelas);
-        setIdMahasiswa(data.data.id);
+        setIdMahasiswa(data.data.id? data.data.id : id);
 
         // Setelah mendapatkan data Mahasiswa, lakukan permintaan kedua
         const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${data.data.ID_Kelas}/${hari}`;
