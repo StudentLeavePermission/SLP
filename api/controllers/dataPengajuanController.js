@@ -3,6 +3,7 @@ const path = require('path');
 const basename = path.basename(__filename);
 const {mainModel} = require('../common/models');
 const Data_Pengajuan = new mainModel("Data_Pengajuan");
+const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 
 // Get all leave requests
 exports.getAllLeaveRequests = async (req, res) => {
@@ -22,11 +23,13 @@ exports.getLeaveRequestMahasiswa = async (req, res) => {
         ID_Mahasiswa: req.params.idMahasiswa,
       },
     });
+    const jadwal = await Jadwal_Kelas.getAll();
 
     if (request) {
       res.send({
         message: "Request found successfully",
-        data: request,
+        data : request,
+        jadwal : jadwal,
       });
       console.log(request)
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");

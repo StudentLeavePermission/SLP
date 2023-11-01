@@ -14,8 +14,8 @@ const dashboardMahasiswa = () => {
     const [mahasiswa, setMahasiswa] = useState([]);
     const [mataKuliah, setMataKuliah] = useState([]);
     const [jamPelajaran, setJamPelajaran] = useState([]);
-    const [Sakit, setSakit] = useState([]);
-    const [Izin, setIzin] = useState([]);
+    const [Sakit, setSakit] = useState('');
+    const [Izin, setIzin] = useState('');
     const getDayName = (date) => {
         const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         const dayIndex = date.getDay();
@@ -81,6 +81,28 @@ const dashboardMahasiswa = () => {
         }
         return "NULL";
       }
+
+      function getJamStart (data, id_jadwal){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].id == id_jadwal){
+            return data[i].ID_Jam_Pelajaran_Start;
+          }
+          i++;
+        }
+        return "NULL";
+      }
+
+      function getJamEnd (data, id_jadwal){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].id == id_jadwal){
+            return data[i].ID_Jam_Pelajaran_End;
+          }
+          i++;
+        }
+        return "NULL";
+      }
     
       const getAllScheduleToday = async () => {
         try {
@@ -110,31 +132,30 @@ const dashboardMahasiswa = () => {
 
       const getAllLeaveRequests = async () => {
         try {
-            const jadwal = await axios.get(`http://localhost:3000/jadwal-kelas/`);
-            console.log('jadwal',jadwal.data.data)
             const response = await axios.get(`http://localhost:3000/data-pengajuan/mahasiswa/${id}`);
             console.log('pengajuan',response.data);
-            setDaftarPengajuan(response.data.data);
+            const jadwal = response.data.jadwal;
             const sakit = response.data.data.filter(item => item.Jenis_Izin === 'Sakit' && item.Status_Pengajuan === 'Accepted');
             const izin = response.data.data.filter(item => item.Jenis_Izin === 'Izin' && item.Status_Pengajuan === 'Accepted');
             console.log('Jumlah Izin:', izin);
             console.log('Jumlah Sakit:', sakit);
-            let jumlahIzin = 0;
-            izin.forEach(item => {
-                jumlahIzin += (jadwal.data.data[item.ID_Jadwal_Kelas -1].ID_Jam_Pelajaran_End - jadwal.data.data[item.ID_Jadwal_Kelas -1].ID_Jam_Pelajaran_Start +1);
-            });
-            console.log('aa:', jumlahIzin);
+            if(izin.length >0){
+                let jumlahIzin = 0;
+                izin.forEach(item => {
+                    jumlahIzin += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) +1;
+                });
+                setIzin(jumlahIzin);
+            }
 
-            let jumlahSakit = 0;
-            sakit.forEach(item => {
-                jumlahSakit += (jadwal.data.data[item.ID_Jadwal_Kelas -1].ID_Jam_Pelajaran_End - jadwal.data.data[item.ID_Jadwal_Kelas -1].ID_Jam_Pelajaran_Start +1);
-            });
-            console.log('bb:', jumlahSakit);
-            setIzin(izin);
-            setSakit(sakit);
-        
-            console.log('Jumlah Izin:', izin);
-            console.log('Jumlah Sakit:', sakit);
+            if(sakit.length >0){
+                let jumlahSakit = 0;
+                sakit.forEach(item => {
+                    jumlahSakit += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) +1;
+                });
+                setSakit(jumlahSakit);
+            }
+            
+            
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -179,7 +200,7 @@ const dashboardMahasiswa = () => {
                     <div className="d-flex justify-content-around">
                             <div className="d-flex-column justify-content-around">
                                 <div className="text-information text-blue">Jumlah Izin</div>
-                                <div className="text-information">12 Jam Pelajaran</div>
+                                <div className="text-information">{Izin} Jam Pelajaran</div>
                             </div>
                             <div className='m-auto'>
                                 <CIcon size={'3xl'}  icon={cilChartPie} />
@@ -194,7 +215,7 @@ const dashboardMahasiswa = () => {
                     <div className="d-flex justify-content-around">
                             <div className="d-flex-column justify-content-around">
                                 <div className="text-information text-blue">Jumlah sakit</div>
-                                <div className="text-information">{Sakit.length}</div>
+                                <div className="text-information">{Sakit} Jam Pelajaran</div>
                             </div>
                             <div className='m-auto'>
                                 <CIcon size={'3xl'}  icon={cilChartPie} />
