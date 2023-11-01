@@ -105,7 +105,9 @@ const TambahDataDosen = () => {
   function getNamaKelas() {
     const namaKelas = [];
     for (let i = 0; i < dataKelas.length; i++) {
-      namaKelas.push({ value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas });
+      if (dataKelas[i].ID_Dosen_Wali === null) {
+        namaKelas.push({ value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas });
+      }
     }
     return namaKelas;
   }

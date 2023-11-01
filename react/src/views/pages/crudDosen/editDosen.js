@@ -32,6 +32,78 @@ const EditDataDosen = () => {
   const [done, setDone] = useState();
   const navigate = useNavigate();
 
+  const pilihanData = {
+    kelas: getNamaKelas(),
+  };
+
+  useEffect(() => {
+    // Jika key ada dalam URL, berarti sedang dalam mode edit, maka ambil data berdasarkan key
+    if (key) {
+      fetchData(key);
+      setIsEditing(true);
+    }
+  }, [key]);
+
+  useEffect(() => {
+    // Fetch data
+    getAllDataKelas();
+    getAllDataDosenWali();
+  }, []);
+
+  const getAllDataDosenWali = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-dosen-wali');
+      setDataDosenWali(response.data.data);
+      console.log('Data Dosen Wali:', response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  const apiUrl = `http://localhost:3000/data-dosen/getformatted/${key}`;
+
+  useEffect(() => {
+    fetch(apiUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data.data);
+        setDosen(data.data);
+        setDataKelas(data.dataKelas);
+      })
+      .catch((error) => console.error('Error fetching data:', error));
+  }, [apiUrl]);
+
+  if (!data || dataDosenWali.length === 0) {
+    return <div>Loading...</div>;
+  }
+
+  // Logika pengecekan Dosen Wali
+  const isDosenWali = dataDosenWali.some((dosenWali) => dosenWali.ID_Dosen.toString() === key);
+
+  const kelasData = dataKelas.find((kelas) => kelas.ID_Dosen_Wali !== null && kelas.ID_Dosen_Wali.toString() === key);
+
+  useEffect(() => {
+    if (done == 1) {
+      navigate('/admin/dataDosen');
+    }
+  }, [done]);
+
+  const getAllDataKelas = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-kelas');
+      setDataKelas(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  function getNamaKelas() {
+    const namaKelas = [];
+    for (let i = 0; i < dataKelas.length; i++) {
+      namaKelas.push({ value: dataKelas[i].id, label: dataKelas[i].Nama_Kelas });
+    }
+    return namaKelas;
+  }
+
   const handleChange = (name, value) => {
     setFormData({
       ...formData,
@@ -63,36 +135,6 @@ const EditDataDosen = () => {
     });
   };
 
-  const handleChangeKelas = (selectedOption) => {
-    setSelectedKelas(selectedOption);
-    handleChange('Nama_Kelas', selectedOption ? selectedOption.label : '');
-  };
-
-  useEffect(() => {
-    getAllDataKelas();
-  }, []);
-
-  const getAllDataKelas = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/data-kelas');
-      const filteredDataKelas = response.data.data.filter((kelas) => kelas.ID_Dosen_Wali.toString() === key.toString());
-      setDataKelas(filteredDataKelas);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData(key);
-    setIsEditing(true);
-  }, [key]);
-
-  useEffect(() => {
-    if (done === 1) {
-      navigate('/dataDosen');
-    }
-  }, [done]);
-
   const fetchData = async (key) => {
     try {
       const dataDosenResponse = await axios.get(`http://localhost:3000/data-dosen/get/${key}`);
@@ -100,13 +142,11 @@ const EditDataDosen = () => {
 
       if (dataDosenResponse.status === 200) {
         setFormData((prevData) => ({
-          ...prevData,
           Nama_Dosen: dataDosen.Nama_Dosen,
           NIP: dataDosen.NIP,
           Kode_Dosen: dataDosen.Kode_Dosen,
           InitialID: dataDosen.InitialID,
           Email_Dosen: dataDosen.Email_Dosen,
-          kelas: dataDosen.Nama_Kelas,
         }));
       } else {
         console.error('Gagal mengambil data dosen');
@@ -139,6 +179,9 @@ const EditDataDosen = () => {
             Status: 'Dosen Wali',
             Password: dosenWaliData.Password,
           }));
+
+          // Inisialisasi selectedKelas berdasarkan nilai formData.kelas
+          setSelectedKelas(pilihanData.kelas.find((option) => option.value === formData.kelas));
         } else {
           setFormData((prevData) => ({
             ...prevData,
@@ -149,6 +192,18 @@ const EditDataDosen = () => {
       } else {
         console.error('Gagal mengambil data dosen wali');
       }
+      const dataKelasResponse = await axios.get(`http://localhost:3000/data-kelas/get/${IDDosen}`);
+      const dataKelas = dataKelasResponse.data.data;
+
+      if (dataKelasResponse.status === 200) {
+        if (dosenWaliData) {
+          setFormData((prevData) => ({
+            ...prevData,
+            Nama_Kelas: dataKelas.Nama_Kelas,
+          }))
+        }
+      }
+      console.log("Kelas:", formData.Nama_Kelas);
 
       console.log('Data_Dosen URL:', `http://localhost:3000/data-dosen/get/${key}`);
       console.log('Data_Kelas URL:', `http://localhost:3000/data-kelas/get/${IDDosen}`);
@@ -180,7 +235,7 @@ const EditDataDosen = () => {
     if (!formData.Email_Dosen) {
       errors.Email_Dosen = 'Email Dosen harus diisi.';
     }
-    
+
     if (formData.Status === 'Dosen Wali' && !formData.Password) {
       errors.Password = 'Password harus diisi.';
     }
@@ -265,7 +320,7 @@ const EditDataDosen = () => {
       alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
     }
   };
-
+  
   return (
     <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>
       <CRow>
@@ -349,14 +404,10 @@ const EditDataDosen = () => {
               <div className="col-md-4 margin-right">
                 <label className="table-font">Kelas</label>
                 <Select
-                  name="kelas"
-                  value={selectedKelas}
-                  onChange={handleChangeKelas}
-                  options={dataKelas.map((kelas) => ({
-                    value: kelas.id,
-                    label: kelas.Nama_Kelas,
-                  }))}
-                  isSearchable
+                  name="Nama_kelas"
+                  options={pilihanData.kelas}
+                  value={pilihanData.kelas.find((option) => option.value === formData.Nama_Kelas)}
+                  onChange={(selectedOption) => handleChange('Nama_Kelas', selectedOption.value)}
                   required
                 />
                 {formErrors.Nama_Kelas && (
