@@ -35,9 +35,8 @@ class mainModel {
         })
     }
 
-    getAll() {
-        return this.models.findAll({
-        },{
+    getAll(options) {
+        return this.models.findAll(options, {
             sequelize
         })
     }
