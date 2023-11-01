@@ -136,7 +136,7 @@ exports.createDataDosenWali = async (req, res) => { //sudah bisa menjadi fk di d
 
     // Lanjutkan dengan membuat Data Dosen Wali
     await Data_Dosen_Wali.post({
-      Password,
+      Password : await bcrypt.hash(Password, 10),
       ID_Dosen, // Pastikan Anda sudah mengirimkan ID_Dosen dalam permintaan POST
     });
 
