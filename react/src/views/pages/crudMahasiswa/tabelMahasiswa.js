@@ -64,7 +64,7 @@ function TabelCRUD() {
 
   // JSX for the header section
   const headerSection = (
-    <div className="font-header table-font">
+    <div className="font-title table-font">
       <div>
         <h2>Data Mahasiswa</h2>
       </div>
@@ -90,8 +90,9 @@ function TabelCRUD() {
   };
   return (
     <>
-      {headerSection}
       <div className="container">
+      {headerSection}
+        <div className="containerTabel box-blue"></div>
         <div className="table-box">
           <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
             + Tambah Data
