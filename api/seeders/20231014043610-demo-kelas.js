@@ -13,25 +13,29 @@ module.exports = {
      * }], {});
     */
     await queryInterface.bulkInsert('Data_Kelas', [{
-      Nama_Kelas: '1AD3',
+      Nama_Kelas: 'AD3',
+      Tahun_Ajaran: 2022,
       ID_Dosen_Wali: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Kelas: '1BD3',
+      Nama_Kelas: 'BD3',
+      Tahun_Ajaran: 2022,
       ID_Dosen_Wali: 2,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Kelas: '1AD4',
+      Nama_Kelas: 'AD4',
+      Tahun_Ajaran: 2022,
       ID_Dosen_Wali: 3,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Nama_Kelas: '1BD4',
+      Nama_Kelas: 'BD4',
+      Tahun_Ajaran: 2022,
       ID_Dosen_Wali: 4,
       createdAt: new Date(),
       updatedAt: new Date()

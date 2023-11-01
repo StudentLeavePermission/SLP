@@ -11,7 +11,7 @@ import {
   CRow,
 } from '@coreui/react';
 
-const TambahDataDosen = () => {
+function TambahDataDosen() {
   const [formData, setFormData] = useState({
     Nama_Dosen: '',
     NIP: '',
@@ -19,8 +19,8 @@ const TambahDataDosen = () => {
     InitialID: '',
     Email_Dosen: '',
     Nama_Kelas: '',
-    Password: '',
-    status: '',
+    Password: '', // Password akan diisi otomatis
+    status: 'Bukan Dosen Wali', // Nilai default status
   });
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -30,6 +30,24 @@ const TambahDataDosen = () => {
   const [dataKelas, setDataKelas] = useState([]);
   const [done, setDone] = useState();
   const [selectedKelas, setSelectedKelas] = useState(null);
+
+
+  // Fungsi untuk menghasilkan password otomatis
+  function generatePassword() {
+    // Bagian awal password
+    const prefix = "*Polbanjtk";
+
+    // Mendapatkan angka acak antara 1000 hingga 9999
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+
+    // Bagian akhir password
+    const suffix = "#";
+
+    // Menggabungkan semua bagian untuk membuat password
+    const password = `${prefix}${randomDigits}${suffix}`;
+
+    return password;
+  }
 
   const handleChange = (name, value) => {
     setFormData({
@@ -61,6 +79,8 @@ const TambahDataDosen = () => {
     setFormData({
       ...formData,
       status: status,
+      // Saat status berubah, reset password jika bukan "Dosen Wali"
+      Password: status === 'Dosen Wali' ? generatePassword() : '',
     });
 
     if (status === 'Dosen Wali') {
