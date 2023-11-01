@@ -212,22 +212,12 @@ function TabelCRUD({}) {
           <div className="top-table">
             <CButton href={`/#/admin/tambahJadwal`} className="btn-tambah table-font">
               + Tambah Data
+            </CButton>                     
+            <CButton href={`/#/admin/tambahJadwal`} className="btn-imporEkspor table-font">
+              Impor
             </CButton>
-            <CButton href={`/#/`} className="upload" style={{ backgroundColor: '#EDEA96'}}>
-              <CCol>
-                <CIcon icon={cilCloudUpload} />
-              </CCol>
-              <CCol>
-                Upload file
-              </CCol>
-            </CButton>
-            <CButton href={`/#/`} className="upload" style={{ backgroundColor: '#EDEA96'}}>
-              <CCol>
-                <CIcon icon={cilCloudDownload} />
-              </CCol>
-              <CCol>
-                Download
-              </CCol>
+            <CButton href={`/#/admin/tambahJadwal`} className="btn-imporEkspor table-font">
+              Ekspor
             </CButton>
             <div className="search-input-container">
                 <input
