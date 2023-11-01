@@ -12,6 +12,9 @@ module.exports = {
       Nama_Kelas: {
         type: Sequelize.STRING
       },
+      Tahun_Ajaran: {
+        type: Sequelize.INTEGER
+      },
       ID_Dosen_Wali: {
         type: Sequelize.INTEGER
       },
