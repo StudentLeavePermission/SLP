@@ -286,10 +286,11 @@
     font-size: 25px;
     font-family: 'Montserrat', sans-serif; 
   }
-  .font-header {
-    margin-left: 190px;
-    margin-top: 60px;
+  
+  .font-title {
+    margin-left: 50px;
   }
+
   .background-kuning { /* Atur warna latar belakang menjadi kuning */
     padding: 80px; /* Atur padding sesuai kebutuhan */
   }

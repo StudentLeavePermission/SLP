@@ -194,7 +194,7 @@ function TabelCRUD({}) {
 
   // JSX for the header section
   const headerSection = (
-    <div className="font-header table-font">
+    <div className="font-title table-font">
       <div>
         <h2>Data Jadwal Mata Kuliah</h2>
       </div>
@@ -206,6 +206,7 @@ function TabelCRUD({}) {
   return (
     <>
     <div className="container">
+        {headerSection}
         <div className="containerTabel box-blue"></div>
         <div className="table-box">
           <div className="top-table">
