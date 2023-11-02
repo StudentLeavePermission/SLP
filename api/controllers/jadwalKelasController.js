@@ -4,6 +4,8 @@ const {mainModel} = require('../common/models');
 const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const Data_Jam_Pelajaran = new mainModel("Data_Jam_Pelajaran");
 const Data_Kelas = new mainModel("Data_Kelas");
+const Data_Dosen = new mainModel("Data_Dosen");
+const Data_Mata_Kuliah = new mainModel("Data_Mata_Kuliah");
 
 // console.log(Jadwal_Kelas);
 // const Jadwal_Kelas = require('../models/models/jadwalKelas');
@@ -176,6 +178,37 @@ exports.getClassScheduleFormatted = async (req, res) => {
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");
     } else {
       res.status(404).json({ message: "Schedule not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+exports.toClearClassSchedule = async (req, res) => {
+  try {    
+    const dataJamPelajaran = await Data_Jam_Pelajaran.getAll();
+
+    const dataDosen = await Data_Dosen.getAll();
+
+    const dataMatkul = await Data_Mata_Kuliah.getAll();
+
+    const dataKelas = await Data_Kelas.getAll();
+
+    if (dataKelas) {
+      res.send({
+        message: "found successfully",
+        jam_pelajaran: dataJamPelajaran,
+        dosen: dataDosen,
+        mata_kuliah: dataMatkul,
+        kelas: dataKelas
+      });
+      
+      console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");
+    } else {
+      res.status(404).json({ message: "not found" });
     }
   } catch (error) {
     console.error(error);
