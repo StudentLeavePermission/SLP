@@ -184,10 +184,20 @@ function TabelImport() {
     }
   };
 
+  const downloadTemplate = () => {
+    const header = ["Hari", "Jam_Mulai", "Jam_Selesai", "Nama_Mata_Kuliah", "Nama_Dosen", "Kelas"];
+    const templateData = [header];
+    const ws = XLSX.utils.aoa_to_sheet(templateData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Template");
+    XLSX.writeFile(wb, "import-template.xlsx");
+  };
+
   return (
     <div>
       <input type="file" accept=".xlsx" onChange={handleFileChange} />
       <button onClick={handleImportData}>Impor Data</button>
+      <button onClick={downloadTemplate}>Unduh Template</button>
     </div>
   );
 }
