@@ -14,8 +14,8 @@ const dashboardMahasiswa = () => {
     const [mahasiswa, setMahasiswa] = useState([]);
     const [mataKuliah, setMataKuliah] = useState([]);
     const [jamPelajaran, setJamPelajaran] = useState([]);
-    const [Sakit, setSakit] = useState('');
-    const [Izin, setIzin] = useState('');
+    const [Sakit, setSakit] = useState(0);
+    const [Izin, setIzin] = useState(0);
     const getDayName = (date) => {
         const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         const dayIndex = date.getDay();
