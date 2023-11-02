@@ -280,9 +280,15 @@
 
     .text-information{
         font-family: 'Montserrat', sans-serif;
-        font-size: 15px;
+        font-size: 20px;
         text-align: start;
-        margin : 10px 0 10px 0;
+    }
+
+    .box-text-information{
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px 0 10px;
+      width: 100%;
     }
 
     .text-blue{
@@ -298,11 +304,11 @@
     }
 
     .box-information{
-        grid-row:1/2;
         margin-top: 30px;
         margin-bottom: 30px;
+        padding: 30px;
         width: 100%;
-        height: 200px;
+        height: 150px;
         position: relative;
         text-align: center;
         display: flex;

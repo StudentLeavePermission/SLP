@@ -193,17 +193,17 @@ const dashboardMahasiswa = () => {
         <>
         <div className='container'>
             <div className="grid-container">
-            <div className="box-information">
+                <div className="box-information">
                     <div className='box-blue box-information'>
                     </div>
                     <div className='box-white box-information'>
-                    <div className="d-flex justify-content-around">
-                            <div className="d-flex-column justify-content-around">
-                                <div className="text-information text-blue">Jumlah Izin</div>
+                      <div className="box-text-information">
+                            <div className="d-flex justify-content-center flex-column">
+                              <div className="text-information text-blue">Jumlah Izin</div>
                                 <div className="text-information">{Izin} Jam Pelajaran</div>
                             </div>
-                            <div className='m-auto'>
-                                <CIcon size={'3xl'}  icon={cilChartPie} />
+                            <div>
+                                <CIcon size={'5xl'}  icon={cilChartPie} />
                             </div>
                         </div>
                     </div>
@@ -212,13 +212,13 @@ const dashboardMahasiswa = () => {
                     <div className='box-blue box-information'>
                     </div>
                     <div className='box-white box-information'>
-                    <div className="d-flex justify-content-around">
-                            <div className="d-flex-column justify-content-around">
+                      <div className="box-text-information">
+                            <div className="d-flex justify-content-center flex-column">
                                 <div className="text-information text-blue">Jumlah sakit</div>
                                 <div className="text-information">{Sakit} Jam Pelajaran</div>
                             </div>
-                            <div className='m-auto'>
-                                <CIcon size={'3xl'}  icon={cilChartPie} />
+                            <div>
+                                <CIcon size={'5xl'}  icon={cilChartPie} />
                             </div>
                         </div>
                     </div>
