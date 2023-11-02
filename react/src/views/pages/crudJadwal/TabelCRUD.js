@@ -29,14 +29,14 @@ function TabelCRUD({}) {
         const JamPelajaran = getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_Start)+" - "+ tambahIntervalWaktu(getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_End), 50); 
         const namaDosen = getNamaDosen(dataDosen, item.ID_Dosen);
         const namaMatkul = getNamaMatkul(dataMatkul, item.ID_Matkul);
-        const namaKelas = getNamaKelas(dataKelas, item.ID_Kelas);
+        // const namaKelas = getNamaKelas(dataKelas, item.ID_Kelas);
         return {
           ...item,
           DT_RowId: `${index + 1}`,
           Jam: JamPelajaran,
           Nama_Dosen: namaDosen,
           Mata_Kuliah: namaMatkul,
-          Nama_Kelas: namaKelas
+          Nama_Kelas: item.ID_Kelas
         };
       });
       setDataJadwal(formattedData);
@@ -213,7 +213,7 @@ function TabelCRUD({}) {
             <CButton href={`/#/admin/tambahJadwal`} className="btn-tambah table-font">
               + Tambah Data
             </CButton>                     
-            <CButton href={`/#/admin/tambahJadwal`} className="btn-imporEkspor table-font">
+            <CButton href={`/#/admin/ImporTabel`} className="btn-imporEkspor table-font">
               Impor
             </CButton>
             <CButton href={`/#/admin/tambahJadwal`} className="btn-imporEkspor table-font">

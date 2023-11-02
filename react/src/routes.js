@@ -63,8 +63,10 @@ const FormPengajuan = React.lazy(() => import('./views/pages/formPengajuan/FormP
 const CrudDosen = React.lazy(() => import('./views/pages/crudDosen/tabelDosen'))
 const DetailDosen= React.lazy(() => import('./views/pages/crudDosen/DetailDosen'))
 const TambahDosen = React.lazy(() => import('./views/pages/crudDosen/tambahDosen'))
-/*const TabelImport = React.lazy(() => import('./views/pages/crudDosen/TabelImport'))
-const TabelEkspor = React.lazy(() => import('./views/pages/crudDosen/TabelEkspor'))*/
+// const TabelImport = React.lazy(() => import('./views/pages/crudDosen/TabelImport'))
+// const TabelEkspor = React.lazy(() => import('./views/pages/crudDosen/TabelEkspor'))
+const ImporTabel = React.lazy(() => import('./views/pages/crudJadwal/imporTabel'))
+const EksporTabel = React.lazy(() => import('./views/pages/crudJadwal/eksporTabel'))
 const EditDosen = React.lazy(() => import('./views/pages/crudDosen/editDosen'))
 const VerifyPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/VerifyPengajuan'));
 const TabelPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/tabelPengajuan'));
@@ -143,8 +145,10 @@ const routes = [
   { path: '/admin/dataDosen', name: 'TabelDosen', element: CrudDosen },
   { path: '/admin/detailDosen/:key', name: 'DetailDosen', element: DetailDosen },
   { path: '/admin/tambahDosen', name: 'TambahDosen', element: TambahDosen },
-  /*{ path: '/admin/TabelImport', name: 'TabelImport', element: TabelImport },
-  { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: TabelEkspor },*/
+  // { path: '/admin/TabelImport', name: 'TabelImport', element: TabelImport },
+  // { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: TabelEkspor },
+  { path: '/admin/ImporTabel', name: 'ImporTabel', element: ImporTabel },
+  { path: '/admin/EksporTabel', name: 'EksporTabel', element: EksporTabel },
   { path: '/admin/editDosen/:key', name: 'EditDosen', element: EditDosen },
   { path: '/admin/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
   { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
