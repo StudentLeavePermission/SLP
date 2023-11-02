@@ -7,6 +7,7 @@ import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, cilCloudUpload, cilCloudDownload } from '@coreui/icons';
 import { CButton, CCol, CRow } from '@coreui/react';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 function TabelCRUD({}) {
   const tableRef = useRef(null);  
@@ -201,6 +202,43 @@ function TabelCRUD({}) {
     </div>
   );
 
+  const exportToExcel = () => {
+    try {
+      if(dataJadwal){
+        const dataToExport = dataJadwal.map(item => ({
+          No: item.DT_RowId,
+          Hari: item.Hari_Jadwal,
+          Jam: item.Jam,
+          Mata_Kuliah: item.Mata_Kuliah,
+          Nama_Dosen: item.Nama_Dosen,
+          Kelas: item.Nama_Kelas,
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(dataToExport);
+
+        const columnWidths = [
+          { wch: 3},    // Lebar kolom pertama (No) 3 karakter
+          { wch: 10 },  // Lebar kolom kedua (Hari) 10 karakter
+          { wch: 20 },   // Lebar kolom ketiga (Jam) 20 karakter
+          { wch: 35 },  // Lebar kolom keempat (Mata_Kuliah) 20 karakter
+          { wch: 30 },  // Lebar kolom kelima (Nama_Dosen) 20 karakter
+          { wch: 7},    // Lebar kolom keenam (Kelas) 7 karakter
+        ];
+        
+        // Menambahkan pengaturan lebar kolom ke sheet
+        ws['!cols'] = columnWidths;
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'DataJadwal'); // Nama sheet dalam file Excel
+
+        // Simpan file Excel dengan nama tertentu (misalnya: data-jadwal.xlsx)
+        XLSX.writeFile(wb, 'data-jadwal.xlsx');
+      }
+    } catch (error){
+      console.error('Error ekspor data:', error);
+    }
+  };
+
 
   // JSX untuk bagian isian tabel
   return (
@@ -216,7 +254,7 @@ function TabelCRUD({}) {
             <CButton href={`/#/admin/ImporTabel`} className="btn-imporEkspor table-font">
               Impor
             </CButton>
-            <CButton href={`/#/admin/tambahJadwal`} className="btn-imporEkspor table-font">
+            <CButton onClick={exportToExcel} className="btn-imporEkspor table-font">
               Ekspor
             </CButton>
             <div className="search-input-container">
