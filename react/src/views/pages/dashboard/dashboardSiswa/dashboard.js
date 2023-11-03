@@ -22,7 +22,7 @@ const dashboardMahasiswa = () => {
         return days[dayIndex];
       };
     const [hari, setHari] = useState(getDayName(new Date()));
-    const [id, setIdMahasiswa] = useState(2)
+    const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs'))
     const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id}`;
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
