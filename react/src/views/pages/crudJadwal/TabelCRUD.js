@@ -4,7 +4,7 @@ import $ from 'jquery';
 import 'datatables.net'; 
 import './TabelCRUD.css';
 import CIcon from '@coreui/icons-react';
-import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, cilCloudUpload, cilCloudDownload } from '@coreui/icons';
+import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton, CCol, CRow } from '@coreui/react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
