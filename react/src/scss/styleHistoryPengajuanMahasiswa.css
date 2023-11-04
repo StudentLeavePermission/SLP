@@ -30,6 +30,23 @@
       margin: 5px 0; /* Beri sedikit margin */
     }
   }
+
+  .search-input-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    width: 250px;
+    height: 40px;
+  }
+
+  .search-input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 5px;
+  }
   
   .tabel {
       margin-top: 20px;
@@ -328,7 +345,7 @@
     .containerTabel {
         grid-row:2/2;
         width: 100%;
-        height: 400px;
+        height: 420px;
         position: relative;
         text-align: center;
         display: flex;
@@ -387,7 +404,10 @@
   .col-xs-12 {
     margin-top: 10px; /* Jarak atas antara elemen */
   }
-
+  .search-icon {
+    margin-left: 8px; /* Jarak antara ikon dan input */
+    color: #888;/* Warna ikon */
+  }
   .sort-icon {
     float: right;
     margin-left: 15px; /* Adjust the margin as needed */
@@ -416,4 +436,3 @@
     background-color: #007bff;
     color: white;
   }
-  
