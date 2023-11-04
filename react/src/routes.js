@@ -56,6 +56,9 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // SLP
 const HistoryPengajuanMahasiswa = React.lazy(() => import('./views/pages/historyPengajuanMahasiswa/historyPengajuan'))
+const DetailPengajuanMahasiswa = React.lazy(() => import('./views/pages/historyPengajuanMahasiswa/crudPengajuan/detailPengajuan'))
+const TabelPengajuanMahasiswa = React.lazy(() => import('./views/pages/historyPengajuanMahasiswa/crudPengajuan/tabelPengajuan'))
+const UpdatePengajuanMahasiswa = React.lazy(() => import('./views/pages/historyPengajuanMahasiswa/crudPengajuan/updatePengajuan'))
 const TambahMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/tambahMahasiswa.js'))
 const EditMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/EditMahasiswa'))
 const DetailMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/DetailMahasiswa'))
@@ -163,7 +166,10 @@ const routes = [
   { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
   { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
   { path: '/mahasiswa/dashboard', name: 'DashboardMahasiswa', element: DashboardMahasiswa },
-  { path: '/mahasiswa/historyPengajuan', name: 'HistoryPengajuanMahasiswa', element: HistoryPengajuanMahasiswa }
+  { path: '/mahasiswa/historyPengajuan', name: 'HistoryPengajuanMahasiswa', element: HistoryPengajuanMahasiswa },
+  { path: '/mahasiswa/Pengajuan/detail/:key', name: 'DetailPengajuanMahasiswa', element: DetailPengajuanMahasiswa },
+  { path: '/mahasiswa/Pengajuan', name: 'TabelPengajuanMahasiswa', element: TabelPengajuanMahasiswa },
+  { path: '/mahasiswa/Pengajuan/edit/:key', name: 'UpdatePengajuanMahasiswa', element: UpdatePengajuanMahasiswa }
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
 ]
 

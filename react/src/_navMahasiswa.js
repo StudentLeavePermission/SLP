@@ -18,13 +18,13 @@ const _nav = [
   {
       component: CNavGroup,
       name: 'Data Pengajuan',
-      to: '/mahasiswa/historyPengajuan',
+      to: '/mahasiswa/Pengajuan',
       icon: cibHackhands,
       items: [
         {
           component: CNavItem,
           name: 'On Progress Pengajuan',
-          to: '/mahasiswa/historyPengajuan',
+          to: '/mahasiswa/Pengajuan',
         },
         {
           component: CNavItem,
