@@ -3,6 +3,7 @@ import '../../../../src/scss/styleHistoryPengajuanMahasiswa.css';
 import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CIcon from '@coreui/icons-react';
+import { CButton } from '@coreui/react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 
 
@@ -32,19 +33,22 @@ const HistoryPengajuanMahasiswa = () => {
             const response = await axios.get(`http://localhost:3000/data-pengajuan/mahasiswa/${id}`);
             console.log('pengajuan', response.data);
             let dataPengajuan = response.data.data;
+            dataPengajuan = dataPengajuan.filter(item =>
+                item.Status_Pengajuan !== 'Delivered'
+            );
             console.log('data pengajuan', dataPengajuan);
             const jadwal = response.data.jadwal;
             while (dataPengajuan.length > 0) {
                 let idMhs = dataPengajuan[0].ID_Mahasiswa;
                 let Tanggal_Izin = dataPengajuan[0].Tanggal_Pengajuan;
                 let jenis = dataPengajuan[0].Jenis_Izin;
-                console.log('id', idMhs);
                 const formattedData = {
+                    ID : dataPengajuan[0].id,
                     Jenis: jenis,
                     Keterangan: dataPengajuan[0].Keterangan,
                     Tanggal: dataPengajuan[0].Tanggal_Pengajuan,
                     Status: dataPengajuan[0].Status_Pengajuan,
-                    JamPelajaran: getJumlahJamIzin(dataPengajuan, jadwal, dataPengajuan[0].Tanggal_Pengajuan, dataPengajuan[0].Jenis_Izin)+" "+ "Jam"
+                    JamPelajaran: getJumlahJamIzin(dataPengajuan, jadwal, dataPengajuan[0].Tanggal_Pengajuan, dataPengajuan[0].Jenis_Izin) + " " + "Jam"
                 };
                 console.log('format', formattedData);
                 setDaftarPengajuan(prevData => [...prevData, formattedData]);
@@ -91,40 +95,40 @@ const HistoryPengajuanMahasiswa = () => {
 
     const handleSort = (criteria) => {
         if (criteria === sortBy) {
-          setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
         } else {
-          setSortBy(criteria);
-          setSortOrder('asc');
+            setSortBy(criteria);
+            setSortOrder('asc');
         }
-      };
-    
-      // Function to filter data based on search text
-      const filteredData = daftarPengajuan.filter((item) =>
+    };
+
+    // Function to filter data based on search text
+    const filteredData = daftarPengajuan.filter((item) =>
         item.Jenis.toLowerCase().includes(searchText.toLowerCase()) ||
-        item.Tanggal.toString().toLowerCase().includes(searchText.toLowerCase())||
-        item.JamPelajaran.toString().toLowerCase().includes(searchText.toLowerCase())||
+        item.Tanggal.toString().toLowerCase().includes(searchText.toLowerCase()) ||
+        item.JamPelajaran.toString().toLowerCase().includes(searchText.toLowerCase()) ||
         item.Status.toLowerCase().includes(searchText.toLowerCase())
-      );
-    
-      const sortedData = [...filteredData].sort((a, b) => {
+    );
+
+    const sortedData = [...filteredData].sort((a, b) => {
         const order = sortOrder === 'asc' ? 1 : -1;
-    
+
         if (sortBy === 'Jenis') {
-          return order * a.Jenis.localeCompare(b.Jenis);
+            return order * a.Jenis.localeCompare(b.Jenis);
         } else if (sortBy === 'Tanggal') {
-          return order * a.Tanggal.toString().localeCompare(b.Tanggal.toString());
+            return order * a.Tanggal.toString().localeCompare(b.Tanggal.toString());
         } else if (sortBy === 'JP') {
-          return order * a.JamPelajaran.localeCompare(b.JamPelajaran);
+            return order * a.JamPelajaran.localeCompare(b.JamPelajaran);
         } else if (sortBy === 'Status') {
-          return order * a.Status.localeCompare(b.Status);
+            return order * a.Status.localeCompare(b.Status);
         }
-      });
+    });
 
-      const pageNumbers = Math.ceil(sortedData.length / itemsPerPage);
+    const pageNumbers = Math.ceil(sortedData.length / itemsPerPage);
 
-      const indexOfLastItem = currentPage * itemsPerPage;
-      const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-      const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
     const handleNextPage = () => {
         if (currentPage < pageNumbers) {
@@ -146,18 +150,19 @@ const HistoryPengajuanMahasiswa = () => {
 
                         </div>
                         <div className="containerTabel table-box">
-                            <div className="grid-container">
-                                <div>
-                                    <div className="search-input-container">
-                                        <input
-                                            type="text"
-                                            placeholder="Cari..."
-                                            value={searchText}
-                                            onChange={(e) => setSearchText(e.target.value)}
-                                            className="search-input"
-                                        />
-                                        <CIcon icon={cilSearch} className="search-icon" />
-                                    </div>
+                            <div className="d-flex justify-content-between">
+                                <div className="table-font">
+                                    <h2>History Pengajuan Mahasiswa</h2>
+                                </div>
+                                <div className="search-input-container">
+                                    <input
+                                        type="text"
+                                        placeholder="Cari..."
+                                        value={searchText}
+                                        onChange={(e) => setSearchText(e.target.value)}
+                                        className="search-input"
+                                    />
+                                    <CIcon icon={cilSearch} className="search-icon" />
                                 </div>
                             </div>
 
@@ -212,6 +217,11 @@ const HistoryPengajuanMahasiswa = () => {
                                             <td className="cell rata table-font">{item.Tanggal}</td>
                                             <td className="cell rata table-font">{item.JamPelajaran}</td>
                                             <td className="cell rata table-font">{item.Status}</td>
+                                            <td>
+                                                <CButton href={`/#/mahasiswa/Pengajuan/detail/${item.ID}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                                                    <CIcon icon={cilInfo} />
+                                                </CButton>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
