@@ -76,10 +76,15 @@ function TabelCRUD({}) {
     };
 
   // Function to filter data based on search text
-  const filteredData = dataKelas.filter((item) =>
-    (item.Nama_Kelas && item.Nama_Kelas.toLowerCase().includes(searchText.toLowerCase())) ||
-    (item.Tahun_Ajaran && item.Tahun_Ajaran.toLowerCase().includes(searchText.toLowerCase()))
-  );
+  const filteredData = dataKelas.filter((item) => {
+    const namaKelas = item.Nama_Kelas || '';
+    const tahunAjaran = (item.Tahun_Ajaran || '').toString(); // Ensure it's a string
+    const searchTextLower = searchText.toLowerCase();
+    return (
+      namaKelas.toLowerCase().includes(searchTextLower) ||
+      tahunAjaran.toLowerCase().includes(searchTextLower)
+    );
+  });
 
   const sortedData = [...filteredData].sort((a, b) => {
     const order = sortOrder === 'asc' ? 1 : -1;

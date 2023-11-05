@@ -67,7 +67,7 @@ const DetailKelas = () => {
               </div>
             </CCol>
           </CRow>
-          <a href={`/#/admin/dataKelas`} className="btn btn-secondary float-start">
+          <a href={`/#/admin/dataKelas`} className="btn btn-secondary float-start"style={{ marginTop: '400px' }}>
             Kembali
           </a>
         </div>
