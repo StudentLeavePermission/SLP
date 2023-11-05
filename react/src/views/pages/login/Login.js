@@ -99,7 +99,7 @@ const Login = () => {
                   idDosen = data.id;
                   console.log('iddosennnnnn', idDosen);
                   setSearchParams({ idDosen });
-                  sessionStorage.setItem('idMhs', idDosen)
+                  sessionStorage.setItem('idDosen', idDosen)
                   setRole('dosen');
                 } catch (error) {
                   console.error('Error fetching data:', error);
