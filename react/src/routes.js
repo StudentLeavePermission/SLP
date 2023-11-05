@@ -78,6 +78,10 @@ const CrudJadwal = React.lazy(() => import('./views/pages/crudJadwal/TabelCRUD')
 const TambahJadwal = React.lazy(() => import('./views/pages/crudJadwal/TambahData'))
 const EditJadwal = React.lazy(() => import('./views/pages/crudJadwal/EditJadwal'))
 const DetailJadwal = React.lazy(() => import('./views/pages/crudJadwal/detailJadwal'))
+const CrudKelas = React.lazy(() => import('./views/pages/crudKelas/tabelKelas'))
+const TambahKelas = React.lazy(() => import('./views/pages/crudKelas/tambahKelas'))
+// const EditKelas = React.lazy(() => import('./views/pages/crudKelas/editKelas'))
+// const DetailKelas = React.lazy(() => import('./views/pages/crudKelas/detailKelas'))
 //dashboard
 const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardSiswa/dashboard'))
 
@@ -169,7 +173,11 @@ const routes = [
   { path: '/mahasiswa/historyPengajuan', name: 'HistoryPengajuanMahasiswa', element: HistoryPengajuanMahasiswa },
   { path: '/mahasiswa/Pengajuan/detail/:key', name: 'DetailPengajuanMahasiswa', element: DetailPengajuanMahasiswa },
   { path: '/mahasiswa/Pengajuan', name: 'TabelPengajuanMahasiswa', element: TabelPengajuanMahasiswa },
-  { path: '/mahasiswa/Pengajuan/edit/:key', name: 'UpdatePengajuanMahasiswa', element: UpdatePengajuanMahasiswa }
+  { path: '/mahasiswa/Pengajuan/edit/:key', name: 'UpdatePengajuanMahasiswa', element: UpdatePengajuanMahasiswa },
+  { path: '/admin/dataKelas', name: 'CrudKelas', element: CrudKelas },
+  { path: '/admin/tambahKelas', name: 'TambahKelas', element: TambahKelas},
+  // { path: '/admin/editKelas/:key', name: 'EditKelas', element: EditKelas},
+  // { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: DetailKelas}
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
 ]
 
