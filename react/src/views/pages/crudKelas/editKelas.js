@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import Select from 'react-select';
 import {
   CForm,
   CFormLabel,
@@ -8,8 +9,10 @@ import {
   CCol,
   CRow,
 } from '@coreui/react';
+import './crudKelas.css';
 
-function TambahDataKelas() {
+function EditKelas() {
+  const { key } = useParams();
   const [formData, setFormData] = useState({
     Nama_Kelas: '',
     Program_Studi: '',
@@ -20,6 +23,41 @@ function TambahDataKelas() {
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    // Mengambil data kelas berdasarkan ID dari database
+    axios
+      .get(`http://localhost:3000/data-kelas/getoneformat/${key}`)
+      .then((response) => {
+        const kelasData = response.data.dataKelas;
+  
+        // Inisialisasi variabel kelas dan prodi
+        let kelas = '';
+        let prodi = '';
+  
+        if (kelasData) {
+          const nama_kelas = kelasData.Nama_Kelas;
+          const karakterArray = nama_kelas.split('');
+  
+          if (karakterArray.length >= 4) {
+            kelas = karakterArray.slice(1, 2).join('');
+            prodi = karakterArray.slice(2).join('');
+          }
+        }
+  
+        // Mengisi formulir dengan data kelas yang diambil dari database
+        setFormData({
+          Nama_Kelas: kelas,
+          Program_Studi: prodi,
+          Tahun_Ajaran: kelasData.Tahun_Ajaran,
+        });
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat mengambil data. Error: ' + error.message);
+      });
+  }, [key]);
+  
 
   const handleChange = (name, value) => {
     setFormData({
@@ -35,17 +73,17 @@ function TambahDataKelas() {
 
   useEffect(() => {
     if (done) {
-      navigate(-1); // Navigate back to the previous page
+      navigate('/admin/dataKelas'); // Navigate to the data kelas list page
     }
   }, [done, navigate]);
 
   const validateForm = () => {
     const errors = {};
-    if (formData.Nama_Kelas.length !== 1) {
-      errors.Nama_Kelas = 'Nama kelas harus terdiri dari satu karakter.';
+    if (!formData.Nama_Kelas) {
+      errors.Nama_Kelas = 'Nama harus diisi.';
     }
     if (!formData.Program_Studi) {
-      errors.Program_Studi = 'Program Studi harus terdiri dari dua karakter.';
+      errors.Program_Studi = 'Program Studi harus diisi.';
     }
     if (!formData.Tahun_Ajaran) {
       errors.Tahun_Ajaran = 'Tahun Masuk harus diisi.';
@@ -55,7 +93,7 @@ function TambahDataKelas() {
     return errors;
   };
 
-  const handleSubmit = async (event) => {
+  const updateDataKelas = async (event) => {
     event.preventDefault();
     setIsFormSubmitted(true);
 
@@ -63,11 +101,10 @@ function TambahDataKelas() {
 
     if (Object.keys(errors).length === 0) {
       try {
-        // Menggabungkan Nama Kelas dan Program Studi tanpa spasi di antaranya
         const Nama_Kelas = formData.Nama_Kelas + formData.Program_Studi;
 
-        // Kemudian mengirim Nama_Kelas yang telah digabungkan
-        await axios.post('http://localhost:3000/data-kelas/create', {
+        // Mengirim permintaan PUT untuk memperbarui data kelas
+        await axios.patch(`http://localhost:3000/data-kelas/update/${key}`, {
           Nama_Kelas: Nama_Kelas,
           Tahun_Ajaran: formData.Tahun_Ajaran,
         });
@@ -77,7 +114,7 @@ function TambahDataKelas() {
         setFormData({ Nama_Kelas: '', Program_Studi: '', Tahun_Ajaran: '' }); // Clear the form
       } catch (error) {
         console.error('Error:', error);
-        alert('Terjadi kesalahan saat menambahkan data. Error: ' + error.message);
+        alert('Terjadi kesalahan saat memperbarui data. Error: ' + error.message);
       }
     } else {
       alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
@@ -85,10 +122,10 @@ function TambahDataKelas() {
   };
 
   return (
-    <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>
+    <CForm onSubmit={updateDataKelas} style={{ padding: '20px' }}>
       <div className="header-form">
         <div>
-          <h2>Tambah Data Kelas</h2>
+          <h2>Perbarui Data Kelas</h2>
         </div>
       </div>
       <CRow>
@@ -101,7 +138,7 @@ function TambahDataKelas() {
               id="Nama_Kelas"
               value={formData.Nama_Kelas}
               onChange={(e) => handleChange('Nama_Kelas', e.target.value)}
-              maxLength="1" // Set maksimum panjang input ke 1
+              maxLength="1"
             />
             {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
           </div>
@@ -113,7 +150,6 @@ function TambahDataKelas() {
               id="Program_Studi"
               value={formData.Program_Studi}
               onChange={(e) => handleChange('Program_Studi', e.target.value)}
-              maxLength="2"
             />
             {formErrors.Program_Studi && <div className="text-danger">{formErrors.Program_Studi}</div>}
           </div>
@@ -121,13 +157,10 @@ function TambahDataKelas() {
             <CFormLabel htmlFor="Tahun_Ajaran">Tahun Masuk</CFormLabel>
             <CFormInput
               className="input"
-              type="number"
+              type="text"
               id="Tahun_Ajaran"
               value={formData.Tahun_Ajaran}
               onChange={(e) => handleChange('Tahun_Ajaran', e.target.value)}
-              min="2023"  // Ganti dengan tahun minimum yang diizinkan
-              max="2050"  // Ganti dengan tahun maksimum yang diizinkan
-              step="1"    // Langkah pertambahan 1 tahun
             />
             {formErrors.Tahun_Ajaran && <div className="text-danger">{formErrors.Tahun_Ajaran}</div>}
           </div>
@@ -145,4 +178,4 @@ function TambahDataKelas() {
   );
 }
 
-export default TambahDataKelas;
+export default EditKelas;

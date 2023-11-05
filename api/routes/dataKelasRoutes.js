@@ -17,4 +17,6 @@ router.get('/getoneformat/:id', dataKelasController.getOneClassFormated);
 
 router.delete('/delete/:id', dataKelasController.deleteClass);
 
+router.patch('/update/:id', dataKelasController.editDataKelas);
+
 module.exports = router;
