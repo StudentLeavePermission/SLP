@@ -6,7 +6,7 @@ import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, cilChartPie} from '@coreui/icons';
 
 
-const dashboardMahasiswa = () => {
+const dashboardDosen = () => {
     const [jadwalKelasAll, setJadwalKelasAll] = useState([]);
     const [daftarPengajuan, setDaftarPengajuan] = useState([]);
     const [dataJadwal, setDataJadwal] = useState([]);
@@ -15,161 +15,44 @@ const dashboardMahasiswa = () => {
     const [mataKuliah, setMataKuliah] = useState([]);
     const [jamPelajaran, setJamPelajaran] = useState([]);
     const [Sakit, setSakit] = useState(0);
-    const [Izin, setIzin] = useState(0);
+    const [JumlahMhs, setMhs] = useState(0);
+    const [NamaKelas, setNamaKelas] = useState('');
     const getDayName = (date) => {
         const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         const dayIndex = date.getDay();
         return days[dayIndex];
       };
     const [hari, setHari] = useState(getDayName(new Date()));
-    const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs'))
-    const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id}`;
+    const [id, setIdDosen] = useState(sessionStorage.getItem('idDosen'))
+    const urlDosenGetOne = `http://localhost:3000/data-dosen/getdosenclass/${id}`;
+    console.log('gatau ini bisa apa ngga', urlDosenGetOne);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
 
       useEffect(() => {
-        getAllLeaveRequests();
-        getAllClassHours();
-        getAllScheduleToday();
-      }, []);
-
-      function tambahIntervalWaktu(time, intervalMenit) {
-        const [jam, menit, detik] = time.split(':').map(Number);
-      
-        const totalMenit = (jam * 60) + menit;
-      
-        const totalMenitBaru = totalMenit + intervalMenit;
-      
-        const jamBaru = Math.floor(totalMenitBaru / 60);
-        const sisaMenit = totalMenitBaru % 60;
-      
-        // Format hasil baru sebagai tipe data time (HH:MM:SS)
-        const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
-      
-        return waktuBaru;
-      }
-
-      function getJamPelajaran (data, id_jam){
-        let i = 0;
-        while (i < data.length){
-          if (data[i].id == id_jam){
-            return data[i].Waktu_Mulai;
-          }
-          i++;
-        }
-        return "NULL";
-      }
-
-      function getNamaDosen (data, id_dosen){
-        let i = 0;
-        while (i < data.length){
-          if (data[i].Data_Dosen.id == id_dosen){
-            return data[i].Data_Dosen.Nama_Dosen;
-          }
-          i++;
-        }
-        return "NULL";
-      }
+        getAllDataDosen();
+      }, []);    
     
-      function getNamaMatkul (data, id_matkul){
-        let i = 0;
-        while (i < data.length){
-          if (data[i].Data_Mata_Kuliah.id == id_matkul){
-            return data[i].Data_Mata_Kuliah.Nama_Mata_Kuliah;
-          }
-          i++;
-        }
-        return "NULL";
-      }
-
-      function getJamStart (data, id_jadwal){
-        let i = 0;
-        while (i < data.length){
-          if (data[i].id == id_jadwal){
-            return data[i].ID_Jam_Pelajaran_Start;
-          }
-          i++;
-        }
-        return "NULL";
-      }
-
-      function getJamEnd (data, id_jadwal){
-        let i = 0;
-        while (i < data.length){
-          if (data[i].id == id_jadwal){
-            return data[i].ID_Jam_Pelajaran_End;
-          }
-          i++;
-        }
-        return "NULL";
-      }
-    
-      const getAllScheduleToday = async () => {
+      const getAllDataDosen = async () => {
         try {
-            const mahasiswa = await axios.get(urlMahasiswaGetOne);
-            const response = await axios.get(`http://localhost:3000/jadwal-kelas/${mahasiswa.data.data.ID_Kelas}/${hari}`);
-            console.log('ini jadwal',response.data);
-            const dataMatkul = response.data.mata_kuliah;
-            const dataJamPelajaran = response.data.jam_pelajaran;
-            const dataDosen = response.data.dosen;
-            const formattedData = response.data.data.map((item, index) => {
-                const JamPelajaran = getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_Start)+" - "+ tambahIntervalWaktu(getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_End), 50); 
-                const namaDosen = getNamaDosen(dataDosen, item.ID_Dosen);
-                const namaMatkul = getNamaMatkul(dataMatkul, item.ID_Matkul);
-                return {
-                ...item,
-                DT_RowId: `${index + 1}`,
-                Jam: JamPelajaran,
-                Nama_Dosen: namaDosen,
-                Mata_Kuliah: namaMatkul,
-                };
-            });
-            setDataJadwal(formattedData);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
+            const response = await axios.get(`http://localhost:3000/data-dosen/getdosenclass/${id}`);
+            console.log('dosen aja', response.data);
+            console.log('mahasiswa aja', response.data.dataMahasiswa);
+            console.log('kelas aja', response.data.dataKelas);
 
-      const getAllLeaveRequests = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3000/data-pengajuan/mahasiswa/${id}`);
-            console.log('pengajuan',response.data);
-            const jadwal = response.data.jadwal;
-            const sakit = response.data.data.filter(item => item.Jenis_Izin === 'Sakit' && item.Status_Pengajuan === 'Accepted');
-            const izin = response.data.data.filter(item => item.Jenis_Izin === 'Izin' && item.Status_Pengajuan === 'Accepted');
-            console.log('Jumlah Izin:', izin);
-            console.log('Jumlah Sakit:', sakit);
-            if(izin.length >0){
-                let jumlahIzin = 0;
-                izin.forEach(item => {
-                    jumlahIzin += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) +1;
-                });
-                setIzin(jumlahIzin);
-            }
+            // Hitung jumlah mahasiswa
+            const totalMahasiswa = response.data.dataMahasiswa.length;
+            setMhs(totalMahasiswa);
 
-            if(sakit.length >0){
-                let jumlahSakit = 0;
-                sakit.forEach(item => {
-                    jumlahSakit += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) +1;
-                });
-                setSakit(jumlahSakit);
-            }
-            
-            
+            // Ambil Nama_Kelas
+            const NamaKelas = response.data.dataNamaKelas;
+            setNamaKelas(NamaKelas);
+            console.log('bener ga nih kelasnya', NamaKelas);
         } catch (error) {
-          console.error('Error fetching data:', error);
+            console.error('Error fetching data:', error);
         }
       }
     
-      const getAllClassHours = async () => {
-        try {
-          const response = await axios.get('http://localhost:3000/data-jam-pelajaran');
-          setJamPelajaran(response.data.data);
-          console.log('hoii', response.data.data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
 
       const pageNumbers = Math.ceil(dataJadwal.length / itemsPerPage);
 
@@ -199,8 +82,8 @@ const dashboardMahasiswa = () => {
                     <div className='box-white box-information'>
                       <div className="box-text-information">
                             <div className="d-flex justify-content-center flex-column">
-                              <div className="text-information text-blue">Jumlah Izin</div>
-                                <div className="text-information">{Izin} Jam Pelajaran</div>
+                              <div className="text-information text-blue">Jumlah Mahasiswa {NamaKelas && `${NamaKelas}`}</div>
+                              <div className="text-information"> {JumlahMhs} Mahasiswa</div>
                             </div>
                             <div>
                                 <CIcon size={'5xl'}  icon={cilChartPie} />
@@ -214,8 +97,8 @@ const dashboardMahasiswa = () => {
                     <div className='box-white box-information'>
                       <div className="box-text-information">
                             <div className="d-flex justify-content-center flex-column">
-                                <div className="text-information text-blue">Jumlah sakit</div>
-                                <div className="text-information">{Sakit} Jam Pelajaran</div>
+                                <div className="text-information text-blue">Jumlah Mahasiswa izin / sakit terbanyak</div>
+                                <div className="text-information"> Mahasiswa</div>
                             </div>
                             <div>
                                 <CIcon size={'5xl'}  icon={cilChartPie} />
@@ -236,22 +119,27 @@ const dashboardMahasiswa = () => {
                         <table className="tabel">
                         <thead>
                             <tr>
-                            <th className="header-cell rata table-font">Nomor</th>
-                            <th className="header-cell rata table-font">
-                                <div>
-                                Mata Kuliah
-                                </div>
-                            </th>
-                            <th className="header-cell rata table-font">
-                                <div>
-                                    Waktu
-                                </div>
-                            </th>
-                            <th className="header-cell rata table-font">
-                                <div>
-                                    Dosen
-                                </div>
-                            </th>
+                              <th className="header-cell rata table-font">Nomor</th>
+                              <th className="header-cell rata table-font">
+                                  <div>
+                                  Tanggal
+                                  </div>
+                              </th>
+                              <th className="header-cell rata table-font">
+                                  <div>
+                                      NIM
+                                  </div>
+                              </th>
+                              <th className="header-cell rata table-font">
+                                  <div>
+                                      Nama Mahasiswa
+                                  </div>
+                              </th>
+                              <th className="header-cell rata table-font">
+                                  <div>
+                                      Keterangan
+                                  </div>
+                              </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -304,4 +192,4 @@ const dashboardMahasiswa = () => {
     );
 
 };
-export default dashboardMahasiswa;
+export default dashboardDosen;
