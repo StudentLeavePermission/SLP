@@ -180,6 +180,8 @@ const routes = [
   { path: '/admin/tambahKelas', name: 'TambahKelas', element: TambahKelas},
   { path: '/admin/editKelas/:key', name: 'EditKelas', element: EditKelas},
   { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: DetailKelas}
+
+  // Untuk route yang di-proteksi, berikut definisinya:
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
 ]
 
