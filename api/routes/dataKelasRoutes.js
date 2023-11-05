@@ -9,6 +9,12 @@ router.get('/get/:id', dataKelasController.getOneDataKelas);
 
 router.post('/create', dataKelasController.createDataKelas);
 
-router.patch('/patch/:id', dataKelasController.editDataKelas);
+// router.patch('/patch/:id', dataKelasController.editDataKelas);
+
+router.get('/getallformat', dataKelasController.getAllClassFormated);
+
+router.get('/getoneformat/:id', dataKelasController.getOneClassFormated);
+
+router.delete('/delete/:id', dataKelasController.deleteClass);
 
 module.exports = router;
