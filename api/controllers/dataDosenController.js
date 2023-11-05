@@ -116,7 +116,32 @@ exports.getoneDosenFormatted = async (req, res) => {
       where: { id: id },
     });
 
-    const dataKelas = await Data_Kelas.getAll();
+    const classes = await Data_Kelas.getAll();
+    const currentYear = new Date().getFullYear();
+
+    // Ubah format setiap kelas
+    const dataKelas = classes.map((kelas) => {
+      let angka_kelas;
+      if (new Date().getMonth() >= 7) {
+        angka_kelas = currentYear - kelas.Tahun_Ajaran + 1;
+      } else {
+        angka_kelas = currentYear - kelas.Tahun_Ajaran;
+      }
+
+      return {
+        id: kelas.id,
+        Nama_Kelas: `${angka_kelas}${kelas.Nama_Kelas}`,
+        Tahun_Ajaran: kelas.Tahun_Ajaran,
+        ID_Dosen_Wali: kelas.ID_Dosen_Wali,
+        createdAt: kelas.createdAt,
+        updatedAt: kelas.updatedAt
+      };
+    });
+
+    // res.send({
+    //   message: "Classes sent successfully",
+    //   data: formattedClasses
+    // });
 
     if (dataDosen) {
       res.send({
