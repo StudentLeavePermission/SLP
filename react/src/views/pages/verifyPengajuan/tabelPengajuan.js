@@ -1,31 +1,110 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import 'datatables.net-dt/css/jquery.dataTables.css'; // Import DataTables CSS
-import $ from 'jquery'; // Import jQuery
-import 'datatables.net'; // Import DataTables
-// import './tabelPengajuan.css'; // Import your CSS file
+import $ from 'jquery'; 
+import 'datatables.net'; 
+import './tabelPengajuan.css';
 import CIcon from '@coreui/icons-react';
-import { cilInfo, cilTrash, cilPencil } from '@coreui/icons';
-import axios from "axios";
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCol,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableHead,
-  CTableRow,
-  CTableDataCell,
-} from '@coreui/react'
-import { DocsExample } from 'src/components'
-import avatar1 from 'src/assets/images/avatars/1.jpg';
-import avatar2 from 'src/assets/images/avatars/2.jpg';
+import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
+import { CButton } from '@coreui/react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const TabelPengajuan = () => {
-  const tableRef = useRef(null);
+function TabelPengajuan() {
+  const tableRef = useRef(null);  
+  const [data, setData] = useState([]);
+  const nav = useNavigate();
 
+  useEffect(() => {
+    getAllLeaveRequests();
+  }, []);
+
+  const getAllLeaveRequests = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/data-pengajuan');
+      console.log(response.data);
+      setData(response.data);
+      if (response.status === 200) {
+        console.log('Data yang telah diambil dari server:');
+        console.log(data);
+      } else {
+        console.error('Gagal mengambil data pengajuan');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  // function tambahIntervalWaktu(time, intervalMenit) {
+  //   const [jam, menit, detik] = time.split(':').map(Number);
+  
+  //   const totalMenit = (jam * 60) + menit;
+  
+  //   const totalMenitBaru = totalMenit + intervalMenit;
+  
+  //   const jamBaru = Math.floor(totalMenitBaru / 60);
+  //   const sisaMenit = totalMenitBaru % 60;
+  
+  //   // Format hasil baru sebagai tipe data time (HH:MM:SS)
+  //   const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+  
+  //   return waktuBaru;
+  // }
+
+  // function getNIM (data, id){
+  //   let i = 0;
+  //   while (i < data.length){
+  //     if (data[i].id == id){
+  //       return data[i].id;
+  //     }
+  //     i++;
+  //   }
+  //   return "NULL";
+  // } 
+
+  // function getJamPelajaran (data, id_jam){
+  //   let i = 0;
+  //   while (i < data.length){
+  //     if (data[i].id == id_jam){
+  //       return data[i].Waktu_Mulai;
+  //     }
+  //     i++;
+  //   }
+  //   return "NULL";
+  // }
+
+  // function getNamaDosen (data, id_dosen){
+  //   let i = 0;
+  //   while (i < data.length){
+  //     if (data[i].Data_Dosen.id == id_dosen){
+  //       return data[i].Data_Dosen.Nama_Dosen;
+  //     }
+  //     i++;
+  //   }
+  //   return "NULL";
+  // }
+
+  // function getNamaMatkul (data, id_matkul){
+  //   let i = 0;
+  //   while (i < data.length){
+  //     if (data[i].Data_Mata_Kuliah.id == id_matkul){
+  //       return data[i].Data_Mata_Kuliah.Nama_Mata_Kuliah;
+  //     }
+  //     i++;
+  //   }
+  //   return "NULL";
+  // }
+
+  // function getNamaKelas (data, id_kelas){
+  //   let i = 0;
+  //   while (i < data.length){
+  //     if (data[i].id == id_kelas){
+  //       return data[i].Nama_Kelas;
+  //     }
+  //     i++;
+  //   }
+  //   return "NULL";
+  // }
+  
   // useEffect(() => {
   //   // Mengatur opsi bahasa DataTables
   //   $.extend($.fn.dataTable.defaults, {
@@ -36,185 +115,250 @@ const TabelPengajuan = () => {
   //       },
   //     },
   //   });
+  // }, [data]);
 
-  //   // Inisialisasi DataTables pada tabel menggunakan ref
-  //   const dataTable = $(tableRef.current).DataTable({
-  //     paging: true, // Aktifkan paginasi
-  //     searching: true, // Aktifkan pencarian
-  //     lengthChange: false, // Sembunyikan dropdown "Show [X] entries"
-  //     pageLength: 5, // Set panjang halaman default menjadi 5 entri per halaman
-  //     // Konfigurasi DataTables lainnya
-  //   });
+  const [form, setForm] = useState({}); // Form data
+  const [detailItem, setDetailItem] = useState(null); // To display details
+  const [editIndex, setEditIndex] = useState(-1); // Index of the data being edited
+  const [sortBy, setSortBy] = useState('Nomor');
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [searchText, setSearchText] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
-  //   return () => {
-  //     // Hapus DataTables saat komponen unmount
-  //     dataTable.destroy();
-  //   };
-  // }, []);
+  // const handleSort = (criteria) => {
+  //   if (criteria === sortBy) {
+  //     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  //   } else {
+  //     setSortBy(criteria);
+  //     setSortOrder('asc');
+  //   }
+  // };
 
-  // const [data, setData] = useState([
-  //   {
-  //     key: '1',
-  //     nip: '197312271999031003',
-  //     nama: 'Ade Chandra Nugraha, S.Si., M.T.',
-  //     id: 'AD',
-  //     kode: 'KO001N',
-  //     email: 'chandra@jtk.polban.ac.id',
-  //     status: 'Bukan Dosen Wali',
-  //     kelas: null,
-  //     prodi: null,
-  //     image: avatar2,
-  //   },
-  //   {
-  //     key: '2',
-  //     nip: '198903252019032023',
-  //     nama: 'Sri Ratna Wulan, S.Pd., M.T.',
-  //     id: 'SW',
-  //     kode: 'KO076N',
-  //     email: 'sri.ratna@jtk.polban.ac.id',
-  //     status: 'Dosen Wali',
-  //     kelas: '2A',
-  //     prodi: 'D3 Teknik Informatika',
-  //     image: avatar1,
-  //   },
-  // ]);
-
-  // const [data, setData] = useState([]);
-
-  const [data, setData] = useState([]);
-
-  const nav = useNavigate();
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3000/data-pengajuan/`);
-      console.log(response.data);
-      setData(response.data); // Ambil data dari response
-
-      if (response.status === 200) {
-        console.log('Data yang telah diambil dari server:');
-        // Atur formData dengan data dari database
-        // setData({
-        //   ID_Mahasiswa: data.ID_Mahasiswa,
-        //   Keterangan: data.Keterangan,
-        //   Jenis_Izin: data.Jenis_Izin,
-        //   Tanggal_Pengajuan: data.Tanggal_Pengajuan,
-        //   Tanggal_Izin: data.Tanggal_Izin,
-        //   ID_Jadwal_Kelas: data.ID_Jadwal_Kelas,
-        //   File_Pengajuan: data.File_Pengajuan,
-        //   Status_Pengajuan: data.Status_Pengajuan,
-        //   Alasan_Penolakan: data.Alasan_Penolakan
-        // });
-        // setData(response.data.data);
-        console.log(data);
-        // setSelectedDate(data.Tanggal_Izin);
-      } else {
-        console.error('Gagal mengambil data pengajuan');
-      }
-    } catch (error) {
-      console.error('Terjadi kesalahan:', error);
-    }
-  };
-
-  const navigateToVerification = (key) => {
-    console.log("ID: "+key);
-    nav(`../verifyPengajuan/${key}`);
-  };
-
-  // JSX for the header section
-  // const headerSection = (
-  //   <div className="font-header table-font">
-  //     <div>
-  //       <h2>Data Pengajuan</h2>
-  //     </div>
-  //   </div>
+  // // Function to filter data based on search text
+  // const filteredData = data.filter((item) =>
+  //   item.Hari_Jadwal.toLowerCase().includes(searchText.toLowerCase()) ||
+  //   item.Nama_Dosen.toLowerCase().includes(searchText.toLowerCase()) ||
+  //   item.Mata_Kuliah.toLowerCase().includes(searchText.toLowerCase())
   // );
 
-  // JSX for the container and table-box
-  const mainSection = (
-    <div className="container">
-      <div className="table-box">
-        {/* <CButton href="/#/tambahDosen/" onClick={tambahData} color="primary" className="btn-tambah table-font"> */}
-          {/* + Tambah Data */}
-        {/* </CButton> */}
-        {/* <CButton color="info" className="btn-eksport table-font">Eksport</CButton> */}
-        {/* <CButton color="info" className="btn-impor table-font">Import</CButton> */}
-        <CTable ref={tableRef} className="tabel">
-          <CTableHead>
-            <CTableRow>
-              <CTableDataCell className="header-cell rata table-font">Nomor</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">NIM</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Nama Lengkap</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Keterangan</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Jenis Izin</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Tanggal Pengajuan</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Tanggal Izin</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Jam Izin</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">File Pengajuan</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Status Pengajuan</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Alasan Penolakan</CTableDataCell>
-              <CTableDataCell className="header-cell rata table-font">Aksi</CTableDataCell>
-            </CTableRow>
-          </CTableHead>
-          <CTableBody>
-            {data.map((item) => (
-              <CTableRow key={item.id}>
-                <CTableDataCell className="cell rata table-font">{item.id}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.id}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.id}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.Keterangan}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.Jenis_Izin}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.Tanggal_Pengajuan}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.Tanggal_Izin}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.Jam_Izin}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.File_Pengajuan}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.Status_Pengajuan}</CTableDataCell>
-                <CTableDataCell className="cell rata table-font">{item.Alasan_Penolakan}</CTableDataCell>
-                <CTableDataCell className="cell aksi">
-                  <CButton onClick={() => navigateToVerification(item.id)} color="info" className="margin-button">
-                    <CIcon icon={cilInfo} />
-                  </CButton>
-                  <CButton to={`/editDosen/${item.id}`}>
-                    <CIcon icon={cilPencil} />
-                  </CButton>
-                  <CButton color="danger" onClick={() => hapusData(index)}>
-                    <CIcon icon={cilTrash} />
-                  </CButton>
-                </CTableDataCell>
-              </CTableRow>
-            ))}
-          </CTableBody>
-        </CTable>
+  // const sortedData = [...filteredData].sort((a, b) => {
+  //   const order = sortOrder === 'asc' ? 1 : -1;
+
+  //   if (sortBy === 'Mata Kuliah') {
+  //     return order * a.Mata_Kuliah.localeCompare(b.Mata_Kuliah);
+  //   } else if (sortBy === 'Hari Jadwal') {
+  //     return order * a.Hari_Jadwal.localeCompare(b.Hari_Jadwal);
+  //   } else if (sortBy === 'Nama Dosen') {
+  //     return order * a.Nama_Dosen.localeCompare(b.Nama_Dosen);
+  //   } else if (sortBy === 'Jam') {
+  //     return order * a.Jam.localeCompare(b.Jam);
+  //   } else if (sortBy === 'Kelas') {
+  //     return order * a.ID_Kelas.localeCompare(b.ID_Kelas);
+  //   }
+  // });
+
+  // // Calculate the number of pages
+  // const pageNumbers = Math.ceil(sortedData.length / itemsPerPage);
+
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
+
+  // const handleNextPage = () => {
+  //   if (currentPage < pageNumbers) {
+  //     setCurrentPage(currentPage + 1);
+  //   }
+  // };
+
+  // const handlePreviousPage = () => {
+  //   if (currentPage > 1) {
+  //     setCurrentPage(currentPage - 1);
+  //   }
+  // };
+
+  // // Function to delete data
+  // const hapusData = async (id) => {
+  //   const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
+
+  //   if (confirmation) {
+  //     try {
+  //       await axios.delete(`http://localhost:3000/jadwal-kelas/delete/${id}`);
+  //       const newData = data.filter((item) => item.id !== id);
+  //       setdata(newData);
+  //     } catch (error) {
+  //       console.error('Error deleting data:', error);
+  //     }
+  //   }
+  // };
+
+  // JSX for the header section
+  const headerSection = (
+    <div className="font-header table-font">
+      <div>
+        <h2>Data Jadwal Mata Kuliah</h2>
       </div>
     </div>
   );
+
+
+  // JSX untuk bagian isian tabel
   return (
     <>
-      {/* {headerSection} */}
-      {mainSection}
+      <div className="container">
+        <div className="table-box">
+          <div className="search-input-container">
+            <input
+              type="text"
+              placeholder="Cari..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className="search-input"
+            />
+            <CIcon icon={cilSearch} className="search-icon" />
+          </div>
+          <table className="tabel">
+            <thead>
+              <tr>
+                <th className="header-cell rata table-font">Nomor</th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('NIM')}>
+                    NIM
+                    <span className="sort-icon">
+                      {sortBy === 'NIM' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Nama Lengkap')}>
+                    Nama Lengkap
+                    <span className="sort-icon">
+                      {sortBy === 'Nama Lengkap' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Keterangan')}>
+                    Keterangan
+                    <span className="sort-icon">
+                      {sortBy === 'Keterangan' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Jenis Izin')}>
+                    Jenis Izin
+                    <span className="sort-icon">
+                      {sortBy === 'Jenis Izin' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Tanggal Pengajuan')}>
+                    Tanggal Pengajuan
+                    <span className="sort-icon">
+                      {sortBy === 'Tanggal Pengajuan' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Tanggal Izin')}>
+                    Tanggal Izin
+                    <span className="sort-icon">
+                      {sortBy === 'Tanggal Izin' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Jam Izin')}>
+                    Jam Izin
+                    <span className="sort-icon">
+                      {sortBy === 'Jam Izin' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('File Pengajuan')}>
+                    File Pengajuan
+                    <span className="sort-icon">
+                      {sortBy === 'File Pengajuan' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Status Pengajuan')}>
+                    Status Pengajuan
+                    <span className="sort-icon">
+                      {sortBy === 'Status Pengajuan' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+            {data.map((item, index) => (
+            <tr key={index}>
+              <td className="cell rata table-font">{index + 1}</td>
+              <td className="cell rata table-font">{item.ID_Mahasiswa}</td>
+              <td className="cell rata table-font">{item.ID_Mahasiswa}</td>
+              <td className="cell rata table-font">{item.Keterangan}</td>
+              <td className="cell rata table-font">{item.Jenis_Izin}</td>
+              <td className="cell rata table-font">{item.Tanggal_Pengajuan}</td>
+              <td className="cell rata table-font">{item.Tanggal_Izin}</td>
+              <td className="cell rata table-font">{item.ID_Jadwal_Kelas}</td>
+              <td className="cell rata table-font">{item.File_Pengajuan}</td>
+              <td className="cell rata table-font">{item.Status_Pengajuan}</td>
+              <td className="cell aksi">
+                <CButton href={`/#/dosen/verifyPengajuan/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                  <CIcon icon={cilInfo} />
+                </CButton>                
+                <CButton href={``} style={{ backgroundColor: 'transparent', color: 'black' }} >
+                    <CIcon icon={cilPencil} />
+                </CButton>
+                <CButton onClick={''} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                  <CIcon icon={cilTrash} />
+                </CButton>
+              </td>
+            </tr>
+          ))}
+            </tbody>
+          </table>
+          <div className="pagination">
+            <button
+              className="btn-pagination"
+              // onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+            >
+              {'<'}
+            </button>
+            {/* {Array.from({ length: pageNumbers }, (_, i) => {
+              const pageNumber = i + 1;
+              const isActive = pageNumber === currentPage;
+
+              return (
+                <button
+                  key={i}
+                  className={`btn-pagination ${isActive ? 'active' : ''}`}
+                  onClick={() => setCurrentPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              );
+            })} */}
+
+            <button
+              className="btn-pagination"
+              // onClick={handleNextPage}
+              // disabled={currentPage === pageNumbers}
+            >
+              {'>'}
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
 
-const Validation = () => {
-  return (
-    <CRow>
-      <CCol xs={12}>
-        <CCard className="mb-4">
-          <CCardBody>
-            <strong className="table-font-judul fs-5">Tabel Pengajuan</strong>
-            <DocsExample href="forms/validation">
-              <TabelPengajuan />
-            </DocsExample>
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow>
-  )
-}
-
-export default Validation;
+export default TabelPengajuan;
