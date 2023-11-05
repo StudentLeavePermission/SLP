@@ -216,7 +216,7 @@ function TambahDataDosen() {
                 if (dosenResponse.status === 201) {
                   console.log('Data Dosen berhasil ditambahkan:', dosenResponse.data);
                   alert('Data Dosen berhasil ditambahkan!');
-                  navigate('/dataDosen');
+                  navigate('/admin/dataDosen');
                 } else {
                   console.error('Gagal menambahkan data Dosen:', dosenResponse.data.error);
                   alert('Gagal menambahkan data Dosen. Error: ' + dosenResponse.data.error);
@@ -235,7 +235,7 @@ function TambahDataDosen() {
             alert('Data Kelas berhasil ditambahkan!');
 
             // Redirect to the dataDosen route
-            navigate('/dataDosen');
+            navigate('/admin/dataDosen');
           }
         } else {
           console.error('Gagal menambahkan data Dosen:', dosenResponse.data.error);
