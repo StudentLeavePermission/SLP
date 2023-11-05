@@ -55,6 +55,10 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // SLP
+const HistoryPengajuanMahasiswa = React.lazy(() => import('./views/pages/historyPengajuanMahasiswa/historyPengajuan'))
+const DetailPengajuanMahasiswa = React.lazy(() => import('./views/pages/historyPengajuanMahasiswa/crudPengajuan/detailPengajuan'))
+const TabelPengajuanMahasiswa = React.lazy(() => import('./views/pages/historyPengajuanMahasiswa/crudPengajuan/tabelPengajuan'))
+const UpdatePengajuanMahasiswa = React.lazy(() => import('./views/pages/historyPengajuanMahasiswa/crudPengajuan/updatePengajuan'))
 const TambahMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/tambahMahasiswa.js'))
 const EditMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/EditMahasiswa'))
 const DetailMahasiswa = React.lazy(() => import('./views/pages/crudMahasiswa/DetailMahasiswa'))
@@ -63,8 +67,10 @@ const FormPengajuan = React.lazy(() => import('./views/pages/formPengajuan/FormP
 const CrudDosen = React.lazy(() => import('./views/pages/crudDosen/tabelDosen'))
 const DetailDosen= React.lazy(() => import('./views/pages/crudDosen/DetailDosen'))
 const TambahDosen = React.lazy(() => import('./views/pages/crudDosen/tambahDosen'))
-const TabelImport = React.lazy(() => import('./views/pages/crudDosen/TabelImport'))
-const TabelEkspor = React.lazy(() => import('./views/pages/crudDosen/TabelEkspor'))
+// const TabelImport = React.lazy(() => import('./views/pages/crudDosen/TabelImport'))
+// const TabelEkspor = React.lazy(() => import('./views/pages/crudDosen/TabelEkspor'))
+const ImporTabel = React.lazy(() => import('./views/pages/crudJadwal/imporTabel'))
+// const EksporTabel = React.lazy(() => import('./views/pages/crudJadwal/eksporTabel'))
 const EditDosen = React.lazy(() => import('./views/pages/crudDosen/editDosen'))
 const VerifyPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/VerifyPengajuan'));
 const TabelPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/tabelPengajuan'));
@@ -74,6 +80,7 @@ const EditJadwal = React.lazy(() => import('./views/pages/crudJadwal/EditJadwal'
 const DetailJadwal = React.lazy(() => import('./views/pages/crudJadwal/detailJadwal'))
 //dashboard
 const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardSiswa/dashboard'))
+
 
 const wrapComponent = (Component, isProtected, props) => {
   // Return a component that wraps the provided Component
@@ -95,7 +102,6 @@ const wrapComponent = (Component, isProtected, props) => {
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/mahasiswa/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/dosen/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
@@ -144,8 +150,10 @@ const routes = [
   { path: '/admin/dataDosen', name: 'TabelDosen', element: CrudDosen },
   { path: '/admin/detailDosen/:key', name: 'DetailDosen', element: DetailDosen },
   { path: '/admin/tambahDosen', name: 'TambahDosen', element: TambahDosen },
-  { path: '/admin/TabelImport', name: 'TabelImport', element: TabelImport },
-  { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: TabelEkspor },
+  // { path: '/admin/TabelImport', name: 'TabelImport', element: TabelImport },
+  // { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: TabelEkspor },
+  { path: '/admin/ImporTabel', name: 'ImporTabel', element: ImporTabel },
+  // { path: '/admin/EksporTabel', name: 'EksporTabel', element: EksporTabel },
   { path: '/admin/editDosen/:key', name: 'EditDosen', element: EditDosen },
   { path: '/admin/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
   { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
@@ -157,7 +165,11 @@ const routes = [
   { path: '/admin/mahasiswa/tambah', name: 'TambahMahasiswa', element: TambahMahasiswa},
   { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
   { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
-  { path: '/mahasiswa/dashboardMahasiswa', name: 'DashboardMahasiswa', element: DashboardMahasiswa },
+  { path: '/mahasiswa/dashboard', name: 'DashboardMahasiswa', element: DashboardMahasiswa },
+  { path: '/mahasiswa/historyPengajuan', name: 'HistoryPengajuanMahasiswa', element: HistoryPengajuanMahasiswa },
+  { path: '/mahasiswa/Pengajuan/detail/:key', name: 'DetailPengajuanMahasiswa', element: DetailPengajuanMahasiswa },
+  { path: '/mahasiswa/Pengajuan', name: 'TabelPengajuanMahasiswa', element: TabelPengajuanMahasiswa },
+  { path: '/mahasiswa/Pengajuan/edit/:key', name: 'UpdatePengajuanMahasiswa', element: UpdatePengajuanMahasiswa }
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
 ]
 

@@ -47,7 +47,7 @@ const Login = () => {
     // Jika role berubah, navigasikan ke halaman dengan role yang baru
     if (role) {
       setTimeout(() => {
-        navigate(`/${role}`);
+        navigate(`/${role}/dashboard`);
       }, 800); 
     }
   }, [role, navigate]);

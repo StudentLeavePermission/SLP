@@ -63,12 +63,20 @@ module.exports = (models) => {
   });
 
   Data_Pengajuan.belongsTo(Jadwal_Kelas, {
-    foreignKey: 'ID_Jadwal_Kelas'
+    foreignKey: 'ID_Jadwal_Kelas',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   });
 
   Data_Pengajuan.belongsTo(Data_Mahasiswa, {
     foreignKey: 'ID_Mahasiswa'
   });
+
+  Jadwal_Kelas.hasMany(Data_Pengajuan, {
+    foreignKey: 'ID_Jadwal_Kelas',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   Jadwal_Kelas.belongsTo(Data_Jam_Pelajaran, {
     foreignKey: 'ID_Jam_Pelajaran_Start',

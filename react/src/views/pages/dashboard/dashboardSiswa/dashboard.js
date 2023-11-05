@@ -1,49 +1,161 @@
 import React, { useState, useEffect } from 'react';
-import './style.css';
+import '../../../../scss/styleCrud.css';
 import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
+import CIcon from '@coreui/icons-react';
+import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, cilChartPie} from '@coreui/icons';
+
 
 const dashboardMahasiswa = () => {
     const [jadwalKelasAll, setJadwalKelasAll] = useState([]);
+    const [daftarPengajuan, setDaftarPengajuan] = useState([]);
+    const [dataJadwal, setDataJadwal] = useState([]);
     const [jadwalKelas, setJadwalKelas] = useState([]);
     const [mahasiswa, setMahasiswa] = useState([]);
     const [mataKuliah, setMataKuliah] = useState([]);
     const [jamPelajaran, setJamPelajaran] = useState([]);
+    const [Sakit, setSakit] = useState(0);
+    const [Izin, setIzin] = useState(0);
     const getDayName = (date) => {
         const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         const dayIndex = date.getDay();
         return days[dayIndex];
       };
     const [hari, setHari] = useState(getDayName(new Date()));
-    const [id, setIdMahasiswa] = useState(1)
+    const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs'))
     const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id}`;
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
 
       useEffect(() => {
-        getMahasiswa();
+        getAllLeaveRequests();
         getAllClassHours();
-        getAllSchedule();
+        getAllScheduleToday();
       }, []);
 
-      const getMahasiswa = async () => {
-        try {
-            const response = await axios.get(urlMahasiswaGetOne);
-            console.log(response.data.data);
-            setMahasiswa(response.data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
+      function tambahIntervalWaktu(time, intervalMenit) {
+        const [jam, menit, detik] = time.split(':').map(Number);
+      
+        const totalMenit = (jam * 60) + menit;
+      
+        const totalMenitBaru = totalMenit + intervalMenit;
+      
+        const jamBaru = Math.floor(totalMenitBaru / 60);
+        const sisaMenit = totalMenitBaru % 60;
+      
+        // Format hasil baru sebagai tipe data time (HH:MM:SS)
+        const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+      
+        return waktuBaru;
+      }
+
+      function getJamPelajaran (data, id_jam){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].id == id_jam){
+            return data[i].Waktu_Mulai;
+          }
+          i++;
         }
+        return "NULL";
+      }
+
+      function getNamaDosen (data, id_dosen){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].Data_Dosen.id == id_dosen){
+            return data[i].Data_Dosen.Nama_Dosen;
+          }
+          i++;
+        }
+        return "NULL";
       }
     
-      const getAllSchedule = async () => {
+      function getNamaMatkul (data, id_matkul){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].Data_Mata_Kuliah.id == id_matkul){
+            return data[i].Data_Mata_Kuliah.Nama_Mata_Kuliah;
+          }
+          i++;
+        }
+        return "NULL";
+      }
+
+      function getJamStart (data, id_jadwal){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].id == id_jadwal){
+            return data[i].ID_Jam_Pelajaran_Start;
+          }
+          i++;
+        }
+        return "NULL";
+      }
+
+      function getJamEnd (data, id_jadwal){
+        let i = 0;
+        while (i < data.length){
+          if (data[i].id == id_jadwal){
+            return data[i].ID_Jam_Pelajaran_End;
+          }
+          i++;
+        }
+        return "NULL";
+      }
+    
+      const getAllScheduleToday = async () => {
         try {
             const mahasiswa = await axios.get(urlMahasiswaGetOne);
             const response = await axios.get(`http://localhost:3000/jadwal-kelas/${mahasiswa.data.data.ID_Kelas}/${hari}`);
             console.log('ini jadwal',response.data);
-            setJadwalKelasAll(response.data);
-            setJadwalKelas(response.data.data);
-            setMataKuliah(response.data.mata_kuliah);
+            const dataMatkul = response.data.mata_kuliah;
+            const dataJamPelajaran = response.data.jam_pelajaran;
+            const dataDosen = response.data.dosen;
+            const formattedData = response.data.data.map((item, index) => {
+                const JamPelajaran = getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_Start)+" - "+ tambahIntervalWaktu(getJamPelajaran(dataJamPelajaran, item.ID_Jam_Pelajaran_End), 50); 
+                const namaDosen = getNamaDosen(dataDosen, item.ID_Dosen);
+                const namaMatkul = getNamaMatkul(dataMatkul, item.ID_Matkul);
+                return {
+                ...item,
+                DT_RowId: `${index + 1}`,
+                Jam: JamPelajaran,
+                Nama_Dosen: namaDosen,
+                Mata_Kuliah: namaMatkul,
+                };
+            });
+            setDataJadwal(formattedData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+
+      const getAllLeaveRequests = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/data-pengajuan/mahasiswa/${id}`);
+            console.log('pengajuan',response.data);
+            const jadwal = response.data.jadwal;
+            const sakit = response.data.data.filter(item => item.Jenis_Izin === 'Sakit' && item.Status_Pengajuan === 'Accepted');
+            const izin = response.data.data.filter(item => item.Jenis_Izin === 'Izin' && item.Status_Pengajuan === 'Accepted');
+            console.log('Jumlah Izin:', izin);
+            console.log('Jumlah Sakit:', sakit);
+            if(izin.length >0){
+                let jumlahIzin = 0;
+                izin.forEach(item => {
+                    jumlahIzin += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) +1;
+                });
+                setIzin(jumlahIzin);
+            }
+
+            if(sakit.length >0){
+                let jumlahSakit = 0;
+                sakit.forEach(item => {
+                    jumlahSakit += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) +1;
+                });
+                setSakit(jumlahSakit);
+            }
+            
+            
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -59,11 +171,11 @@ const dashboardMahasiswa = () => {
         }
       }
 
-      const pageNumbers = Math.ceil(jadwalKelas.length / itemsPerPage);
+      const pageNumbers = Math.ceil(dataJadwal.length / itemsPerPage);
 
       const indexOfLastItem = currentPage * itemsPerPage;
       const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-      const currentData = jadwalKelas.slice(indexOfFirstItem, indexOfLastItem);
+      const currentData = dataJadwal.slice(indexOfFirstItem, indexOfLastItem);
     
       const handleNextPage = () => {
         if (currentPage < pageNumbers) {
@@ -80,98 +192,110 @@ const dashboardMahasiswa = () => {
     return (
         <>
         <div className='container'>
-            <div className="row">
-                <div className="col-sm-6">
-                    <div className='box-blue'>
-                        gffff
+            <div className="grid-container">
+                <div className="box-information">
+                    <div className='box-blue box-information'>
                     </div>
-                    <div className='box-white'>
-                        g
+                    <div className='box-white box-information'>
+                      <div className="box-text-information">
+                            <div className="d-flex justify-content-center flex-column">
+                              <div className="text-information text-blue">Jumlah Izin</div>
+                                <div className="text-information">{Izin} Jam Pelajaran</div>
+                            </div>
+                            <div>
+                                <CIcon size={'5xl'}  icon={cilChartPie} />
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div className="col-sm-6">
-                    <div className='box-blue'>
-                        gffff
+                <div className="box-information">
+                    <div className='box-blue box-information'>
                     </div>
-                    <div className='box-white'>
-                        g
+                    <div className='box-white box-information'>
+                      <div className="box-text-information">
+                            <div className="d-flex justify-content-center flex-column">
+                                <div className="text-information text-blue">Jumlah sakit</div>
+                                <div className="text-information">{Sakit} Jam Pelajaran</div>
+                            </div>
+                            <div>
+                                <CIcon size={'5xl'}  icon={cilChartPie} />
+                            </div>
+                        </div>
                     </div>
-                </div>
-                
-                <div className="col-sm-1">
-                    a
                 </div>
             </div>
-            <div className="font-title table-font">
+            <div className="table-font">
                 <h2>Jadwal Kuliah Hari Ini</h2>
             </div>
             <div>
+                <div className="containerTabel">
                 <div className="containerTabel box-blue">
-                
-                </div>
-                <div className="table-box">
-                    <table className="tabel">
-                    <thead>
-                        <tr>
-                        <th className="header-cell rata table-font">Nomor</th>
-                        <th className="header-cell rata table-font">
-                            <div>
-                            Mata Kuliah
-                            </div>
-                        </th>
-                        <th className="header-cell rata table-font">
-                            <div>
-                                Waktu
-                            </div>
-                        </th>
-                        <th className="header-cell rata table-font">
-                            <div>
-                                Dosen
-                            </div>
-                        </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentData.map((item, index) => (
-                            <tr key={index}>
-                                <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                                <td className="cell rata table-font">{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
-                                <td className="cell rata table-font">{jamPelajaran[item.ID_Jam_Pelajaran_Start - 1].Waktu_Mulai} - {jamPelajaran[item.ID_Jam_Pelajaran_End - 1].Waktu_Mulai}</td>
-                                <td className="cell rata table-font">{mataKuliah[index].Data_Dosen.Nama_Dosen}</td>
+                    
+                    </div>
+                    <div className="containerTabel table-box">
+                        <table className="tabel">
+                        <thead>
+                            <tr>
+                            <th className="header-cell rata table-font">Nomor</th>
+                            <th className="header-cell rata table-font">
+                                <div>
+                                Mata Kuliah
+                                </div>
+                            </th>
+                            <th className="header-cell rata table-font">
+                                <div>
+                                    Waktu
+                                </div>
+                            </th>
+                            <th className="header-cell rata table-font">
+                                <div>
+                                    Dosen
+                                </div>
+                            </th>
                             </tr>
-                        ))}
-                    </tbody>
-                    </table>
-                    <div className="pagination">
-                    <button
-                        className="btn-pagination"
-                        onClick={handlePreviousPage}
-                        disabled={currentPage === 1}
-                    >
-                        {'<'}
-                    </button>
-                    {Array.from({ length: pageNumbers }, (_, i) => {
-                        const pageNumber = i + 1;
-                        const isActive = pageNumber === currentPage;
-        
-                        return (
+                        </thead>
+                        <tbody>
+                            {currentData.map((item, index) => (
+                                <tr key={index}>
+                                    <td className="cell rata table-font">{index +1 + (currentPage - 1) * itemsPerPage}</td>
+                                    <td className="cell rata table-font">{item.Mata_Kuliah}</td>
+                                    <td className="cell rata table-font">{item.Jam}</td>
+                                    <td className="cell rata table-font">{item.Nama_Dosen}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                        </table>
+                        <div className="pagination">
                         <button
-                            key={i}
-                            className={`btn-pagination ${isActive ? 'active' : ''}`}
-                            onClick={() => setCurrentPage(pageNumber)}
+                            className="btn-pagination"
+                            onClick={handlePreviousPage}
+                            disabled={currentPage === 1}
                         >
-                            {pageNumber}
+                            {'<'}
                         </button>
-                        );
-                    })}
-        
-                    <button
-                        className="btn-pagination"
-                        onClick={handleNextPage}
-                        disabled={currentPage === pageNumbers}
-                    >
-                        {'>'}
-                    </button>
+                        {Array.from({ length: pageNumbers }, (_, i) => {
+                            const pageNumber = i + 1;
+                            const isActive = pageNumber === currentPage;
+            
+                            return (
+                            <button
+                                key={i}
+                                className={`btn-pagination ${isActive ? 'active' : ''}`}
+                                onClick={() => setCurrentPage(pageNumber)}
+                            >
+                                {pageNumber}
+                            </button>
+                            );
+                        })}
+            
+                        <button
+                            className="btn-pagination"
+                            onClick={handleNextPage}
+                            disabled={currentPage === pageNumbers}
+                        >
+                            {'>'}
+                        </button>
+                        </div>
                     </div>
                 </div>
             </div>

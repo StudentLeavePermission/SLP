@@ -13,6 +13,8 @@ router.get('/formatted', dataPengajuanController.getAllFormattedLeaveRequests);
 
 router.get('/:id', dataPengajuanController.getLeaveRequest);
 
+router.get('/mahasiswa/:idMahasiswa', dataPengajuanController.getLeaveRequestMahasiswa);
+
 router.patch('/update/:id', dataPengajuanController.editLeaveRequest);
 
 router.get('/download/:filename', dataPengajuanController.downloadFile);
