@@ -4,6 +4,7 @@ import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton } from '@coreui/react';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 function TabelCRUD() {
   const [data, setData] = useState([]);
@@ -88,6 +89,7 @@ function TabelCRUD() {
       setCurrentPage(currentPage - 1);
     }
   };
+  
 
   const headerSection = (
     <div className="font-title table-font">
@@ -106,10 +108,10 @@ function TabelCRUD() {
         <CButton href={`/#/admin/tambahDosen/`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
-          <CButton href={`/#/admin/TabelImport/`} className="btn-tambah table-font">
+          <CButton href={`/#/admin/TabelImport/`} className="btn-imporEkspor table-font">
             Impor
           </CButton>
-          <CButton href={`/#/admin/TabelEkspor/`} className="btn-tambah table-font">
+          <CButton href={`http://localhost:3000/data-dosen/getAllExport`} className="btn-imporEkspor table-font">
             Ekspor
           </CButton>
           <div className="search-input-container">
