@@ -23,4 +23,6 @@ router.get('/get/:id', dataDosenController.getOneDataDosen);
 
 router.get('/getformatted/:id', dataDosenController.getoneDosenFormatted);
 
+router.get('/getdosenclass/:id', dataDosenController.getDosenClass);
+
 module.exports = router;
