@@ -163,17 +163,16 @@ exports.getPengajuanFormatted = async (req, res) => {
       where: { ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id) },
     });
 
-    // Menggabungkan data Mahasiswa dan Pengajuan
-    const dataMahasiswaPengajuan = mahasiswa
-    .map((mhs) => {
+    // Menggabungkan data Mahasiswa dan Pengajuan dengan Tanggal_Izin yang diformat
+    const dataMahasiswaPengajuan = mahasiswa.map((mhs) => {
       const matchingPengajuan = pengajuan.find((p) => p.ID_Mahasiswa === mhs.id);
       return {
         Nama: mhs.Nama,
         NIM: mhs.NIM,
         Jenis_Izin: matchingPengajuan ? matchingPengajuan.Jenis_Izin : null,
+        Tanggal_Izin: matchingPengajuan ? formatDate(matchingPengajuan.Tanggal_Izin) : null,
       };
-    })
-    .filter((item) => item.Jenis_Izin !== null);
+    }).filter((item) => item.Jenis_Izin !== null);
 
     // Formatting data kelas
     const currentYear = new Date().getFullYear();
@@ -207,6 +206,12 @@ exports.getPengajuanFormatted = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+function formatDate(dateString) {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(dateString).toLocaleDateString('id-ID', options);
+}
+
 
 
 
