@@ -4,6 +4,8 @@ const basename = path.basename(__filename);
 const {mainModel} = require('../common/models');
 const Data_Pengajuan = new mainModel("Data_Pengajuan");
 const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
+const Data_Kelas = new mainModel("Data_Kelas");
+const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 
 // Get all leave requests
 exports.getAllLeaveRequests = async (req, res) => {
@@ -137,3 +139,75 @@ exports.downloadFile = async (req, res) => {
       }
   });
 };
+
+exports.getPengajuanFormatted = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Ambil data kelas
+    const kelas = await Data_Kelas.get({
+      where: { id: id },
+    });
+
+    if (!kelas) {
+      return res.status(404).json({ message: "Data Kelas not found" });
+    }
+
+    // Ambil data mahasiswa berdasarkan ID_Kelas
+    const mahasiswa = await Data_Mahasiswa.getAll({
+      where: { ID_Kelas: kelas.id },
+    });
+
+    // Ambil data pengajuan berdasarkan ID_Mahasiswa
+    const pengajuan = await Data_Pengajuan.getAll({
+      where: { ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id) },
+    });
+
+    // Menggabungkan data Mahasiswa dan Pengajuan
+    const dataMahasiswaPengajuan = mahasiswa
+    .map((mhs) => {
+      const matchingPengajuan = pengajuan.find((p) => p.ID_Mahasiswa === mhs.id);
+      return {
+        Nama: mhs.Nama,
+        NIM: mhs.NIM,
+        Jenis_Izin: matchingPengajuan ? matchingPengajuan.Jenis_Izin : null,
+      };
+    })
+    .filter((item) => item.Jenis_Izin !== null);
+
+    // Formatting data kelas
+    const currentYear = new Date().getFullYear();
+    let angka_kelas;
+    if (new Date().getMonth() >= 7) {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran + 1;
+    } else {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran;
+    }
+
+    const formattedDataKelas = {
+      id: kelas.id,
+      Nama_Kelas: `${angka_kelas}${kelas.Nama_Kelas}`,
+      Tahun_Ajaran: kelas.Tahun_Ajaran,
+      ID_Dosen_Wali: kelas.ID_Dosen_Wali,
+      createdAt: kelas.createdAt,
+      updatedAt: kelas.updatedAt,
+    };
+
+    res.send({
+      message: "Pengajuan found successfully",
+      dataKelas: formattedDataKelas,
+      dataMahasiswa: mahasiswa,
+      dataPengajuan: pengajuan,
+      dataDetail: dataMahasiswaPengajuan,
+    });
+
+    console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+
