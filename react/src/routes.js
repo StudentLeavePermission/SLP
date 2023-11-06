@@ -85,6 +85,7 @@ const DetailKelas = React.lazy(() => import('./views/pages/crudKelas/detailKelas
 //dashboard
 const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardSiswa/dashboard'))
 const DashboardDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/dashboard'))
+const DashboardAdmin = React.lazy(() => import('./views/pages/dashboard/dashboardAdmin/dashboard'))
 
 
 const wrapComponent = (Component, isProtected, props) => {
@@ -107,7 +108,7 @@ const wrapComponent = (Component, isProtected, props) => {
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard },
+  // { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard },
   // { path: '/dosen/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
@@ -179,7 +180,8 @@ const routes = [
   { path: '/admin/dataKelas', name: 'CrudKelas', element: CrudKelas },
   { path: '/admin/tambahKelas', name: 'TambahKelas', element: TambahKelas},
   { path: '/admin/editKelas/:key', name: 'EditKelas', element: EditKelas},
-  { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: DetailKelas}
+  { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: DetailKelas},
+  { path: '/admin/dashboard', name: 'DashboardAdmin', element: DashboardAdmin }
 
   // Untuk route yang di-proteksi, berikut definisinya:
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
