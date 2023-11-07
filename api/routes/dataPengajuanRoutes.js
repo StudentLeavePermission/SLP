@@ -19,6 +19,8 @@ router.patch('/update/:id', dataPengajuanController.editLeaveRequest);
 
 router.get('/download/:filename', dataPengajuanController.downloadFile);
 
+router.get('/pengajuan/:id', dataPengajuanController.getPengajuanFormatted);
+
 router.post('/', uploadFile.single('File_Pengajuan'), dataPengajuanController.createLeaveRequest);
 
 module.exports = router;

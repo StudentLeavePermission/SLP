@@ -9,7 +9,7 @@ import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, c
 const dashboardDosen = () => {
     const [jadwalKelasAll, setJadwalKelasAll] = useState([]);
     const [daftarPengajuan, setDaftarPengajuan] = useState([]);
-    const [dataJadwal, setDataJadwal] = useState([]);
+    const [dataPengajuan, setDataPengajuan] = useState([]);
     const [jadwalKelas, setJadwalKelas] = useState([]);
     const [mahasiswa, setMahasiswa] = useState([]);
     const [mataKuliah, setMataKuliah] = useState([]);
@@ -31,6 +31,7 @@ const dashboardDosen = () => {
 
       useEffect(() => {
         getAllDataDosen();
+        getAllPengajuan();
       }, []);    
     
       const getAllDataDosen = async () => {
@@ -38,7 +39,7 @@ const dashboardDosen = () => {
             const response = await axios.get(`http://localhost:3000/data-dosen/getdosenclass/${id}`);
             console.log('dosen aja', response.data);
             console.log('mahasiswa aja', response.data.dataMahasiswa);
-            console.log('kelas aja', response.data.dataKelas);
+            console.log('kelas aja', response.data.dataKelas[0].Nama_Kelas);
 
             // Hitung jumlah mahasiswa
             const totalMahasiswa = response.data.dataMahasiswa.length;
@@ -52,13 +53,28 @@ const dashboardDosen = () => {
             console.error('Error fetching data:', error);
         }
       }
+
+      const getAllPengajuan = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/data-pengajuan/pengajuan/${id}`);
+            console.log('pengajuan aja', response.data);
+            console.log('ngecek cik pengajuan aja', response.data.dataDetail);
+
+            // Ambil Pengajuan
+            const dataPengajuan = response.data.dataDetail;
+            setDataPengajuan(dataPengajuan);
+            console.log('bener ga nih pengajuannya', dataPengajuan);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+      }
     
 
-      const pageNumbers = Math.ceil(dataJadwal.length / itemsPerPage);
+      const pageNumbers = Math.ceil(dataPengajuan.length / itemsPerPage);
 
       const indexOfLastItem = currentPage * itemsPerPage;
       const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-      const currentData = dataJadwal.slice(indexOfFirstItem, indexOfLastItem);
+      const currentData = dataPengajuan.slice(indexOfFirstItem, indexOfLastItem);
     
       const handleNextPage = () => {
         if (currentPage < pageNumbers) {
@@ -108,7 +124,7 @@ const dashboardDosen = () => {
                 </div>
             </div>
             <div className="table-font">
-                <h2>Jadwal Kuliah Hari Ini</h2>
+                <h2>Rekap Mahasiswa</h2>
             </div>
             <div>
                 <div className="containerTabel">
@@ -146,9 +162,10 @@ const dashboardDosen = () => {
                             {currentData.map((item, index) => (
                                 <tr key={index}>
                                     <td className="cell rata table-font">{index +1 + (currentPage - 1) * itemsPerPage}</td>
-                                    <td className="cell rata table-font">{item.Mata_Kuliah}</td>
-                                    <td className="cell rata table-font">{item.Jam}</td>
-                                    <td className="cell rata table-font">{item.Nama_Dosen}</td>
+                                    <td className="cell rata table-font">{item.Tanggal_Izin}</td>
+                                    <td className="cell rata table-font">{item.NIM}</td>
+                                    <td className="cell rata table-font">{item.Nama}</td>
+                                    <td className="cell rata table-font">{item.Jenis_Izin}</td>
                                 </tr>
                             ))}
                         </tbody>
