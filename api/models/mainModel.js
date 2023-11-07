@@ -50,6 +50,15 @@ class mainModel {
         })
     }
 
+    getJustGroup({ attributes = [], group = [] }) {
+        return this.models.findAll({
+            attributes: attributes,
+            group: group
+        },{
+            sequelize
+        })
+    }
+
     post(data){
         return this.models.create(data,{
             fields:Object.keys(data)

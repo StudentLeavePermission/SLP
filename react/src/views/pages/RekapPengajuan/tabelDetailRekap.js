@@ -4,6 +4,8 @@ import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton } from '@coreui/react';
 import axios from "axios";
+import { useParams } from 'react-router-dom';
+
 import Modal from 'react-modal';
 const customStyles = {
   content: {
@@ -15,7 +17,7 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
   },
 };
-function TabelCRUD() {
+function TabelRekap() {
 
 
   let subtitle;
@@ -40,20 +42,21 @@ function TabelCRUD() {
   const [searchText, setSearchText] = useState('');
   const [sortBy, setSortBy] = useState('Nama');
   const [sortOrder, setSortOrder] = useState('asc');
-
+  const { id } = useParams();
   useEffect(() => {
-    getAllDataDosen();
+    getRekapPengajuan();
   }, []);
 
-  const getAllDataDosen = async () => {
+  const getRekapPengajuan = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/data-mahasiswa/students/');
+      const response = await axios.get(`http://localhost:3000/data-mahasiswa/rekap/detail/${id}`);
       setData(response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-
+  const Nama = data.length > 0 ? data[0].Mahasiswa.Nama : '';
+  const Nim = data.length > 0 ? data[0].Mahasiswa.NIM : '';
   // Function to delete data
   const hapusData = async (id) => {
     const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
@@ -81,13 +84,13 @@ function TabelCRUD() {
   const sortedData = [...data].sort((a, b) => {
     const order = sortOrder === 'asc' ? 1 : -1;
 
-    if (sortBy === 'Nama') {
-      return order * a.Nama.localeCompare(b.Nama);
-    } else if (sortBy === 'NIM ') {
-      return order * a.NIM.localeCompare(b.NIM);;
-    } else if (sortBy === 'ID_Kelas') {
-      return order * a.Kelas.localeCompare(b.Kelas);
-    }
+    // if (sortBy === 'Nama') {
+    //   return order * a.Nama.localeCompare(b.Nama);
+    // } else if (sortBy === 'NIM ') {
+    //   return order * a.NIM.localeCompare(b.NIM);;
+    // } else if (sortBy === 'ID_Kelas') {
+    //   return order * a.Kelas.localeCompare(b.Kelas);
+    // }
   });
 
   // JSX for the header section
@@ -144,33 +147,11 @@ function TabelCRUD() {
       {headerSection}
         <div className="containerTabel box-blue"></div>
         <div className="table-box">
-          <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
-            + Tambah Data
-          </CButton>
-          <CButton onClick={ExportData} className="btn-tambah table-font">
-            Export
-          </CButton>
-          <CButton onClick={openModal} className="btn-tambah table-font">
-            Import
-          </CButton>
-          <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-        <button onClick={closeModal}>close</button>
-        <div>I am a modal</div>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form>
-      </Modal>
+          Nama : {Nama}
+
+
+
+
           <div className="search-input-container">
             <input
               type="text"
@@ -201,14 +182,25 @@ function TabelCRUD() {
                     </span>
                   </div>
                 </th>
+
                 <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('ID_Kelas')}>
-                    Kelas
+                  <div onClick={() => handleSort('Nama')}>
+                    Jenis Izin
                     <span className="sort-icon">
-                      {sortBy === 'ID_Kelas' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                      {sortBy === 'Nama' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                     </span>
                   </div>
                 </th>
+
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Nama')}>
+                    Keterangan
+                    <span className="sort-icon">
+                      {sortBy === 'Nama' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+
 
                 <th className="header-cell rata table-font">Aksi</th>
               </tr>
@@ -217,20 +209,16 @@ function TabelCRUD() {
               {currentData.map((item, index) => (
                 <tr key={item.id}>
                   <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                  <td className="cell rata table-font">{item.NIM}</td>
-                  <td className="cell rata table-font">{item.Nama}</td>
-                  <td className="cell rata table-font">{item.Kelas.Nama_Kelas}</td>
+                  <td className="cell rata table-font">{item.Mahasiswa.NIM}</td>
+                  <td className="cell rata table-font">{item.Mahasiswa.Nama}</td>
+                  <td className="cell rata table-font">{item.Jenis_Izin}</td>
+                  <td className="cell rata table-font">{item.Keterangan}</td>
+
 
                   <td className="cell aksi">
-                    <CButton href={`/#/admin/mahasiswa/detail/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                    <CButton href={`/#/admin/rekap/detail/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
                       <CIcon icon={cilInfo} />
                     </CButton>
-                    <CButton href={`/#/admin/mahasiswa/edit/${item.id}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
-                      <CIcon icon={cilPencil} />
-                    </CButton>
-                    <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(item.id)}>
-                      <CIcon icon={cilTrash} />
-                    </button>
                   </td>
                 </tr>
               ))}
@@ -273,4 +261,4 @@ function TabelCRUD() {
   );
 }
 
-export default TabelCRUD;
+export default TabelRekap;
