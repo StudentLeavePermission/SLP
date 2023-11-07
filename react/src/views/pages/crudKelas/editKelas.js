@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import Select from 'react-select';
+import Select from 'react-select'; // Import komponen Select
 import {
   CForm,
   CFormLabel,
@@ -23,6 +23,19 @@ function EditKelas() {
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const [done, setDone] = useState(false);
+
+  const kelasOptions = [
+    { value: 'A', label: 'A' },
+    { value: 'B', label: 'B' },
+    { value: 'C', label: 'C' },
+    // Tambahkan pilihan kelas lainnya
+  ];
+
+  const prodiOptions = [
+    { value: 'D3', label: 'D3' },
+    { value: 'D4', label: 'D4' },
+    // Tambahkan pilihan lainnya
+  ];
 
   useEffect(() => {
     // Mengambil data kelas berdasarkan ID dari database
@@ -132,24 +145,21 @@ function EditKelas() {
         <CCol className="box-1">
           <div>
             <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
-            <CFormInput
-              className="input"
-              type="text"
+            <Select
               id="Nama_Kelas"
-              value={formData.Nama_Kelas}
-              onChange={(e) => handleChange('Nama_Kelas', e.target.value)}
-              maxLength="1"
+              value={kelasOptions.find(option => option.value === formData.Nama_Kelas)}
+              onChange={(selectedOption) => handleChange('Nama_Kelas', selectedOption.value)}
+              options={kelasOptions}
             />
             {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
           </div>
           <div>
             <CFormLabel htmlFor="Program_Studi">Program Studi</CFormLabel>
-            <CFormInput
-              className="input"
-              type="text"
+            <Select
               id="Program_Studi"
-              value={formData.Program_Studi}
-              onChange={(e) => handleChange('Program_Studi', e.target.value)}
+              value={prodiOptions.find(option => option.value === formData.Program_Studi)}
+              onChange={(selectedOption) => handleChange('Program_Studi', selectedOption.value)}
+              options={prodiOptions}
             />
             {formErrors.Program_Studi && <div className="text-danger">{formErrors.Program_Studi}</div>}
           </div>
@@ -161,6 +171,7 @@ function EditKelas() {
               id="Tahun_Ajaran"
               value={formData.Tahun_Ajaran}
               onChange={(e) => handleChange('Tahun_Ajaran', e.target.value)}
+              disabled
             />
             {formErrors.Tahun_Ajaran && <div className="text-danger">{formErrors.Tahun_Ajaran}</div>}
           </div>

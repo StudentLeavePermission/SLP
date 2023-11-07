@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import 'datatables.net-dt/css/jquery.dataTables.css'; // Import DataTables CSS
-import $ from 'jquery'; 
-import 'datatables.net'; 
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import $ from 'jquery';
+import 'datatables.net';
 import './crudKelas.css';
 import CIcon from '@coreui/icons-react';
-import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, cilCloudUpload, cilCloudDownload } from '@coreui/icons';
-import { CButton, CCol, CRow } from '@coreui/react';
+import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
+import { CButton } from '@coreui/react';
 import axios from 'axios';
 
 function TabelCRUD({}) {
-  const tableRef = useRef(null);  
+  const tableRef = useRef(null);
   const [dataKelas, setDataKelas] = useState([]);
+  const [sortBy, setSortBy] = useState('Kelas');
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [searchText, setSearchText] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     getAllClass();
@@ -19,32 +24,91 @@ function TabelCRUD({}) {
   const getAllClass = async () => {
     try {
       const response = await axios.get('http://localhost:3000/data-kelas/getallformat');
-      setDataKelas(response.data.data);
+      // Menambahkan pemisahan kelas dan prodi dari nama_kelas
+      const modifiedData = response.data.data.map((item) => {
+        const nama_kelas = item.Nama_Kelas;
+        const karakterArray = nama_kelas.split('');
+
+        if (karakterArray.length >= 4) {
+          item.kelas = karakterArray.slice(0, 2).join('');
+          item.prodi = karakterArray.slice(2).join('');
+        } else {
+          item.kelas = '';
+          item.prodi = '';
+        }
+
+        return item;
+      });
+
+      setDataKelas(modifiedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
   useEffect(() => {
-    // Mengatur opsi bahasa DataTables
     $.extend($.fn.dataTable.defaults, {
       language: {
         paginate: {
-          previous: '<', // Mengubah "Previous" menjadi tanda "<"
-          next: '>', // Mengubah "Next" menjadi tanda ">"
+          previous: '<',
+          next: '>',
         },
       },
     });
   }, [dataKelas]);
 
-  const [form, setForm] = useState({}); // Form data
-  const [detailItem, setDetailItem] = useState(null); // To display details
-  const [editIndex, setEditIndex] = useState(-1); // Index of the data being edited
-  const [sortBy, setSortBy] = useState('Nomor');
-  const [sortOrder, setSortOrder] = useState('asc');
-  const [searchText, setSearchText] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const customSortFunction = (str1, str2) => {
+    const numPattern = /\d+/g;
+
+    const num1 = parseInt(str1.match(numPattern)?.[0] || 0, 10);
+    const num2 = parseInt(str2.match(numPattern)?.[0] || 0, 10);
+
+    const text1 = str1.replace(numPattern, '');
+    const text2 = str2.replace(numPattern, '');
+
+    if (num1 === num2) {
+      return text1.localeCompare(text2);
+    }
+
+    return num1 - num2;
+  };
+
+  const filteredData = dataKelas.filter((item) => {
+    const namaKelas = item.kelas || '';
+    const prodi = item.prodi || '';
+    const tahunAjaran = (item.Tahun_Ajaran || '').toString();
+    const searchTextLower = searchText.toLowerCase();
+    return (
+      namaKelas.toLowerCase().includes(searchTextLower) ||
+      prodi.toLowerCase().includes(searchTextLower) ||
+      tahunAjaran.toLowerCase().includes(searchTextLower)
+    );
+  });
+
+  const sortedData = [...filteredData].sort((a, b) => {
+    const order = sortOrder === 'asc' ? 1 : -1;
+
+    if (sortBy === 'Kelas') {
+      return order * customSortFunction(a.kelas, b.kelas);
+    } else if (sortBy === 'Program Studi') {
+      return order * customSortFunction(a.prodi, b.prodi);
+    } else if (sortBy === 'Tahun Ajaran') {
+      const tahunAjaranA = parseInt(a.Tahun_Ajaran);
+      const tahunAjaranB = parseInt(b.Tahun_Ajaran);
+
+      if (!isNaN(tahunAjaranA) && !isNaN(tahunAjaranB)) {
+        return order * (tahunAjaranA - tahunAjaranB);
+      } else {
+        return 0;
+      }
+    }
+    return 0;
+  });
+
+  const pageNumbers = Math.ceil(sortedData.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleSort = (criteria) => {
     if (criteria === sortBy) {
@@ -54,62 +118,6 @@ function TabelCRUD({}) {
       setSortOrder('asc');
     }
   };
-
-    // Fungsi kustom untuk mengurutkan berdasarkan angka dan kemudian huruf
-    const customSortFunction = (str1, str2) => {
-      const numPattern = /\d+/g;
-  
-      // Mengambil angka dari string
-      const num1 = parseInt(str1.match(numPattern)?.[0] || 0, 10);
-      const num2 = parseInt(str2.match(numPattern)?.[0] || 0, 10);
-  
-      // Menghapus angka dari string
-      const text1 = str1.replace(numPattern, '');
-      const text2 = str2.replace(numPattern, '');
-  
-      // Mengurutkan berdasarkan angka terlebih dahulu, kemudian huruf
-      if (num1 === num2) {
-        return text1.localeCompare(text2);
-      }
-  
-      return num1 - num2;
-    };
-
-  // Function to filter data based on search text
-  const filteredData = dataKelas.filter((item) => {
-    const namaKelas = item.Nama_Kelas || '';
-    const tahunAjaran = (item.Tahun_Ajaran || '').toString(); // Ensure it's a string
-    const searchTextLower = searchText.toLowerCase();
-    return (
-      namaKelas.toLowerCase().includes(searchTextLower) ||
-      tahunAjaran.toLowerCase().includes(searchTextLower)
-    );
-  });
-
-  const sortedData = [...filteredData].sort((a, b) => {
-    const order = sortOrder === 'asc' ? 1 : -1;
-
-    if (sortBy === 'Nama Kelas') {
-      return order * customSortFunction(a.Nama_Kelas, b.Nama_Kelas);
-    } else if (sortBy === 'Tahun Ajaran') {
-      // Ensure Tahun_Ajaran is treated as numbers
-      const tahunAjaranA = parseInt(a.Tahun_Ajaran);
-      const tahunAjaranB = parseInt(b.Tahun_Ajaran);
-
-      if (!isNaN(tahunAjaranA) && !isNaN(tahunAjaranB)) {
-        return order * (tahunAjaranA - tahunAjaranB);
-      } else {
-        return 0; // Handle cases where Tahun_Ajaran is not a valid number
-      }
-    }
-    return 0; // Handle other sortBy cases
-  });
-
-  // Calculate the number of pages
-  const pageNumbers = Math.ceil(sortedData.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleNextPage = () => {
     if (currentPage < pageNumbers) {
@@ -123,7 +131,6 @@ function TabelCRUD({}) {
     }
   };
 
-  // Function to delete data
   const hapusData = async (id) => {
     const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
 
@@ -138,7 +145,6 @@ function TabelCRUD({}) {
     }
   };
 
-  // JSX for the header section
   const headerSection = (
     <div className="font-title table-font">
       <div>
@@ -147,10 +153,9 @@ function TabelCRUD({}) {
     </div>
   );
 
-  // JSX untuk bagian isian tabel
   return (
     <>
-    <div className="container">
+      <div className="container">
         {headerSection}
         <div className="containerTabel box-blue"></div>
         <div className="table-box">
@@ -159,24 +164,32 @@ function TabelCRUD({}) {
               + Tambah Data
             </CButton>
             <div className="search-input-container">
-                <input
-                  type="text"
-                  placeholder="Cari..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  className="search-input"
-                />
-                <CIcon icon={cilSearch} className="search-icon" />
+              <input
+                type="text"
+                placeholder="Cari..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                className="search-input"
+              />
+              <CIcon icon={cilSearch} className="search-icon" />
             </div>
           </div>
           <table className="tabel">
             <thead>
               <tr>
                 <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Nama Kelas')}>
-                    Nama Kelas
+                  <div onClick={() => handleSort('Kelas')}>
+                    Kelas
                     <span className="sort-icon">
-                      {sortBy === 'Nama Kelas' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                      {sortBy === 'Kelas' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                    </span>
+                  </div>
+                </th>
+                <th className="header-cell rata table-font">
+                  <div onClick={() => handleSort('Program Studi')}>
+                    Program Studi
+                    <span className="sort-icon">
+                      {sortBy === 'Program Studi' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                     </span>
                   </div>
                 </th>
@@ -192,23 +205,24 @@ function TabelCRUD({}) {
               </tr>
             </thead>
             <tbody>
-            {currentData.map((item, index) => (
-            <tr key={index}>
-              <td className="cell rata table-font">{item.Nama_Kelas}</td>
-              <td className="cell rata table-font">{item.Tahun_Ajaran}</td>
-              <td className="cell aksi">
-                <CButton href={`/#/admin/detailKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
-                  <CIcon icon={cilInfo} />
-                </CButton>                
-                <CButton href={`/#/admin/editKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
-                    <CIcon icon={cilPencil} />
-                </CButton>
-                <CButton onClick={() => hapusData(item.id)} style={{ backgroundColor: 'transparent', color: 'black' }}>
-                  <CIcon icon={cilTrash} />
-                </CButton>
-              </td>
-            </tr>
-          ))}
+              {currentData.map((item, index) => (
+                <tr key={index}>
+                  <td className="cell rata table-font">{item.kelas}</td>
+                  <td className="cell rata table-font">{item.prodi}</td>
+                  <td className="cell rata table-font">{item.Tahun_Ajaran}</td>
+                  <td className="cell aksi">
+                    <CButton href={`/#/admin/detailKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                      <CIcon icon={cilInfo} />
+                    </CButton>
+                    <CButton href={`/#/admin/editKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
+                      <CIcon icon={cilPencil} />
+                    </CButton>
+                    <CButton onClick={() => hapusData(item.id)} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                      <CIcon icon={cilTrash} />
+                    </CButton>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
           <div className="pagination">
@@ -243,8 +257,7 @@ function TabelCRUD({}) {
             </button>
           </div>
         </div>
-        
-    </div>
+      </div>
     </>
   );
 }

@@ -13,7 +13,7 @@ function TambahDataKelas() {
   const [formData, setFormData] = useState({
     Nama_Kelas: '',
     Program_Studi: '',
-    Tahun_Ajaran: '',
+    Tahun_Ajaran: new Date().getFullYear(),
   });
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -32,6 +32,25 @@ function TambahDataKelas() {
       [name]: '',
     });
   };
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    setFormData({
+      ...formData,
+      Tahun_Ajaran: currentYear,
+    });
+  }, []);
+
+  const kelasOptions = [ // Daftar pilihan kelas
+    'A',
+    'B',
+    'C',
+  ];
+
+  const prodiOptions = [ // Daftar pilihan kelas
+    'D3',
+    'D4',
+  ];
 
   useEffect(() => {
     if (done) {
@@ -95,27 +114,37 @@ function TambahDataKelas() {
         <CCol className="box-1">
           <div>
             <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
-            <CFormInput
+            <select
               className="input"
-              type="text"
               id="Nama_Kelas"
               value={formData.Nama_Kelas}
               onChange={(e) => handleChange('Nama_Kelas', e.target.value)}
-              maxLength="1" // Set maksimum panjang input ke 1
-            />
+            >
+              <option value="">Pilih Nama Kelas</option>
+              {kelasOptions.map((kelas, index) => (
+                <option key={index} value={kelas}>
+                  {kelas}
+                </option>
+              ))}
+            </select>
             {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
           </div>
           <div>
             <CFormLabel htmlFor="Program_Studi">Program Studi</CFormLabel>
-            <CFormInput
+            <select
               className="input"
-              type="text"
               id="Program_Studi"
               value={formData.Program_Studi}
               onChange={(e) => handleChange('Program_Studi', e.target.value)}
-              maxLength="2"
-            />
-            {formErrors.Program_Studi && <div className="text-danger">{formErrors.Program_Studi}</div>}
+              >
+              <option value="">Pilih Program Studi</option>
+              {prodiOptions.map((prodi, index) => (
+                <option key={index} value={prodi}>
+                  {prodi}
+                </option>
+              ))}
+            </select>
+            {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
           </div>
           <div>
             <CFormLabel htmlFor="Tahun_Ajaran">Tahun Masuk</CFormLabel>
@@ -125,9 +154,7 @@ function TambahDataKelas() {
               id="Tahun_Ajaran"
               value={formData.Tahun_Ajaran}
               onChange={(e) => handleChange('Tahun_Ajaran', e.target.value)}
-              min="2023"  // Ganti dengan tahun minimum yang diizinkan
-              max="2050"  // Ganti dengan tahun maksimum yang diizinkan
-              step="1"    // Langkah pertambahan 1 tahun
+              disabled
             />
             {formErrors.Tahun_Ajaran && <div className="text-danger">{formErrors.Tahun_Ajaran}</div>}
           </div>
