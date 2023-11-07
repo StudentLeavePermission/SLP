@@ -14,7 +14,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { DocsExample } from 'src/components'
-import './Style.css'
+import '../../../scss/styleFormPengajuan.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
@@ -56,7 +56,7 @@ const CustomCheckboxTable = () => {
   const [checkboxStatus, setCheckboxStatus] = useState({})
   const selectedDatesExist = selectedDates.length > 0
   const navigate = useNavigate()
-  const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id}`;
+  const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/coba/${id}`;
 
   // const formatSelectedDate = (date) => {
   //   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
@@ -325,7 +325,9 @@ const CustomCheckboxTable = () => {
         ...selectedDates,
         { date, data: tableData?.map((item) => item.isChecked) },
       ]
+      
       setSelectedDates(updatedSelectedDates)
+      console.log('tanggaln:', updatedSelectedDates);
     }
     setSelectedDate(date)
     const harihari = getDayName(date)
