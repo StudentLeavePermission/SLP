@@ -9,7 +9,6 @@ const uploadFile = require('../middleware/multerFile');
 
 router.get('/', dataPengajuanController.getAllLeaveRequests);
 
-router.get('/s', dataPengajuanController.countLeaveRequestsByNIM);
 
 router.get('/formatted', dataPengajuanController.getAllFormattedLeaveRequests);
 
