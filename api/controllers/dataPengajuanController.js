@@ -26,6 +26,13 @@ exports.getLeaveRequestMahasiswa = async (req, res) => {
         ID_Mahasiswa: req.params.idMahasiswa,
       },
     });
+
+    const mahasiswa= await Data_Pengajuan.getAllInclude({
+      where: {
+        ID_Mahasiswa: req.params.idMahasiswa,
+      },
+      include : ['Data_Mahasiswa']
+    });
     const jadwal = await Jadwal_Kelas.getAll();
 
     if (request) {
@@ -33,6 +40,7 @@ exports.getLeaveRequestMahasiswa = async (req, res) => {
         message: "Request found successfully",
         data : request,
         jadwal : jadwal,
+        mahasiswa : mahasiswa
       });
       console.log(request)
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
@@ -53,10 +61,21 @@ exports.getLeaveRequest = async (req, res) => {
       }
     });
 
+    const mahasiswa = await Data_Pengajuan.getAllInclude({
+      where: {
+        id: req.params.id,
+      },
+      include : ['Data_Mahasiswa']
+    });
+
+    const jadwal = await Jadwal_Kelas.getAll();
+
     if (request) {
       res.send({
         message: "Request found successfully",
-        data: request,
+        data : request,
+        mahasiswa : mahasiswa,
+        jadwal : jadwal,
       });
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
     } else {
@@ -290,6 +309,22 @@ exports.getCountOfLeaveRequests = async (req, res) => {
   } catch (error) {
     console.error(error);
 
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.deleteLeaveRequest = async (req, res) => {
+  try {
+    const whereClause = { id: req.params.id }; // Contoh: menghapus data berdasarkan ID
+    const deletedRowCount = await Data_Pengajuan.delete(whereClause);
+
+    if (deletedRowCount === 0) {
+      return res.status(404).json({ msg: 'Leave Request not found' });
+    }else{
+      res.status(200).json({ msg: 'Leave Request deleted' });
+    }
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };

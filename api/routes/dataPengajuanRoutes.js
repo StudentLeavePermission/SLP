@@ -26,4 +26,6 @@ router.get('/leave/request/:jenis/:prodi', dataPengajuanController.getCountOfLea
 
 router.post('/', uploadFile.single('File_Pengajuan'), dataPengajuanController.createLeaveRequest);
 
+router.delete('/delete/:id', dataPengajuanController.deleteLeaveRequest);
+
 module.exports = router;
