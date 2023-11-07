@@ -64,6 +64,10 @@
       border-radius: 3px;
       outline: none;
     }
+
+    .tabel .aksi button:last-child {
+      margin-right: 0; /* Tidak ada margin kanan pada tombol terakhir */
+    }
   
     .margin-button{
       margin-left: 20px;
