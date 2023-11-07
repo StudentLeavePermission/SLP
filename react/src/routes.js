@@ -87,7 +87,10 @@ const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dash
 const DashboardDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/dashboard'))
 const DashboardAdmin = React.lazy(() => import('./views/pages/dashboard/dashboardAdmin/dashboard'))
 
-
+//Rekap
+const RekapPengajuan = React.lazy(() => import('./views/pages/RekapPengajuan/tabelRekap.js'))
+const RekapPengajuanDetail = React.lazy(() => import('./views/pages/RekapPengajuan/tabelDetailRekap.js'))
+-
 const wrapComponent = (Component, isProtected, props) => {
   // Return a component that wraps the provided Component
   return () => {
@@ -160,6 +163,8 @@ const routes = [
   // { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: TabelEkspor },
   // { path: '/admin/ImporTabel', name: 'ImporTabel', element: ImporTabel },
   // { path: '/admin/EksporTabel', name: 'EksporTabel', element: EksporTabel },
+  { path: '/admin/rekap', name: 'RekapPengajuan', element: RekapPengajuan },
+  { path: '/admin/rekap/detail/:id', name: 'RekapPengajuanDetail', element: RekapPengajuanDetail },
   { path: '/admin/editDosen/:key', name: 'EditDosen', element: EditDosen },
   { path: '/admin/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
   { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
