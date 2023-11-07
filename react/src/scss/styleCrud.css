@@ -364,6 +364,16 @@
 
     .card-grafik {
       border: transparent;
+      margin-top: 30px;
+    }
+
+    .text-header-grafik{
+      font-family: 'Montserrat', sans-serif;
+      font-size: 23px;
+      text-align: start;
+      width: 300px;
+      border: transparent;
+      background-color: #ffffff;
     }
 
     .page-dashboard {

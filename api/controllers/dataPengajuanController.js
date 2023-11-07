@@ -6,6 +6,7 @@ const Data_Pengajuan = new mainModel("Data_Pengajuan");
 const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const Data_Kelas = new mainModel("Data_Kelas");
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
+const { Op } = require('sequelize');
 
 // Get all leave requests
 exports.getAllLeaveRequests = async (req, res) => {
@@ -227,3 +228,52 @@ function formatDate(dateString) {
 
 
 
+
+exports.getCountOfLeaveRequests = async (req, res) => {
+  try {
+    const { jenis, prodi } = req.params;
+    
+    const jmlPengajuan = Array.from({ length: 12 }, () => 0);
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear(); 
+
+    // Mengecek dari bulan januari
+    let month = 0;
+
+    //Cek bulan untuk memisahkan semester
+    while (month < 12){
+      const startDate = new Date(currentYear, month, 1); // Tanggal awal 
+      const endDate = new Date(currentYear, month, 31); // Tanggal akhir 
+      
+      const dataPengajuan = await Data_Pengajuan.getAll({
+        where: {
+          Tanggal_Izin: {
+            [Op.and]: [
+              { [Op.gte]: startDate }, // Tanggal izin >= tanggal awal Januari
+              { [Op.lte]: endDate } // Tanggal izin <= tanggal akhir Januari
+            ]
+          },
+          Status_Pengajuan: 'Delivered',
+          Jenis_Izin: jenis
+        }
+      });
+
+      if (dataPengajuan) {
+        jmlPengajuan[month]  = dataPengajuan.length;
+      }
+
+      month += 1;
+    }
+
+    if (jmlPengajuan) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: jmlPengajuan
+      })
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
