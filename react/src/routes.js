@@ -90,7 +90,7 @@ const DashboardAdmin = React.lazy(() => import('./views/pages/dashboard/dashboar
 //Rekap
 const RekapPengajuan = React.lazy(() => import('./views/pages/RekapPengajuan/tabelRekap.js'))
 const RekapPengajuanDetail = React.lazy(() => import('./views/pages/RekapPengajuan/tabelDetailRekap.js'))
--
+
 const wrapComponent = (Component, isProtected, props) => {
   // Return a component that wraps the provided Component
   return () => {
