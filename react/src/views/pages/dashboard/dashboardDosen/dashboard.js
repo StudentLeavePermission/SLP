@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../../../scss/styleCrud.css';
+import { CButton } from '@coreui/react';
 import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CIcon from '@coreui/icons-react';
@@ -156,16 +157,26 @@ const dashboardDosen = () => {
                                       Keterangan
                                   </div>
                               </th>
+                              <th className="header-cell rata table-font">
+                                  <div>
+                                      Info
+                                  </div>
+                              </th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentData.map((item, index) => (
                                 <tr key={index}>
                                     <td className="cell rata table-font">{index +1 + (currentPage - 1) * itemsPerPage}</td>
-                                    <td className="cell rata table-font">{item.Tanggal_Izin}</td>
+                                    <td className="cell rata table-font">{item.Tanggal_Pengajuan}</td>
                                     <td className="cell rata table-font">{item.NIM}</td>
                                     <td className="cell rata table-font">{item.Nama}</td>
                                     <td className="cell rata table-font">{item.Jenis_Izin}</td>
+                                    <td className="cell aksi">
+                                        <CButton href={`/#/dosen/verifyPengajuan/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                                            <CIcon icon={cilInfo} />
+                                        </CButton>                
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
