@@ -224,11 +224,6 @@ function formatDate(dateString) {
   return new Date(dateString).toLocaleDateString('id-ID', options);
 }
 
-
-
-
-
-
 exports.getCountOfLeaveRequests = async (req, res) => {
   try {
     const { jenis, prodi } = req.params;
@@ -241,11 +236,31 @@ exports.getCountOfLeaveRequests = async (req, res) => {
     // Mengecek dari bulan januari
     let month = 0;
 
+    const kelas = await Data_Kelas.getAllWhere({
+      where: {
+        Nama_Kelas: {
+          [Op.like]: `%${prodi}`
+        }
+      }
+    });
+
+    // const mahasiswa = await Data_Mahasiswa.getAllWhere({
+    //   where: {
+    //     ID_Kelas: kelas.id
+    //   }
+    // });
+
     //Cek bulan untuk memisahkan semester
     while (month < 12){
-      const startDate = new Date(currentYear, month, 1); // Tanggal awal 
-      const endDate = new Date(currentYear, month, 31); // Tanggal akhir 
+      // Tanggal awal bulan
+      const startDate = new Date(currentYear, month, 1); 
+
+      // Tanggal akhir bulan
+      const endDate = new Date(currentYear, month, 31); 
       
+
+
+
       const dataPengajuan = await Data_Pengajuan.getAll({
         where: {
           Tanggal_Izin: {
@@ -274,6 +289,11 @@ exports.getCountOfLeaveRequests = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
+
+
