@@ -48,7 +48,7 @@ const Login = () => {
     if (role) {
       setTimeout(() => {
         navigate(`/${role}/dashboard`);
-      }, 800); 
+      }, 800);
     }
   }, [role, navigate]);
 
@@ -99,6 +99,7 @@ const Login = () => {
                   idDosen = data.id;
                   console.log('iddosennnnnn', idDosen);
                   setSearchParams({ idDosen });
+                  sessionStorage.setItem('idDosen', idDosen)
                   setRole('dosen');
                 } catch (error) {
                   console.error('Error fetching data:', error);
@@ -113,7 +114,7 @@ const Login = () => {
               alert('Email or password is invalid');
             });
         } else if (username === 'admin') {
-          setRole('admin'); 
+          setRole('admin');
         } else if (isNIM(username)) {
           axios
             .post('http://localhost:3000/data-mahasiswa/login', {
@@ -151,9 +152,9 @@ const Login = () => {
       } catch (error){
         alert('Error1234211332');
       }
-      
+
     }
-  }  
+  }
 
   return (
     <div className="page">

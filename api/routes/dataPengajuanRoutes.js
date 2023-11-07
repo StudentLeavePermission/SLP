@@ -9,6 +9,7 @@ const uploadFile = require('../middleware/multerFile');
 
 router.get('/', dataPengajuanController.getAllLeaveRequests);
 
+
 router.get('/formatted', dataPengajuanController.getAllFormattedLeaveRequests);
 
 router.get('/:id', dataPengajuanController.getLeaveRequest);
@@ -18,6 +19,10 @@ router.get('/mahasiswa/:idMahasiswa', dataPengajuanController.getLeaveRequestMah
 router.patch('/update/:id', dataPengajuanController.editLeaveRequest);
 
 router.get('/download/:filename', dataPengajuanController.downloadFile);
+
+router.get('/pengajuan/:id', dataPengajuanController.getPengajuanFormatted);
+
+router.get('/leave/request/:jenis/:prodi', dataPengajuanController.getCountOfLeaveRequests);
 
 router.post('/', uploadFile.single('File_Pengajuan'), dataPengajuanController.createLeaveRequest);
 

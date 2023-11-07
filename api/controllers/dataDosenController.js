@@ -205,7 +205,7 @@ exports.getDosenClass = async (req, res) => {
       } else {
         angka_kelas = currentYear - kelas.Tahun_Ajaran;
       }
-
+    
       return {
         id: kelas.id,
         Nama_Kelas: `${angka_kelas}${kelas.Nama_Kelas}`,
@@ -215,13 +215,17 @@ exports.getDosenClass = async (req, res) => {
         updatedAt: kelas.updatedAt,
       };
     });
-
+    
+    // Ambil Nama_Kelas dari dataKelas pertama (jika ada)
+    const dataNamaKelas = formattedDataKelas.length > 0 ? formattedDataKelas[0].Nama_Kelas : '';
+    
     res.send({
       message: "Dosen and Classes found successfully",
       dataDosen: dataDosen,
       dataKelas: formattedDataKelas,
       dataWaliDosen: dosenWali,
       dataMahasiswa: dataMahasiswa,
+      dataNamaKelas: dataNamaKelas, // Menambahkan dataNamaKelas ke res.send
     });
 
     console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");

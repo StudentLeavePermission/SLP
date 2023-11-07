@@ -17,7 +17,7 @@ import './style.css';
 import axios from 'axios';
 
 import pencil from "../../../assets/images/pencil-solid.svg";
-const TambahDataDosen = () => {
+const TambahMahasiswa = () => {
   const [formData, setFormData] = useState({
     nama: '',
     nip: '',
@@ -35,7 +35,11 @@ const TambahDataDosen = () => {
   const [dataKelas, setKelasData] = useState([]);
   const [selectedKelas, setSelectedKelas] = useState(null);
   const [Nama, setNama] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [NIM, setNim] = useState(null);
+  const [Email, setEmail] = useState(null);
+  const [NoTelp, setNoTelp] = useState(null);
+  const [NoTelpOrtu, setNoTelpOrtu] = useState(null);
+  const [Nama_Ortu, setNamaOrtu] = useState(null);
   const [post, setPost] = useState([]);
   const handleChange = (name, value) => {
     setFormData({
@@ -131,22 +135,28 @@ const TambahDataDosen = () => {
 
   const baseURL = `http://localhost:3000/data-mahasiswa/register`;
   const createPost = () => {
+
+
     const data = new FormData();
-    console.log(selectedKelas)
-    console.log(Nama)
-    console.log(email)
-    // data.append("Nama", selectedKelas);
+    data.append("NIM", NIM);
+    data.append("Nama", Nama);
+    data.append("Nomor_Telp", NoTelp);
+    data.append("Email", Email);
+    data.append("ID_Kelas", 1);
+    data.append("Nama_Ortu", Nama_Ortu);
+    data.append("Nomor_Telp_Ortu", NoTelpOrtu);
 
 
-    // axios
-    //   .post(baseURL, data)
-    //   .then((response) => {
-    //     setPost(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //   });
+    axios
+      .post(baseURL, data)
+      .then((response) => {
+        setPost(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -243,7 +253,7 @@ const TambahDataDosen = () => {
                           No Handphone
                         </CFormLabel>
                         <CFormInput
-                          type="text"
+                          type="number"
                           id="noHandphone"
                           name="noHandphone"
 
@@ -258,13 +268,13 @@ const TambahDataDosen = () => {
                           type="text"
                           id="namaOrangTuaWali"
                           name="namaOrangTuaWali"
-
+                          onChange={(event) => setNamaOrtu(event.target.value)}
                         />
                         <CFormLabel htmlFor="noHandphoneOrangTuaWali" className="label">
                           No Handphone Orang Tua Wali
                         </CFormLabel>
                         <CFormInput
-                          type="text"
+                          type="number"
                           id="noHandphoneOrangTuaWali"
                           name="noHandphoneOrangTuaWali"
                           onChange={(event) => setNoTelpOrtu(event.target.value)}
@@ -302,7 +312,7 @@ const TambahDataDosen = () => {
                         <CFormLabel htmlFor="nim" className="label">
                           NIM
                         </CFormLabel>
-                        <CFormInput type="text" id="nim" name="nim" />
+                        <CFormInput type="number" id="nim" name="nim"  onChange={(event) => setNim(event.target.value)}/>
                         <CFormLabel htmlFor="waliDosen" className="label">
                           Wali Dosen
                         </CFormLabel>
@@ -332,4 +342,4 @@ const TambahDataDosen = () => {
   );
 };
 
-export default TambahDataDosen;
+export default TambahMahasiswa;

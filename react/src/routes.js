@@ -85,7 +85,11 @@ const DetailKelas = React.lazy(() => import('./views/pages/crudKelas/detailKelas
 //dashboard
 const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardSiswa/dashboard'))
 const DashboardDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/dashboard'))
+const DashboardAdmin = React.lazy(() => import('./views/pages/dashboard/dashboardAdmin/dashboard'))
 
+//Rekap
+const RekapPengajuan = React.lazy(() => import('./views/pages/RekapPengajuan/tabelRekap.js'))
+const RekapPengajuanDetail = React.lazy(() => import('./views/pages/RekapPengajuan/tabelDetailRekap.js'))
 
 const wrapComponent = (Component, isProtected, props) => {
   // Return a component that wraps the provided Component
@@ -107,7 +111,7 @@ const wrapComponent = (Component, isProtected, props) => {
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
-  { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard },
+  // { path: '/admin/dashboard', name: 'Dashboard', element: Dashboard },
   // { path: '/dosen/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
@@ -159,6 +163,8 @@ const routes = [
   // { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: TabelEkspor },
   // { path: '/admin/ImporTabel', name: 'ImporTabel', element: ImporTabel },
   // { path: '/admin/EksporTabel', name: 'EksporTabel', element: EksporTabel },
+  { path: '/admin/rekap', name: 'RekapPengajuan', element: RekapPengajuan },
+  { path: '/admin/rekap/detail/:id', name: 'RekapPengajuanDetail', element: RekapPengajuanDetail },
   { path: '/admin/editDosen/:key', name: 'EditDosen', element: EditDosen },
   { path: '/admin/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
   { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
@@ -179,7 +185,8 @@ const routes = [
   { path: '/admin/dataKelas', name: 'CrudKelas', element: CrudKelas },
   { path: '/admin/tambahKelas', name: 'TambahKelas', element: TambahKelas},
   { path: '/admin/editKelas/:key', name: 'EditKelas', element: EditKelas},
-  { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: DetailKelas}
+  { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: DetailKelas},
+  { path: '/admin/dashboard', name: 'DashboardAdmin', element: DashboardAdmin }
 
   // Untuk route yang di-proteksi, berikut definisinya:
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
