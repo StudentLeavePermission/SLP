@@ -15,6 +15,24 @@ const _nav = [
     to: '/mahasiswa/formPengajuan',
     icon: cibHackhands,
   },
+  {
+      component: CNavGroup,
+      name: 'Data Pengajuan',
+      to: '/mahasiswa/Pengajuan',
+      icon: cibHackhands,
+      items: [
+        {
+          component: CNavItem,
+          name: 'On Progress Pengajuan',
+          to: '/mahasiswa/Pengajuan',
+        },
+        {
+          component: CNavItem,
+          name: 'History Pengajuan',
+          to: '/mahasiswa/historyPengajuan',
+        },
+      ],
+    },
   // {
   //   component: CNavItem,
   //   name: 'History Pengajuan',

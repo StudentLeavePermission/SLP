@@ -64,6 +64,10 @@
       border-radius: 3px;
       outline: none;
     }
+
+    .tabel .aksi button:last-child {
+      margin-right: 0; /* Tidak ada margin kanan pada tombol terakhir */
+    }
   
     .margin-button{
       margin-left: 20px;
@@ -263,13 +267,36 @@
       font-size: 25px;
       font-family: 'Montserrat', sans-serif;
     }
-    
-    .font-title {
-      margin-left: 50px;
+
+    /* untuk information */
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 50px;
+        padding: 2px;
+      }
+      
+      .grid-container > div {
+        width: 100%;
+        
+        padding: 15px 0;
+      }
+
+    .text-information{
+        font-family: 'Montserrat', sans-serif;
+        font-size: 20px;
+        text-align: start;
     }
-  
-    .background-kuning { /* Atur warna latar belakang menjadi kuning */
-      padding: 80px; /* Atur padding sesuai kebutuhan */
+
+    .box-text-information{
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px 0 10px;
+      width: 100%;
+    }
+
+    .text-blue{
+        color: #5A719D;
     }
 
     .box-blue{
@@ -279,29 +306,101 @@
         border-radius: 10px;
         z-index: 1;
     }
+
+    .box-information{
+        margin-top: 30px;
+        margin-bottom: 30px;
+        padding: 30px;
+        width: 100%;
+        height: 150px;
+        position: relative;
+        text-align: center;
+        display: flex;
+        align-items: center;
+    }
+    
     .box-white{
         position: absolute;
-        background: #dee0e6;
+        padding: 20px;
+        margin-left: 15px;
+        background: #ffffff;
         box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.25);
         border-radius: 10px;
         z-index: 2;
     }
+
+    .box-blue-grafik{
+      position: absolute;
+      background: #2B2A4C;
+      box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      z-index: 1;
+      max-width: 500px;
+    }
+
+    .box-grafik{
+      margin-top: 30px;
+      margin-bottom: 30px;
+      padding: 10px;
+      width: 100%;
+      height: 300px;
+      position: relative;
+      text-align: center;
+      display: flex;
+      align-items: center;
+    }
+    
+    .box-white-grafik{
+        position: absolute;
+        padding: 20px;
+        padding-top: 20px;
+        margin-left: 10px;
+        background: #ffffff;
+        box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+        z-index: 2;
+        width: 500px;
+    }
+
+    .card-grafik {
+      border: transparent;
+      margin-top: 30px;
+    }
+
+    .text-header-grafik{
+      font-family: 'Montserrat', sans-serif;
+      font-size: 23px;
+      text-align: start;
+      width: 300px;
+      border: transparent;
+      background-color: #ffffff;
+    }
+
+    .page-dashboard {
+      height: 100%;
+      background-color: #ebedef;
+    }
   
     .containerTabel {
-      width: 1000px;
-      height: 400px;
+        grid-row:2/2;
+        width: 100%;
+        height: 400px;
+        position: relative;
+        text-align: center;
+        display: flex;
+        margin-bottom: 10px;
     }
   
     .table-box {
-      width: 1000px;
-      height: 400px;
-      padding: 30px;
-      position: absolute;
-      margin-left: 15px;
-      background: #FFFFFF;
-      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
-      border-radius: 10px;
-      z-index: 2;
+        position: absolute;
+        padding: 20px;
+        margin-left: 15px;
+        background: #ffffff;
+        box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+        z-index: 2;
+        display: grid;
+        align-content:space-between
     }
   
     /* Gaya untuk pesan validasi */

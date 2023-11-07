@@ -16,7 +16,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       ID_Dosen_Wali: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Data_Dosen_Wali',
+          key: 'id',
+          as: 'ID_Dosen_Wali',
+        }
       },
       createdAt: {
         allowNull: false,

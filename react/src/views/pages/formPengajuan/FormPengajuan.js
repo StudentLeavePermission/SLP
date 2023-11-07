@@ -19,7 +19,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
 import { useNavigate, useParams } from 'react-router-dom'
-import { idMahasiswa } from '../login/Login'
+// import { idMahasiswa } from '../login/Login'
 
 const baseURL = "http://localhost:3000/data-pengajuan/";
 
@@ -30,7 +30,7 @@ const CustomCheckboxTable = () => {
   const [mahasiswa, setMahasiswa] = useState([]);
   const [mataKuliah, setMataKuliah] = useState([]);
   const [jamPelajaran, setJamPelajaran] = useState([]);
-  const [id, setIdMahasiswa] = useState(idMahasiswa)
+  const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs')) // fetch id mahasiswa dari session storage
   const [nama, setNama] = useState("")
   const [NIM, setNIM] = useState("")
   const [kelas, setKelas] = useState(1)
@@ -75,7 +75,8 @@ const CustomCheckboxTable = () => {
   const dayName = getDayName(selectedDate)
 
   useEffect(() => {
-    console.log('id', id)
+    setIdMahasiswa(sessionStorage.getItem('idMhs'))
+    console.log('id MAHASISWA: ', id)
 
     // Lakukan apa pun yang Anda butuhkan dengan URL ini, misalnya, permintaan API.
     console.log(urlJadwalKelasGetOne);
@@ -105,7 +106,7 @@ const CustomCheckboxTable = () => {
         setNIM(data.data.NIM);
         setKelas(data.data.ID_Kelas);
         console.log('kelasnya', data.data.ID_Kelas);
-        setIdMahasiswa(data.data.id);
+        setIdMahasiswa(data.data.id? data.data.id : id);
 
         // Setelah mendapatkan data Mahasiswa, lakukan permintaan kedua
         const urlJadwalKelasGetOne = `http://localhost:3000/jadwal-kelas/${data.data.ID_Kelas}/${hari}`;
@@ -139,12 +140,46 @@ const CustomCheckboxTable = () => {
     }
   }
 
-  /* useEffect(() => {
-    console.log('jadwalKelas:', jadwalKelas.data[0].id);
-  }, [jadwalKelas]); */
+  function tambahIntervalWaktu(time, intervalMenit) {
+    const [jam, menit, detik] = time.split(':').map(Number);
+  
+    const totalMenit = (jam * 60) + menit;
+  
+    const totalMenitBaru = totalMenit + intervalMenit;
+  
+    const jamBaru = Math.floor(totalMenitBaru / 60);
+    const sisaMenit = totalMenitBaru % 60;
+  
+    // Format hasil baru sebagai tipe data time (HH:MM:SS)
+    const waktuBaru = `${jamBaru.toString().padStart(2, '0')}:${sisaMenit.toString().padStart(2, '0')}:${detik.toString().padStart(2, '0')}`;
+  
+    return waktuBaru;
+  }
+
+  function getJamPelajaran (data, id_jam){
+    let i = 0;
+    while (i < data.length){
+      if (data[i].id == id_jam){
+        return data[i].Waktu_Mulai;
+      }
+      i++;
+    }
+    return "NULL";
+  }
+
+  function getNamaMatkul (data, id_matkul){
+    let i = 0;
+    while (i < data.length){
+      if (data[i].Data_Mata_Kuliah.id == id_matkul){
+        return data[i].Data_Mata_Kuliah.Nama_Mata_Kuliah;
+      }
+      i++;
+    }
+    return "NULL";
+  }
 
 
-  function createPost() {// Panggil fungsi getTanggalHariIni() untuk mendapatkan tanggal hari ini.
+  function createPost() {
 
     if (selectedDates.length === 0) {
       selectedDates.push({ date: new Date() });
@@ -219,7 +254,7 @@ const CustomCheckboxTable = () => {
           axios
             .post(baseURL, data)
             .then((response) => {
-              setPost(response.data);
+              //setPost(response.data);
             })
             .catch((error) => {
               console.error("Error:", error);
@@ -230,95 +265,6 @@ const CustomCheckboxTable = () => {
     }
 
   }
-
-  // const sendDataToAPI = async (e) => {
-  //   e.preventDefault();
-  //   console.log(idMahasiswa);
-  //   try {
-  //      axios.post('http://localhost:3000/data-pengajuan/', {
-  //       idMahasiswa,
-  //       keterangan,
-  //       jenisIzin,
-  //       idJadwalKelas,
-  //       tanggalPengajuan,
-  //       tanggalAbsen,
-  //       fileBukti,
-  //       statusPengajuan,
-  //       });
-  //       console.log('berhasul');
-  //   } catch (error) {
-  //     console.error('Terjadi kesalahan:', error);
-  //   }
-  // };
-
-
-
-  // Mendapatkan nama hari dari tanggal yang dipilih
-
-  // Fungsi untuk mendapatkan data tabel berdasarkan hari yang dipilih
-  const getTableDataForDay = (dayName) => {
-    // Tambahkan logika di sini untuk mengambil data sesuai dengan hari yang dipilih
-    switch (dayName) {
-      case 'Minggu':
-        return [
-          {
-            id: 'minggu-checkbox1',
-            jamPelajaran: '08:10 - 09:40',
-            namaMataKuliah: 'Komgraf',
-            isChecked: false,
-          },
-          {
-            id: 'minggu-checkbox2',
-            jamPelajaran: '10:45 - 12:15',
-            namaMataKuliah: 'Komgraf',
-            isChecked: false,
-          },
-          // Tambahkan data lainnya untuk Minggu
-        ]
-      case 'Senin':
-        return [
-          {
-            id: 'senin-checkbox1',
-            jamPelajaran: '08:00 - 09:30',
-            namaMataKuliah: 'Matematika',
-            isChecked: false,
-          },
-          {
-            id: 'senin-checkbox2',
-            jamPelajaran: '09:45 - 11:15',
-            namaMataKuliah: 'Bahasa Inggris',
-            isChecked: false,
-          },
-          // Tambahkan data lainnya untuk Senin
-        ]
-      case 'Selasa':
-        return [
-          {
-            id: 'selasa-checkbox3',
-            jamPelajaran: '08:00 - 09:30',
-            namaMataKuliah: 'Fisika',
-            isChecked: false,
-          },
-          {
-            id: 'selasa-checkbox4',
-            jamPelajaran: '09:45 - 11:15',
-            namaMataKuliah: 'Kimia',
-            isChecked: false,
-          },
-          // Tambahkan data lainnya untuk Selasa
-        ]
-      default:
-        return [] // Default kosong jika hari tidak dikenali
-    }
-  }
-
-  // Gunakan useEffect untuk memperbarui data tabel saat tanggal berubah
-  useEffect(() => {
-    const dataForSelectedDay = getTableDataForDay(dayName)
-    setTableData(dataForSelectedDay)
-  }, [selectedDate, dayName]) // Sertakan dayName dalam dependency array
-
-  // Fungsi untuk menangani perubahan checkbox
 
   const handleCheckboxChange = (id) => {
     // Copy state checkboxStatus menjadi objek baru
@@ -542,8 +488,8 @@ const CustomCheckboxTable = () => {
                           onChange={() => handleCheckboxChange(item.id)}
                         />
                       </td>
-                      <td><p>{jamPelajaran[item.ID_Jam_Pelajaran_Start - 1].Waktu_Mulai}</p></td>
-                      <td>{mataKuliah[index].Data_Mata_Kuliah.Nama_Mata_Kuliah}</td>
+                      <td><p>{getJamPelajaran(jamPelajaran, item.ID_Jam_Pelajaran_Start)+" - "+ tambahIntervalWaktu(getJamPelajaran(jamPelajaran, item.ID_Jam_Pelajaran_End), 50)}</p></td>
+                      <td>{getNamaMatkul(mataKuliah, item.ID_Matkul)}</td>
                     </tr>
                   );
                 })}

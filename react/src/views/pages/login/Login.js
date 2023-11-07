@@ -15,7 +15,7 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import '../../../scss/_variables.scss'
 import './style.css'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie'
 
@@ -27,6 +27,7 @@ export let idDosenWali = '';
 
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
@@ -46,8 +47,8 @@ const Login = () => {
     // Jika role berubah, navigasikan ke halaman dengan role yang baru
     if (role) {
       setTimeout(() => {
-        navigate(`/${role}`);
-      }, 800); 
+        navigate(`/${role}/dashboard`);
+      }, 800);
     }
   }, [role, navigate]);
 
@@ -97,6 +98,8 @@ const Login = () => {
                   const data = response.data.data;
                   idDosen = data.id;
                   console.log('iddosennnnnn', idDosen);
+                  setSearchParams({ idDosen });
+                  sessionStorage.setItem('idDosen', idDosen)
                   setRole('dosen');
                 } catch (error) {
                   console.error('Error fetching data:', error);
@@ -111,7 +114,7 @@ const Login = () => {
               alert('Email or password is invalid');
             });
         } else if (username === 'admin') {
-          setRole('admin'); 
+          setRole('admin');
         } else if (isNIM(username)) {
           axios
             .post('http://localhost:3000/data-mahasiswa/login', {
@@ -126,6 +129,8 @@ const Login = () => {
                   const response = await axios.get(apiURL);
                   const data = response.data.data;
                   idMhs = data.id;
+                  setSearchParams({ idMhs });
+                  sessionStorage.setItem('idMhs', idMhs)
                   console.log(idMhs);
                   setRole('mahasiswa');
                 } catch (error) {
@@ -143,12 +148,13 @@ const Login = () => {
         } else {
           alert ('Invalid Username');
         }
+        console.log("ID ID ID ID (idMhs): " + idMhs + ", ID ID ID ID (idDosen): " + idDosen);
       } catch (error){
         alert('Error1234211332');
       }
-      
+
     }
-  }  
+  }
 
   return (
     <div className="page">

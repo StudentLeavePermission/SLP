@@ -1,10 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const axios = require('axios');
 const dataDosenController = require('../controllers/dataDosenController');
 
 // Get all lecturers
 router.get('/', dataDosenController.getAllDataDosen);
+
+// Get all lecturers in a formatted way
+router.get('/getDosenFormatted', dataDosenController.getAllDataDosenFormatted);
+
+// Export all lecturers to Excel
+router.get('/getAllExport', dataDosenController.getAllDosenExport);
 
 router.post('/create', dataDosenController.createDataDosen);
 
@@ -17,5 +22,7 @@ router.patch('/patch/:id', dataDosenController.editDataDosen);
 router.get('/get/:id', dataDosenController.getOneDataDosen);
 
 router.get('/getformatted/:id', dataDosenController.getoneDosenFormatted);
+
+router.get('/getdosenclass/:id', dataDosenController.getDosenClass);
 
 module.exports = router;
