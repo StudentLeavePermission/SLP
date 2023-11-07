@@ -260,7 +260,7 @@ exports.getCountOfLeaveRequests = async (req, res) => {
       
 
 
-
+      
       const dataPengajuan = await Data_Pengajuan.getAll({
         where: {
           Tanggal_Izin: {
