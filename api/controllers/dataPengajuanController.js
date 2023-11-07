@@ -164,15 +164,26 @@ exports.getPengajuanFormatted = async (req, res) => {
     });
 
     // Menggabungkan data Mahasiswa dan Pengajuan dengan Tanggal_Izin yang diformat
-    const dataMahasiswaPengajuan = mahasiswa.map((mhs) => {
-      const matchingPengajuan = pengajuan.find((p) => p.ID_Mahasiswa === mhs.id);
-      return {
-        Nama: mhs.Nama,
-        NIM: mhs.NIM,
-        Jenis_Izin: matchingPengajuan ? matchingPengajuan.Jenis_Izin : null,
-        Tanggal_Izin: matchingPengajuan ? formatDate(matchingPengajuan.Tanggal_Izin) : null,
-      };
-    }).filter((item) => item.Jenis_Izin !== null);
+    const dataMahasiswaPengajuan = [];
+    mahasiswa.forEach((mhs) => {
+      const matchingPengajuan = pengajuan.filter((p) => p.ID_Mahasiswa === mhs.id);
+      const uniquePengajuan = {};
+
+      matchingPengajuan.forEach((peng) => {
+        const key = `${peng.Jenis_Izin}_${formatDate(peng.Tanggal_Pengajuan)}`;
+        if (!uniquePengajuan[key]) {
+          uniquePengajuan[key] = {
+            id: peng.id, // Tambahkan id di sini
+            Nama: mhs.Nama,
+            NIM: mhs.NIM,
+            Jenis_Izin: peng.Jenis_Izin,
+            Tanggal_Pengajuan: formatDate(peng.Tanggal_Pengajuan),
+          };
+        }
+      });
+
+      dataMahasiswaPengajuan.push(...Object.values(uniquePengajuan));
+    });
 
     // Formatting data kelas
     const currentYear = new Date().getFullYear();
