@@ -64,6 +64,10 @@
       border-radius: 3px;
       outline: none;
     }
+
+    .tabel .aksi button:last-child {
+      margin-right: 0; /* Tidak ada margin kanan pada tombol terakhir */
+    }
   
     .margin-button{
       margin-left: 20px;
@@ -360,11 +364,19 @@
 
     .card-grafik {
       border: transparent;
+      margin-top: 30px;
+    }
+
+    .text-header-grafik{
+      font-family: 'Montserrat', sans-serif;
+      font-size: 23px;
+      text-align: start;
+      width: 300px;
+      border: transparent;
+      background-color: #ffffff;
     }
 
     .page-dashboard {
-      width: 1366px;
-      min-height: 768px;
       height: 100%;
       background-color: #ebedef;
     }
