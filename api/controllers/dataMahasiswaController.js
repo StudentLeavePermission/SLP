@@ -78,7 +78,28 @@ const getAllStudents = async (req, res) => {
   }
 };
 
+const getStudentOne = async (req, res) => {
+  try {
+    const { id } = req.params; // Assuming NIM is passed as a route parameter
+    const student = await Data_Mahasiswa.get({
+      where: { id: req.params.id },
+    });
 
+    if (student) {
+
+      res.send({
+        message: "Student found successfully",
+        data: student,
+      });
+      console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+    } else {
+      res.status(404).json({ message: "Student not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
 
@@ -412,6 +433,7 @@ const RekapIzinDetail = async (req, res) => {
 module.exports = {
   getAllStudents,
   getStudent,
+  getStudentOne,
   loginStudent,
   registerStudent,
   protectedContent,
