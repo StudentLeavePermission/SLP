@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 
 function TabelCRUD() {
   const [data, setData] = useState([]);
+  const [dosenWali, setDosenWali] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [searchText, setSearchText] = useState('');
@@ -16,6 +17,7 @@ function TabelCRUD() {
 
   useEffect(() => {
     getAllDataDosen();
+    getAllDataDosenWali();
   }, []);
 
   const getAllDataDosen = async () => {
@@ -26,21 +28,53 @@ function TabelCRUD() {
       console.error('Error fetching data:', error);
     }
   };
+  
+  // Mengambil data dari data-dosen-wali
+  const getAllDataDosenWali = async () => {
+    try {
+      const responseDosenWali = await axios.get('http://localhost:3000/data-dosen-wali');
+      setDosenWali(responseDosenWali.data.data);
+      console.log("data dosen wali:", responseDosenWali.data.data);
+    } catch (error) {
+      console.error('Error fetching data from data-dosen-wali:', error);
+    }
+  };
 
   // Function to delete data
   const hapusData = async (id) => {
-    const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
-
-    if (confirmation) {
       try {
-        await axios.delete(`http://localhost:3000/data-dosen/delete/${id}`);
-        const newData = data.filter((item) => item.id !== id);
-        setData(newData);
+        // Periksa apakah ID dosen ada di tabel data_dosen_wali
+        const dosenWaliTerkait = dosenWali.find((dosen) => dosen.ID_Dosen === id);
+  
+        if (dosenWaliTerkait) {
+          // Jika ditemukan, hapus data dari tabel data_dosen_wali
+          const confirmationDosenWali = window.confirm('Anda yakin ingin menghapus data ini dari dosen wali?');
+          if (confirmationDosenWali){
+            await axios.delete(`http://localhost:3000/data-dosen-wali/delete/${id}`);
+            try {
+              await axios.patch(`http://localhost:3000/data-kelas/update/${id}`, {
+                ID_Dosen_Wali: null,
+              });
+              console.log("ada isinya ga:", ID_Dosen_Wali);
+              console.log("Update berhasil!");
+            } catch (error) {
+              console.error("Terjadi kesalahan saast melakukan pembaruan:", error);
+            }
+          }
+        }
+        
+        const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
+        if (confirmation){
+          // Hapus data dari tabel data_dosen
+          await axios.delete(`http://localhost:3000/data-dosen/delete/${id}`);
+          const newData = data.filter((item) => item.id !== id);
+          setData(newData); 
+        }
       } catch (error) {
         console.error('Error deleting data:', error);
       }
-    }
   };
+  
 
   const handleSort = (criteria) => {
     if (criteria === sortBy) {
