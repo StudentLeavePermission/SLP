@@ -16,9 +16,13 @@ const dashboardDosen = () => {
     const [mahasiswa, setMahasiswa] = useState([]);
     const [mataKuliah, setMataKuliah] = useState([]);
     const [jamPelajaran, setJamPelajaran] = useState([]);
-    const [Sakit, setSakit] = useState(0);
-    const [Izin, setIzin] = useState(0);
+    const [SakitGenap, setSakitGenap] = useState(0);
+    const [IzinGenap, setIzinGenap] = useState(0);
+    const [SakitGanjil, setSakitGanjil] = useState(0);
+    const [IzinGanjil, setIzinGanjil] = useState(0);
     const [Semester, setSemester] = useState('');
+    const [Genap, setSemesterGenap] = useState('');
+    const [Ganjil, setSemesterGanjil] = useState('');
     const [JumlahMhs, setMhs] = useState(0);
     const [NamaKelas, setNamaKelas] = useState('');
     const getDayName = (date) => {
@@ -46,26 +50,47 @@ const dashboardDosen = () => {
       
       const getAllLeaveRequests = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/data-pengajuan/pengajuantrend/${id}`);
+            const response = await axios.get(`http://localhost:3000/data-pengajuan/pengajuanTrendNew/${id}`);
             console.log('trend aja', response.data);
             console.log('trend izin aja', response.data.dataJumlahIzin);
             console.log('trend sakit aja', response.data.dataJumlahSakit);
             console.log('trend semester aja', response.data.semester);
 
-            // Menampung seluruh jumlah izin perbulan
-            const IzinBulanan = response.data.dataJumlahIzin;
-            setIzin(IzinBulanan);
-            console.log('Ini bener ga sih izin??', IzinBulanan);
+            // Menampung seluruh jumlah izin semester ganjil
+            const IzinGanjil = response.data.dataJumlahIzinGanjil;
+            setIzinGanjil(IzinGanjil);
+            console.log('Ini bener ga sih izin ganjil??', IzinGanjil);
 
-            // Menampung seluruh jumlah sakit perbulan
-            const SakitBulanan = response.data.dataJumlahSakit;
-            setSakit(SakitBulanan);
-            console.log('Ini bener ga sih sakit??', SakitBulanan);
+            // Menampung seluruh jumlah izin semester genap
+            const IzinGenap = response.data.dataJumlahIzinGenap;
+            setIzinGenap(IzinGenap);
+            console.log('Ini bener ga sih izin genap??', IzinGenap);
+
+            // Menampung seluruh jumlah sakit semester ganjil
+            const SakitGanjil = response.data.dataJumlahSakitGanjil;
+            setSakitGanjil(SakitGanjil);
+            console.log('Ini bener ga sih izin ganjil??', SakitGanjil);
+
+            // Menampung seluruh jumlah sakit semester genap
+            const SakitGenap = response.data.dataJumlahSakitGenap;
+            setSakitGenap(SakitGenap);
+            console.log('Ini bener ga sih izin genap??', SakitGenap);
 
             // Menampung string ganjil/genap
             const semester = response.data.semester;
-            setSemester(semester);
-            console.log('Ini bener ga sih semesteer??', semester);
+            let semesternew = 'Ganjil';
+            setSemester(semesternew);
+            console.log('Ini bener ga sih semesteer??', semesternew);
+
+            // Menampung string bulan Semester Genap
+            const bulanGenap = response.data.dataBulanGenap;
+            setSemesterGenap(bulanGenap);
+            console.log('Ini bener ga sih Semester Genap??', bulanGenap);
+
+            // Menampung string bulan Semester Ganjil
+            const bulanGanjil = response.data.dataBulanGanjil;
+            setSemesterGanjil(bulanGanjil);
+            console.log('Ini bener ga sih Semesteer Ganjil??', bulanGanjil);
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -293,36 +318,36 @@ const dashboardDosen = () => {
                 </div>
                 <div className="containerTabelTrend jarak-container">
                     <div className="containerTabelTrend box-blue"></div>
-                        <div className="containerTabelTrend table-box">
-                            <CCard className="mb-4 card-grafik">
-                                <CCardHeader>Trend Pengajuan Semester {Semester}</CCardHeader>
-                                  <CCardBody>
-                                    <CChartLine
-                                      data={{
-                                        labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-                                        datasets: [
-                                          {
-                                            label: 'Jumlah Izin',
-                                            backgroundColor: 'rgba(220, 220, 220, 0.2)',
-                                            borderColor: 'rgba(220, 220, 220, 1)',
-                                            pointBackgroundColor: 'rgba(220, 220, 220, 1)',
-                                            pointBorderColor: '#fff',
-                                            data: Izin, // Gunakan data dari setIzin
-                                          },
-                                          {
-                                            label: 'Jumlah Sakit',
-                                            backgroundColor: 'rgba(151, 187, 205, 0.2)',
-                                            borderColor: 'rgba(151, 187, 205, 1)',
-                                            pointBackgroundColor: 'rgba(151, 187, 205, 1)',
-                                            pointBorderColor: '#fff',
-                                            data: Sakit, // Gunakan data dari setSakit
-                                          },
-                                        ],
-                                      }}
-                                    />
-                                  </CCardBody>
-                            </CCard> 
-                        </div>
+                      <div className="containerTabelTrend table-box">
+                      <CCard className="mb-4 card-grafik">
+                        <CCardHeader>Trend Pengajuan Semester {Semester}</CCardHeader>
+                        <CCardBody>
+                          <CChartLine
+                            data={{
+                              labels: Semester === 'Ganjil' ? Ganjil : Genap,
+                              datasets: [
+                                {
+                                  label: 'Jumlah Izin',
+                                  backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                                  borderColor: 'rgba(220, 220, 220, 1)',
+                                  pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                                  pointBorderColor: '#fff',
+                                  data: Semester === 'Ganjil' ?  IzinGanjil : IzinGenap, // Gunakan data dari setIzin
+                                },
+                                {
+                                  label: 'Jumlah Sakit',
+                                  backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                                  borderColor: 'rgba(151, 187, 205, 1)',
+                                  pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                                  pointBorderColor: '#fff',
+                                  data: Semester === 'Ganjil' ?  SakitGanjil : SakitGenap,  // Gunakan data dari setSakit
+                                },
+                              ],
+                            }}
+                          />
+                        </CCardBody>
+                      </CCard>
+                      </div>
                 </div>
             </div>
         </div>
