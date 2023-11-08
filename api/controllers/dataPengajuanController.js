@@ -530,11 +530,6 @@ exports.getAllDataPengajuan = async (req, res) => {
   }
 };
 
-
-
-
-
-
 exports.getCountOfLeaveRequests = async (req, res) => {
   try {
     const { jenis, prodi } = req.params;
@@ -555,11 +550,13 @@ exports.getCountOfLeaveRequests = async (req, res) => {
       }
     });
 
-    // const mahasiswa = await Data_Mahasiswa.getAllWhere({
-    //   where: {
-    //     ID_Kelas: kelas.id
-    //   }
-    // });
+    console.log ('ini data kelas:', kelas);
+
+    const mahasiswa = await Data_Mahasiswa.getAll({
+      where: { ID_Kelas: kelas.map((kls) => kls.id) },
+    });
+
+    console.log ('ini data mahasiswa:', mahasiswa);
 
     //Cek bulan untuk memisahkan semester
     while (month < 12){
@@ -569,11 +566,9 @@ exports.getCountOfLeaveRequests = async (req, res) => {
       // Tanggal akhir bulan
       const endDate = new Date(currentYear, month, 31); 
       
-
-
-      
       const dataPengajuan = await Data_Pengajuan.getAll({
         where: {
+          ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id),
           Tanggal_Izin: {
             [Op.and]: [
               { [Op.gte]: startDate }, // Tanggal izin >= tanggal awal Januari
@@ -617,6 +612,65 @@ exports.deleteLeaveRequest = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+exports.getCountOfLeaveRequestsTable = async (req, res) => {
+  try {
+    const { prodi } = req.params;
+    
+    const jmlPengajuan = Array.from({ length: 12 }, () => 0);
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear(); 
+
+    //variabel untuk sakit
+
+
+    //variabel untuk izin
+
+    //Cek bulan untuk memisahkan semester
+    while (month < 12){
+      // Tanggal awal bulan
+      const startDate = new Date(currentYear, month, 1); 
+
+      // Tanggal akhir bulan
+      const endDate = new Date(currentYear, month, 31); 
+      
+
+
+      
+      const dataPengajuan = await Data_Pengajuan.getAll({
+        where: {
+          Tanggal_Izin: {
+            [Op.and]: [
+              { [Op.gte]: startDate }, // Tanggal izin >= tanggal awal Januari
+              { [Op.lte]: endDate } // Tanggal izin <= tanggal akhir Januari
+            ]
+          },
+          Status_Pengajuan: 'Delivered',
+          Jenis_Izin: jenis
+        }
+      });
+
+      if (dataPengajuan) {
+        jmlPengajuan[month]  = dataPengajuan.length;
+      }
+
+      month += 1;
+    }
+
+    if (jmlPengajuan) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: jmlPengajuan
+      })
+    }
+  } catch (error) {
+    console.error(error);
+
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
