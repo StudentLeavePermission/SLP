@@ -534,13 +534,41 @@ exports.getCountOfLeaveRequests = async (req, res) => {
   try {
     const { jenis, prodi } = req.params;
     
-    const jmlPengajuan = Array.from({ length: 12 }, () => 0);
+    const jmlPengajuan = Array.from({ length: 6 }, () => 0);
 
-    // Mendapatkan tahun sekarang
-    const currentYear = new Date().getFullYear(); 
+    let namaBulan = [];
+
+    const currentMonth = new Date().getMonth();
 
     // Mengecek dari bulan januari
     let month = 0;
+
+    if (currentMonth > 6) {
+      namaBulan = [
+        'July',
+        'Aug',
+        'Sept',
+        'Oct',
+        'Nov',
+        'Dec'
+      ]
+      
+      month = 7;
+    } else {
+      namaBulan = [
+        'Jan',
+        'Feb',
+        'March',
+        'April',
+        'May',
+        'June'
+      ];
+
+      month = 1;
+    }
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear(); 
 
     const kelas = await Data_Kelas.getAllWhere({
       where: {
@@ -559,12 +587,12 @@ exports.getCountOfLeaveRequests = async (req, res) => {
     console.log ('ini data mahasiswa:', mahasiswa);
 
     //Cek bulan untuk memisahkan semester
-    while (month < 12){
+    while (month <= 12 && month >=1){
       // Tanggal awal bulan
-      const startDate = new Date(currentYear, month, 1); 
+      let startDate = new Date(currentYear, month, 1); 
 
       // Tanggal akhir bulan
-      const endDate = new Date(currentYear, month, 31); 
+      let endDate = new Date(currentYear, month, 31); 
       
       const dataPengajuan = await Data_Pengajuan.getAll({
         where: {
@@ -581,7 +609,10 @@ exports.getCountOfLeaveRequests = async (req, res) => {
       });
 
       if (dataPengajuan) {
-        jmlPengajuan[month]  = dataPengajuan.length;
+        if (currentMonth >= 7){
+          jmlPengajuan[month-6]  = dataPengajuan.length;
+        } else {
+          jmlPengajuan[month]  = dataPengajuan.length;}
       }
 
       month += 1;
@@ -590,6 +621,7 @@ exports.getCountOfLeaveRequests = async (req, res) => {
     if (jmlPengajuan) {
       res.send({
         message: "Leave Requests found successfully",
+        months: namaBulan,
         data: jmlPengajuan
       })
     }
