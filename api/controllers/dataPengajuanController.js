@@ -530,22 +530,45 @@ exports.getAllDataPengajuan = async (req, res) => {
   }
 };
 
-
-
-
-
-
 exports.getCountOfLeaveRequests = async (req, res) => {
   try {
     const { jenis, prodi } = req.params;
     
-    const jmlPengajuan = Array.from({ length: 12 }, () => 0);
+    const jmlPengajuan = Array.from({ length: 6 }, () => 0);
 
-    // Mendapatkan tahun sekarang
-    const currentYear = new Date().getFullYear(); 
+    let namaBulan = [];
+
+    const currentMonth = new Date().getMonth();
 
     // Mengecek dari bulan januari
     let month = 0;
+
+    if (currentMonth > 6) {
+      namaBulan = [
+        'July',
+        'Aug',
+        'Sept',
+        'Oct',
+        'Nov',
+        'Dec'
+      ]
+      
+      month = 7;
+    } else {
+      namaBulan = [
+        'Jan',
+        'Feb',
+        'March',
+        'April',
+        'May',
+        'June'
+      ];
+
+      month = 1;
+    }
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear(); 
 
     const kelas = await Data_Kelas.getAllWhere({
       where: {
@@ -555,11 +578,90 @@ exports.getCountOfLeaveRequests = async (req, res) => {
       }
     });
 
-    // const mahasiswa = await Data_Mahasiswa.getAllWhere({
-    //   where: {
-    //     ID_Kelas: kelas.id
-    //   }
-    // });
+    console.log ('ini data kelas:', kelas);
+
+    const mahasiswa = await Data_Mahasiswa.getAll({
+      where: { ID_Kelas: kelas.map((kls) => kls.id) },
+    });
+
+    console.log ('ini data mahasiswa:', mahasiswa);
+
+    //Cek bulan untuk memisahkan semester
+    while (month <= 12 && month >=1){
+      // Tanggal awal bulan
+      let startDate = new Date(currentYear, month, 1); 
+
+      // Tanggal akhir bulan
+      let endDate = new Date(currentYear, month, 31); 
+      
+      const dataPengajuan = await Data_Pengajuan.getAll({
+        where: {
+          ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id),
+          Tanggal_Izin: {
+            [Op.and]: [
+              { [Op.gte]: startDate }, // Tanggal izin >= tanggal awal Januari
+              { [Op.lte]: endDate } // Tanggal izin <= tanggal akhir Januari
+            ]
+          },
+          Status_Pengajuan: 'Delivered',
+          Jenis_Izin: jenis
+        }
+      });
+
+      if (dataPengajuan) {
+        if (currentMonth >= 7){
+          jmlPengajuan[month-6]  = dataPengajuan.length;
+        } else {
+          jmlPengajuan[month]  = dataPengajuan.length;}
+      }
+
+      month += 1;
+    }
+
+    if (jmlPengajuan) {
+      res.send({
+        message: "Leave Requests found successfully",
+        months: namaBulan,
+        data: jmlPengajuan
+      })
+    }
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.deleteLeaveRequest = async (req, res) => {
+  try {
+    const whereClause = { id: req.params.id }; // Contoh: menghapus data berdasarkan ID
+    const deletedRowCount = await Data_Pengajuan.delete(whereClause);
+
+    if (deletedRowCount === 0) {
+      return res.status(404).json({ msg: 'Leave Request not found' });
+    }else{
+      res.status(200).json({ msg: 'Leave Request deleted' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+exports.getCountOfLeaveRequestsTable = async (req, res) => {
+  try {
+    const { prodi } = req.params;
+    
+    const jmlPengajuan = Array.from({ length: 12 }, () => 0);
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear(); 
+
+    //variabel untuk sakit
+
+
+    //variabel untuk izin
 
     //Cek bulan untuk memisahkan semester
     while (month < 12){
@@ -601,22 +703,6 @@ exports.getCountOfLeaveRequests = async (req, res) => {
   } catch (error) {
     console.error(error);
 
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
-
-exports.deleteLeaveRequest = async (req, res) => {
-  try {
-    const whereClause = { id: req.params.id }; // Contoh: menghapus data berdasarkan ID
-    const deletedRowCount = await Data_Pengajuan.delete(whereClause);
-
-    if (deletedRowCount === 0) {
-      return res.status(404).json({ msg: 'Leave Request not found' });
-    }else{
-      res.status(200).json({ msg: 'Leave Request deleted' });
-    }
-  } catch (error) {
-    console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
