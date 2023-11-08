@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../../../scss/styleCrud.css';
-import { CButton } from '@coreui/react';
+import { CCard, CCardBody, CCol, CCardHeader, CRow, CButton } from '@coreui/react'
+import {CChartLine} from '@coreui/react-chartjs'
 import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CIcon from '@coreui/icons-react';
@@ -16,6 +17,8 @@ const dashboardDosen = () => {
     const [mataKuliah, setMataKuliah] = useState([]);
     const [jamPelajaran, setJamPelajaran] = useState([]);
     const [Sakit, setSakit] = useState(0);
+    const [Izin, setIzin] = useState(0);
+    const [Semester, setSemester] = useState('');
     const [JumlahMhs, setMhs] = useState(0);
     const [NamaKelas, setNamaKelas] = useState('');
     const getDayName = (date) => {
@@ -24,16 +27,51 @@ const dashboardDosen = () => {
         return days[dayIndex];
       };
     const [hari, setHari] = useState(getDayName(new Date()));
+    const [searchText, setSearchText] = useState('');
+    const [sortBy, setSortBy] = useState('Nama');
+    const [sortOrder, setSortOrder] = useState('asc');
     const [id, setIdDosen] = useState(sessionStorage.getItem('idDosen'))
     const urlDosenGetOne = `http://localhost:3000/data-dosen/getdosenclass/${id}`;
     console.log('gatau ini bisa apa ngga', urlDosenGetOne);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(5);
+    const random = () => Math.round(Math.random() * 100);
 
       useEffect(() => {
         getAllDataDosen();
         getAllPengajuan();
-      }, []);    
+        getAllLeaveRequests();
+      }, []);   
+      
+      
+      const getAllLeaveRequests = async () => {
+        try {
+            const response = await axios.get(`http://localhost:3000/data-pengajuan/pengajuantrend/${id}`);
+            console.log('trend aja', response.data);
+            console.log('trend izin aja', response.data.dataJumlahIzin);
+            console.log('trend sakit aja', response.data.dataJumlahSakit);
+            console.log('trend semester aja', response.data.semester);
+
+            // Menampung seluruh jumlah izin perbulan
+            const IzinBulanan = response.data.dataJumlahIzin;
+            setIzin(IzinBulanan);
+            console.log('Ini bener ga sih izin??', IzinBulanan);
+
+            // Menampung seluruh jumlah sakit perbulan
+            const SakitBulanan = response.data.dataJumlahSakit;
+            setSakit(SakitBulanan);
+            console.log('Ini bener ga sih sakit??', SakitBulanan);
+
+            // Menampung string ganjil/genap
+            const semester = response.data.semester;
+            setSemester(semester);
+            console.log('Ini bener ga sih semesteer??', semester);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+      }
+
     
       const getAllDataDosen = async () => {
         try {
@@ -57,25 +95,53 @@ const dashboardDosen = () => {
 
       const getAllPengajuan = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/data-pengajuan/pengajuan/${id}`);
+            const response = await axios.get(`http://localhost:3000/data-pengajuan/pengajuantabel/${id}`);
             console.log('pengajuan aja', response.data);
-            console.log('ngecek cik pengajuan aja', response.data.dataDetail);
 
             // Ambil Pengajuan
-            const dataPengajuan = response.data.dataDetail;
+            const dataPengajuan = response.data.dataMahasiswaPengajuan;
             setDataPengajuan(dataPengajuan);
             console.log('bener ga nih pengajuannya', dataPengajuan);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
       }
+
+      const handleSort = (criteria) => {
+        if (criteria === sortBy) {
+          setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+          setSortBy(criteria);
+          setSortOrder('asc');
+        }
+      };
+    
+      // Function to filter data based on search text
+      const filteredData = dataPengajuan.filter((item) =>
+        item.Nama.toLowerCase().includes(searchText.toLowerCase())
+      );
+    
+      const sortedData = [...filteredData].sort((a, b) => {
+        const order = sortOrder === 'asc' ? 1 : -1;
+        
+        if (sortBy === 'Nama Mahasiswa') {
+          return order * a.Nama.localeCompare(b.Nama);
+        } else if (sortBy === 'NIM') {
+          return order * (a.NIM - b.NIM);
+        } else if (sortBy === 'Jumlah Izin') {
+          return order * (a.JumlahIzin - b.JumlahIzin); // Perbandingan berdasarkan angka
+        } else if (sortBy === 'Jumlah Sakit') {
+          return order * (a.JumlahSakit - b.JumlahSakit); // Perbandingan berdasarkan angka
+        }
+      });
+      
     
 
-      const pageNumbers = Math.ceil(dataPengajuan.length / itemsPerPage);
+      const pageNumbers = Math.ceil(sortedData.length / itemsPerPage);
 
       const indexOfLastItem = currentPage * itemsPerPage;
       const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-      const currentData = dataPengajuan.slice(indexOfFirstItem, indexOfLastItem);
+      const currentData = sortedData.slice(indexOfFirstItem, indexOfLastItem);
     
       const handleNextPage = () => {
         if (currentPage < pageNumbers) {
@@ -94,13 +160,14 @@ const dashboardDosen = () => {
         <div className='container'>
             <div className="grid-container">
                 <div className="box-information">
-                    <div className='box-blue box-information'>
-                    </div>
+                    <div className='box-blue box-information'></div>
                     <div className='box-white box-information'>
                       <div className="box-text-information">
                             <div className="d-flex justify-content-center flex-column">
                               <div className="text-information text-blue">Jumlah Mahasiswa {NamaKelas && `${NamaKelas}`}</div>
-                              <div className="text-information"> {JumlahMhs} Mahasiswa</div>
+                              <a href="#/dosen/dashboard/daftarMahasiswa">
+                                <div className="text-information"> {JumlahMhs} Mahasiswa</div>
+                              </a>
                             </div>
                             <div>
                                 <CIcon size={'5xl'}  icon={cilChartPie} />
@@ -128,55 +195,65 @@ const dashboardDosen = () => {
                 <h2>Rekap Mahasiswa</h2>
             </div>
             <div>
-                <div className="containerTabel">
-                <div className="containerTabel box-blue">
-                    
-                    </div>
-                    <div className="containerTabel table-box">
+                <div className="containerTabelRekap">
+                <div className="containerTabelRekap box-blue"></div>
+                    <div className="containerTabelRekap table-box">
+                        <div className="search-input-container">
+                            <input
+                            type="text"
+                            placeholder="Cari..."
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                            className="search-input"
+                            />
+                            <CIcon icon={cilSearch} className="search-icon" />
+                        </div>
                         <table className="tabel">
                         <thead>
                             <tr>
-                              <th className="header-cell rata table-font">Nomor</th>
-                              <th className="header-cell rata table-font">
-                                  <div>
-                                  Tanggal
-                                  </div>
-                              </th>
-                              <th className="header-cell rata table-font">
-                                  <div>
-                                      NIM
-                                  </div>
-                              </th>
-                              <th className="header-cell rata table-font">
-                                  <div>
-                                      Nama Mahasiswa
-                                  </div>
-                              </th>
-                              <th className="header-cell rata table-font">
-                                  <div>
-                                      Keterangan
-                                  </div>
-                              </th>
-                              <th className="header-cell rata table-font">
-                                  <div>
-                                      Info
-                                  </div>
-                              </th>
+                                <th className="header-cell rata table-font">Nomor</th>
+                                <th className="header-cell rata table-font">
+                                <div onClick={() => handleSort('Nama Mahasiswa')}>
+                                    Nama Mahasiswa
+                                    <span className="sort-icon">
+                                    {sortBy === 'Nama Mahasiswa' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                    </span>
+                                </div>
+                                </th>
+                                <th className="header-cell rata table-font">
+                                <div onClick={() => handleSort('NIM')}>
+                                    NIM
+                                    <span className="sort-icon">
+                                    {sortBy === 'NIM' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                    </span>
+                                </div>
+                                </th>
+                                <th className="header-cell rata table-font">
+                                <div onClick={() => handleSort('Jumlah Izin')}>
+                                    Jumlah Izin
+                                    <span className="sort-icon">
+                                    {sortBy === 'Jumlah Izin' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                    </span>
+                                </div>
+                                </th>
+                                <th className="header-cell rata table-font">
+                                <div onClick={() => handleSort('Jumlah Sakit')}>
+                                    Jumlah Sakit
+                                    <span className="sort-icon">
+                                    {sortBy === 'Jumlah Sakit' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                    </span>
+                                </div>
+                                </th>
                             </tr>
-                        </thead>
+                            </thead>
                         <tbody>
                             {currentData.map((item, index) => (
                                 <tr key={index}>
                                     <td className="cell rata table-font">{index +1 + (currentPage - 1) * itemsPerPage}</td>
-                                    <td className="cell rata table-font">{item.Tanggal_Pengajuan}</td>
-                                    <td className="cell rata table-font">{item.NIM}</td>
                                     <td className="cell rata table-font">{item.Nama}</td>
-                                    <td className="cell rata table-font">{item.Jenis_Izin}</td>
-                                    <td className="cell aksi">
-                                        <CButton href={`/#/dosen/verifyPengajuan/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
-                                            <CIcon icon={cilInfo} />
-                                        </CButton>                
-                                    </td>
+                                    <td className="cell rata table-font">{item.NIM}</td>
+                                    <td className="cell rata table-font">{item.JumlahIzin}</td>
+                                    <td className="cell rata table-font">{item.JumlahSakit}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -213,6 +290,39 @@ const dashboardDosen = () => {
                         </button>
                         </div>
                     </div>
+                </div>
+                <div className="containerTabelTrend jarak-container">
+                    <div className="containerTabelTrend box-blue"></div>
+                        <div className="containerTabelTrend table-box">
+                            <CCard className="mb-4 card-grafik">
+                                <CCardHeader>Trend Pengajuan Semester {Semester}</CCardHeader>
+                                  <CCardBody>
+                                    <CChartLine
+                                      data={{
+                                        labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+                                        datasets: [
+                                          {
+                                            label: 'Jumlah Izin',
+                                            backgroundColor: 'rgba(220, 220, 220, 0.2)',
+                                            borderColor: 'rgba(220, 220, 220, 1)',
+                                            pointBackgroundColor: 'rgba(220, 220, 220, 1)',
+                                            pointBorderColor: '#fff',
+                                            data: Izin, // Gunakan data dari setIzin
+                                          },
+                                          {
+                                            label: 'Jumlah Sakit',
+                                            backgroundColor: 'rgba(151, 187, 205, 0.2)',
+                                            borderColor: 'rgba(151, 187, 205, 1)',
+                                            pointBackgroundColor: 'rgba(151, 187, 205, 1)',
+                                            pointBorderColor: '#fff',
+                                            data: Sakit, // Gunakan data dari setSakit
+                                          },
+                                        ],
+                                      }}
+                                    />
+                                  </CCardBody>
+                            </CCard> 
+                        </div>
                 </div>
             </div>
         </div>

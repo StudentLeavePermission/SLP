@@ -13,7 +13,8 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('Data_Mahasiswa', [{
+    await queryInterface.bulkInsert('Data_Mahasiswa', [
+      {
       NIM: 221511001,
       Nama: 'Agam Andika',
       Password: await bcrypt.hash('Agam Gemblong', 10),
@@ -96,7 +97,36 @@ module.exports = {
       Foto_Profil: null,
       createdAt: new Date(),
       updatedAt: new Date()
-    }])
+    },
+    {
+      NIM: 221524036,
+      Nama: 'Dinda',
+      Password: await bcrypt.hash('dinda123', 10),
+      Nomor_Telp: '088888888888',
+      Nomor_Telp_Ortu: '088888888888',
+      Email: 'dindaaja@polban.ac.id',
+      ID_Kelas: 4,
+      Nama_Ortu: 'Ortu Agam',
+      Nomor_Telp_Ortu: '088888888888',
+      Foto_Profil: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      NIM: 221524016,
+      Nama: 'Agus',
+      Password: await bcrypt.hash('agus456', 10),
+      Nomor_Telp: '088888888888',
+      Nomor_Telp_Ortu: '088888888888',
+      Email: 'agusdoang@polban.ac.id',
+      ID_Kelas: 3,
+      Nama_Ortu: 'Ortu Agam',
+      Nomor_Telp_Ortu: '088888888888',
+      Foto_Profil: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ])
   },
 
   async down (queryInterface, Sequelize) {

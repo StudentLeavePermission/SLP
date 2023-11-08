@@ -21,8 +21,6 @@ router.get('/students', dataMahasiswaController.getAllStudents);
 
 router.get('/students/:id', dataMahasiswaController.getStudent);
 
-router.get('/students/coba/:id', dataMahasiswaController.getStudentOne);
-
 router.get('/students/getId/:NIM', dataMahasiswaController.getStudentId);
 
 router.post('/students/edit/:id', uploadImg.single('photo'), dataMahasiswaController.editStudent);
