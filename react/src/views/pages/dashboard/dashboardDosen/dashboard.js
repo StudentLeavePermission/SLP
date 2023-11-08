@@ -159,6 +159,7 @@ const dashboardDosen = () => {
         <>
         <div className='container'>
             <div className="grid-container">
+              <a href="#/dosen/dashboard/daftarMahasiswa">
                 <div className="box-information">
                     <div className='box-blue box-information'></div>
                     <div className='box-white box-information'>
@@ -173,6 +174,7 @@ const dashboardDosen = () => {
                         </div>
                     </div>
                 </div>
+              </a>
                 <div className="box-information">
                     <div className='box-blue box-information'>
                     </div>
