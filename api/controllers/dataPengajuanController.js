@@ -150,14 +150,15 @@ exports.createLeaveRequest = async (req, res) => {
     // );
 
     // Render the component to an HTML string
-    const emailHTML = ReactDOMServer.renderToStaticMarkup(emailComponent? emailComponent : 'Ada permohonan baru!');
+    // const emailHTML = ReactDOMServer.renderToStaticMarkup(emailComponent? emailComponent : 'Ada permohonan baru!');
 
     // Define your email message
     const mailOptions = {
       from: 'intljax6@gmail.com',
       to: 'jaxsix06@gmail.com',
       subject: 'New Request',
-      emailHTML,
+      // emailHTML,
+      text: `<html>Ada pengajuan terbaru!</html>`
     };
 
     // Send the email
