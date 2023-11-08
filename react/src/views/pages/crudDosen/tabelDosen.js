@@ -44,21 +44,39 @@ function TabelCRUD() {
   const hapusData = async (id) => {
       try {
         // Periksa apakah ID dosen ada di tabel data_dosen_wali
+        console.log("id dosen ini:", id);
         const dosenWaliTerkait = dosenWali.find((dosen) => dosen.ID_Dosen === id);
-  
+        console.log("id dosen ini2:", dosenWaliTerkait);
         if (dosenWaliTerkait) {
           // Jika ditemukan, hapus data dari tabel data_dosen_wali
           const confirmationDosenWali = window.confirm('Anda yakin ingin menghapus data ini dari dosen wali?');
           if (confirmationDosenWali){
-            await axios.delete(`http://localhost:3000/data-dosen-wali/delete/${id}`);
+            await axios.delete(`http://localhost:3000/data-dosen-wali/delete/${dosenWaliTerkait.id}`);
             try {
-              await axios.patch(`http://localhost:3000/data-kelas/update/${id}`, {
-                ID_Dosen_Wali: null,
-              });
-              console.log("ada isinya ga:", ID_Dosen_Wali);
-              console.log("Update berhasil!");
+              // Cari Kelas yang dipilih oleh dosen tersebut
+              const kelas = await axios.get('http://localhost:3000/data-kelas/getallformat');
+              const kelasData = kelas.data.data;
+              console.log("Data kelas:", kelasData);
+
+              const matchingKelas = kelasData.find(kelas => kelas.ID_Dosen_Wali === id);
+              console.log("ini kelas yang cocok:", matchingKelas);
+              if (matchingKelas) {
+                console.log("Data Dosen dengan id yang cocok:", matchingKelas);
+              } else {
+                console.log("Data Dosen dengan id tidak ditemukan.");
+              }
+              console.log("id kelasnya:", matchingKelas.id);
+              try {
+                await axios.patch(`http://localhost:3000/data-kelas/update/${matchingKelas.id}`, {
+                  ID_Dosen_Wali: null,
+                });
+                console.log("ada isinya ga:", ID_Dosen_Wali);
+                console.log("Update berhasil!");
+              } catch (error) {
+                console.error("Terjadi kesalahan saast melakukan pembaruan:", error);
+              }
             } catch (error) {
-              console.error("Terjadi kesalahan saast melakukan pembaruan:", error);
+              console.error("Terjadi kesalahan saat melakukan pembaruan:", error);
             }
           }
         }
