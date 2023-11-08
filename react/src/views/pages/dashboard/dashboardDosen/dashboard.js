@@ -159,14 +159,15 @@ const dashboardDosen = () => {
         <>
         <div className='container'>
             <div className="grid-container">
-              <a href="#/dosen/dashboard/daftarMahasiswa">
                 <div className="box-information">
                     <div className='box-blue box-information'></div>
                     <div className='box-white box-information'>
                       <div className="box-text-information">
                             <div className="d-flex justify-content-center flex-column">
                               <div className="text-information text-blue">Jumlah Mahasiswa {NamaKelas && `${NamaKelas}`}</div>
-                              <div className="text-information"> {JumlahMhs} Mahasiswa</div>
+                              <a href="#/dosen/dashboard/daftarMahasiswa">
+                                <div className="text-information"> {JumlahMhs} Mahasiswa</div>
+                              </a>
                             </div>
                             <div>
                                 <CIcon size={'5xl'}  icon={cilChartPie} />
@@ -174,7 +175,6 @@ const dashboardDosen = () => {
                         </div>
                     </div>
                 </div>
-              </a>
                 <div className="box-information">
                     <div className='box-blue box-information'>
                     </div>
