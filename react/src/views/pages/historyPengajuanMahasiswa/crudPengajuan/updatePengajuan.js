@@ -31,6 +31,8 @@ const UpdatePengajuanMahasiswa = () => {
     const jenis = ['Izin', 'Sakit'];
     const [jadwalKelas, setJadwalKelas] = useState([]);
     const [mahasiswa, setMahasiswa] = useState([]);
+    const [Nama, setNama] = useState("")
+    const [NIM, setNIM] = useState("")
     const [mataKuliah, setMataKuliah] = useState([]);
     const [jamPelajaran, setJamPelajaran] = useState([]);
     const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs'))
@@ -67,6 +69,8 @@ const UpdatePengajuanMahasiswa = () => {
             setKeterangan(response.data.data.Keterangan)
             setJadwalKelas(response.data.jadwal)
             setMahasiswa(response.data.mahasiswa[0].Data_Mahasiswa)
+            setNama(response.data.mahasiswa[0].Data_Mahasiswa.Nama)
+            setNIM(response.data.mahasiswa[0].Data_Mahasiswa.NIM)
             getAllLeaveRequests(response.data.mahasiswa[0].Data_Mahasiswa.id, response.data.data.Jenis_Izin, response.data.data.Tanggal_Pengajuan,   response.data.data.Keterangan, response.data.jadwal)
             console.log('coba', selectedjadwalcoba)
         } catch (error) {
@@ -424,7 +428,7 @@ const UpdatePengajuanMahasiswa = () => {
                                         <CFormLabel htmlFor="validationCustom01" className="table-font">
                                             Nama
                                         </CFormLabel>
-                                        <CFormInput type="text" id="validationCustom01" value={mahasiswa.Nama} placeholder="Ketikkan nama Anda" disabled />
+                                        <CFormInput type="text" id="validationCustom01" value={Nama} placeholder="Ketikkan nama Anda" disabled />
                                         <CFormFeedback valid>Nama sudah terisi!</CFormFeedback>
                                         <CFormFeedback invalid>Mohon Nama diisi</CFormFeedback>
                                     </CCol>
@@ -433,7 +437,7 @@ const UpdatePengajuanMahasiswa = () => {
                                         <CFormLabel htmlFor="validationCustom02" className="table-font">
                                             NIM
                                         </CFormLabel>
-                                        <CFormInput type="text" id="validationCustom02" placeholder="Ketikkan NIM Anda" value={mahasiswa.NIM} disabled />
+                                        <CFormInput type="text" id="validationCustom02" placeholder="Ketikkan NIM Anda" value={NIM} disabled />
                                         <CFormFeedback valid>NIM sudah terisi!</CFormFeedback>
                                         <CFormFeedback invalid>Mohon NIM diisi</CFormFeedback>
                                     </CCol>
