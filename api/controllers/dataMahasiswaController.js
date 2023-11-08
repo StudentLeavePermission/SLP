@@ -3,7 +3,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const basename = path.basename(__filename);
-const {mainModel} = require('../common/models');
+const { mainModel } = require('../common/models');
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 const Data_Kelas = new mainModel("Data_Kelas");
 const Data_Dosen_Wali = new mainModel("Data_Dosen_Wali");
@@ -33,10 +33,10 @@ function generatePassword() {
 const getAllStudents = async (req, res) => {
   try {
     const students = await Data_Mahasiswa.getAll();
-    
+
     // Membuat objek untuk memetakan ID_Kelas ke Nama_Kelas
     const kelasMap = {};
-    
+
     // Mengambil data kelas
     const kelas = await Data_Kelas.getAll();
     const AllKelas = await Data_Kelas.getAll();
@@ -51,10 +51,10 @@ const getAllStudents = async (req, res) => {
         where: { id: student.ID_Kelas }
       });
 
-      
-    
+
+
       return {
-        id : student.id,
+        id: student.id,
         NIM: student.NIM,
         Nama: student.Nama,
         ID_Kelas: student.ID_Kelas,
@@ -86,15 +86,15 @@ const getStudent = async (req, res) => {
       where: { id: id },
     });
     const kelas = await Data_Kelas.get({
-      where:{id: student.ID_Kelas}
+      where: { id: student.ID_Kelas }
     })
 
     const Wali = await Data_Dosen_Wali.get({
-      where:{id: kelas.ID_Dosen_Wali}
+      where: { id: kelas.ID_Dosen_Wali }
     });
 
     const WaliDosen = await Data_Dosen.get({
-      where:{id: Wali.ID_Dosen}
+      where: { id: Wali.ID_Dosen }
     });
 
     if (student) {
@@ -110,7 +110,7 @@ const getStudent = async (req, res) => {
           Nama_kelas: NKelas,
           prodi: prodi
         },
-        WaliDosen :WaliDosen,
+        WaliDosen: WaliDosen,
 
       });
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
@@ -128,7 +128,7 @@ const getStudentId = async (req, res) => {
   try {
     const { NIM } = req.params; // Assuming NIM is passed as a route parameter
     const student = await Data_Mahasiswa.get({
-      where: { NIM : NIM },
+      where: { NIM: NIM },
     });
 
     if (student) {
@@ -148,15 +148,15 @@ const getStudentId = async (req, res) => {
 
 
 const loginStudent = async (req, res) => {
-  
+
   try {
-    const {NIM, Password} = req.body;
+    const { NIM, Password } = req.body;
     const mhs = await Data_Mahasiswa.get({
       where: {
         NIM: NIM
       }
     });
-    
+
     if (mhs) {
       const isSame = await bcrypt.compare(Password, mhs.Password);
       console.log(Password + ", " + mhs.Password + ", isSame = " + isSame);
@@ -179,14 +179,14 @@ const loginStudent = async (req, res) => {
 
 const registerStudent = async (req, res) => {
   try {
- 
-    
+
+
     Password = generatePassword();
-    const {NIM, Nama, Nomor_Telp, Email, ID_Kelas, Nama_Ortu, Nomor_Telp_Ortu, Foto_Profil} = req.body;
-    
+    const { NIM, Nama, Nomor_Telp, Email, ID_Kelas, Nama_Ortu, Nomor_Telp_Ortu, Foto_Profil } = req.body;
+
     const data = {
       NIM,
-      Nama : Nama,
+      Nama: Nama,
       Password: await bcrypt.hash(Password, 10),
       Nomor_Telp,
       Email,
@@ -359,13 +359,13 @@ const RekapIzin = async (req, res) => {
       };
     });
 
-    
+
 
     console.log(mergedResults);
     res.send({
       message: "Rekap Izin sent successfully",
       data: mergedResults,
-      
+
     });
   } catch (error) {
     console.error('Terjadi kesalahan:', error);
@@ -376,13 +376,13 @@ const RekapIzin = async (req, res) => {
 
 const RekapIzinDetail = async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
     // Ambil data dari tabel "Data_Mahasiswa"
     const students = await Data_Mahasiswa.getAll();
 
     // Ambil hasil rekap izin
     const results = await Data_Pengajuan.getAllWhere({
-      where:{ ID_Mahasiswa: id }
+      where: { ID_Mahasiswa: id }
     });
 
     // Cocokkan data dengan ID_Mahasiswa
