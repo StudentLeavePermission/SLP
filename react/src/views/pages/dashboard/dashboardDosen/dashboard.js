@@ -78,9 +78,9 @@ const dashboardDosen = () => {
 
             // Menampung string ganjil/genap
             const semester = response.data.semester;
-            let semesternew = 'Ganjil';
-            setSemester(semesternew);
-            console.log('Ini bener ga sih semesteer??', semesternew);
+            // let semesternew = 'Ganjil';
+            setSemester(semester);
+            console.log('Ini bener ga sih semesteer??', semester);
 
             // Menampung string bulan Semester Genap
             const bulanGenap = response.data.dataBulanGenap;
