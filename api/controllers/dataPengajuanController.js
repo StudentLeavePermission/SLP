@@ -644,7 +644,130 @@ exports.getAllDataTabelPengajuan = async (req, res) => {
 };
 
 
+exports.getAllDataPengajuanTrend = async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    const dosen = await Data_Dosen.get({
+      where: { id: id },
+    });
+
+    if (!dosen) {
+      return res.status(404).json({ message: "Data Dosen not found" });
+    }
+
+    // Ambil data kelas
+    const kelas = await Data_Kelas.get({
+      where: { ID_Dosen_Wali: dosen.id },
+    });
+
+    if (!kelas) {
+      return res.status(404).json({ message: "Data Kelas not found" });
+    }
+
+    // Ambil data mahasiswa berdasarkan ID_Kelas
+    const mahasiswa = await Data_Mahasiswa.getAll({
+      where: { ID_Kelas: kelas.id },
+    });
+
+    // Ambil data pengajuan berdasarkan ID_Mahasiswa
+    const pengajuan = await Data_Pengajuan.getAll({
+      where: { ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id) },
+    });
+
+    // Ambil data Jadwal_Kelas
+    const jadwal = await Jadwal_Kelas.getAll();
+
+    // Inisialisasi struktur data untuk jumlah izin dan sakit per semester
+    const jumlahIzinPerSemester = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]; // 2 semester (genap dan ganjil) x 6 bulan
+    const jumlahSakitPerSemester = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]; // 2 semester (genap dan ganjil) x 6 bulan
+
+    // Fungsi untuk mendapatkan bulan dari tanggal
+    function getMonthFromDate(date) {
+      return new Date(date).getMonth();
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    pengajuan.forEach((item) => {
+      if (item.Status_Pengajuan === 'Accepted') {
+        const bulan = getMonthFromDate(item.Tanggal_Pengajuan);
+        const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+        const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+
+        if (jamStart !== "NULL" && jamEnd !== "NULL") {
+          // Tentukan semester (genap atau ganjil) berdasarkan bulan
+          const isOddSemester = bulan >= 6; // Januari-Juni termasuk semester genap
+          const semesterIndex = isOddSemester ? 1 : 0; // Index 1 untuk ganjil, 0 untuk genap
+          const monthIndex = isOddSemester ? bulan - 6 : bulan; // Sesuaikan indeks bulan (0-5 atau 6-11)
+
+          // Akumulasi data izin dan sakit per semester
+          if (item.Jenis_Izin === 'Izin') {
+            jumlahIzinPerSemester[semesterIndex][monthIndex] += jamEnd - jamStart + 1;
+          } else if (item.Jenis_Izin === 'Sakit') {
+            jumlahSakitPerSemester[semesterIndex][monthIndex] += jamEnd - jamStart + 1;
+          }
+        }
+      }
+    });
+
+    // Mengembalikan semester ganjil/genap dalam respons
+    const currentMonth = new Date().getMonth();
+    const isOddSemester = currentMonth >= 6;
+    const semester = isOddSemester ? "Ganjil" : "Genap";
+
+    // Formatting data kelas
+    const currentYear = new Date().getFullYear();
+    let angka_kelas;
+    if (new Date().getMonth() >= 6) {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran;
+    } else {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran - 1;
+    }
+
+    const formattedDataKelas = {
+      id: kelas.id,
+      Nama_Kelas: `${angka_kelas}${kelas.Nama_Kelas}`,
+      Tahun_Ajaran: kelas.Tahun_Ajaran,
+      ID_Dosen_Wali: kelas.ID_Dosen_Wali,
+      createdAt: kelas.createdAt,
+      updatedAt: kelas.updatedAt,
+    };
+
+    res.send({
+      message: "Request found successfully",
+      dataDosen: dosen,
+      dataKelas: formattedDataKelas,
+      dataMahasiswa: mahasiswa,
+      dataPengajuan: pengajuan,
+      dataJadwal: jadwal,
+      dataJumlahSakit: jumlahSakitPerSemester[isOddSemester ? 1 : 0],
+      dataJumlahIzin: jumlahIzinPerSemester[isOddSemester ? 1 : 0],
+      semester: semester,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
 exports.getCountOfLeaveRequests = async (req, res) => {
