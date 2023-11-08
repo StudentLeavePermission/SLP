@@ -95,12 +95,11 @@ const dashboardDosen = () => {
 
       const getAllPengajuan = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/data-pengajuan/pengajuan/${id}`);
+            const response = await axios.get(`http://localhost:3000/data-pengajuan/pengajuantabel/${id}`);
             console.log('pengajuan aja', response.data);
-            console.log('ngecek cik pengajuan aja', response.data.dataDetail);
 
             // Ambil Pengajuan
-            const dataPengajuan = response.data.dataDetail;
+            const dataPengajuan = response.data.dataMahasiswaPengajuan;
             setDataPengajuan(dataPengajuan);
             console.log('bener ga nih pengajuannya', dataPengajuan);
         } catch (error) {
@@ -119,23 +118,23 @@ const dashboardDosen = () => {
     
       // Function to filter data based on search text
       const filteredData = dataPengajuan.filter((item) =>
-        item.Jenis_Izin.toLowerCase().includes(searchText.toLowerCase()) ||
         item.Nama.toLowerCase().includes(searchText.toLowerCase())
       );
     
       const sortedData = [...filteredData].sort((a, b) => {
         const order = sortOrder === 'asc' ? 1 : -1;
-      
+        
         if (sortBy === 'Nama Mahasiswa') {
-          return order * (a.Nama.localeCompare(b.Nama));
-        } else if (sortBy === 'NIM ') {
-          return order * a.NIM.localeCompare(b.NIM);;
-        } else if (sortBy === 'Tanggal') {
-          return order * (a.Tanggal_Pengajuan.localeCompare(b.Tanggal_Pengajuan));
-        } else if (sortBy === 'Keterangan') {
-          return order * (a.Jenis_Izin.localeCompare(b.Jenis_Izin));
+          return order * a.Nama.localeCompare(b.Nama);
+        } else if (sortBy === 'NIM') {
+          return order * (a.NIM - b.NIM);
+        } else if (sortBy === 'Jumlah Izin') {
+          return order * (a.JumlahIzin - b.JumlahIzin); // Perbandingan berdasarkan angka
+        } else if (sortBy === 'Jumlah Sakit') {
+          return order * (a.JumlahSakit - b.JumlahSakit); // Perbandingan berdasarkan angka
         }
       });
+      
     
 
       const pageNumbers = Math.ceil(sortedData.length / itemsPerPage);
@@ -212,10 +211,10 @@ const dashboardDosen = () => {
                             <tr>
                                 <th className="header-cell rata table-font">Nomor</th>
                                 <th className="header-cell rata table-font">
-                                <div onClick={() => handleSort('Tanggal')}>
-                                    Tanggal
+                                <div onClick={() => handleSort('Nama Mahasiswa')}>
+                                    Nama Mahasiswa
                                     <span className="sort-icon">
-                                    {sortBy === 'Tanggal' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                    {sortBy === 'Nama Mahasiswa' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                                     </span>
                                 </div>
                                 </th>
@@ -228,37 +227,31 @@ const dashboardDosen = () => {
                                 </div>
                                 </th>
                                 <th className="header-cell rata table-font">
-                                <div onClick={() => handleSort('Nama Mahasiswa')}>
-                                    Nama Mahasiswa
+                                <div onClick={() => handleSort('Jumlah Izin')}>
+                                    Jumlah Izin
                                     <span className="sort-icon">
-                                    {sortBy === 'Nama Mahasiswa' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                    {sortBy === 'Jumlah Izin' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                                     </span>
                                 </div>
                                 </th>
                                 <th className="header-cell rata table-font">
-                                <div onClick={() => handleSort('Keterangan')}>
-                                    Keterangan
+                                <div onClick={() => handleSort('Jumlah Sakit')}>
+                                    Jumlah Sakit
                                     <span className="sort-icon">
-                                    {sortBy === 'Keterangan' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                    {sortBy === 'Jumlah Sakit' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                                     </span>
                                 </div>
                                 </th>
-                                <th className="header-cell rata table-font">Info</th>
                             </tr>
                             </thead>
                         <tbody>
                             {currentData.map((item, index) => (
                                 <tr key={index}>
                                     <td className="cell rata table-font">{index +1 + (currentPage - 1) * itemsPerPage}</td>
-                                    <td className="cell rata table-font">{item.Tanggal_Pengajuan}</td>
-                                    <td className="cell rata table-font">{item.NIM}</td>
                                     <td className="cell rata table-font">{item.Nama}</td>
-                                    <td className="cell rata table-font">{item.Jenis_Izin}</td>
-                                    <td className="cell aksi">
-                                        <CButton href={`/#/dosen/verifyPengajuan/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
-                                            <CIcon icon={cilInfo} />
-                                        </CButton>                
-                                    </td>
+                                    <td className="cell rata table-font">{item.NIM}</td>
+                                    <td className="cell rata table-font">{item.JumlahIzin}</td>
+                                    <td className="cell rata table-font">{item.JumlahSakit}</td>
                                 </tr>
                             ))}
                         </tbody>
