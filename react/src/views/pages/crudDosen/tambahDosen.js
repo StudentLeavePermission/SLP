@@ -36,7 +36,7 @@ function TambahDataDosen() {
   // Fungsi untuk menghasilkan password otomatis
   function generatePassword() {
     // Bagian awal password
-    const prefix = "*Polbanjtk";
+    const prefix = "*Polbanjtkdosen";
 
     // Mendapatkan angka acak antara 1000 hingga 9999
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
@@ -46,6 +46,8 @@ function TambahDataDosen() {
 
     // Menggabungkan semua bagian untuk membuat password
     const password = `${prefix}${randomDigits}${suffix}`;
+
+    console.log('Passwordnya: ', password);
 
     return password;
   }
@@ -232,7 +234,7 @@ function TambahDataDosen() {
               });
   
               if (dosenWaliResponse.status === 201) {
-                alert('Data Dosen berhasil ditambahkan!');
+                alert('Data Dosen berhasil ditambahkan!', formData.Password);
                 navigate('/admin/dataDosen');
               } else {
                 console.error('Gagal menambahkan data Dosen Wali:', dosenWaliResponse.data.error);
