@@ -172,7 +172,7 @@ const routes = [
   { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
   { path: '/admin/editJadwal/:key', name: 'EditJadwal', element: EditJadwal},
   { path: '/admin/detailJadwal/:key', name: 'DetailJadwal', element: DetailJadwal},
-  { path: '/admin/mahasiswa/', name: 'TabelMahasiswa', element: TabelMahasiswa},
+  { path: '/admin/dataMahasiswa/', name: 'TabelMahasiswa', element: TabelMahasiswa},
   { path: '/admin/mahasiswa/edit/:id', name: 'EditMahasiswa', element: EditMahasiswa},
   { path: '/admin/mahasiswa/detail/:id', name: 'DetailMahasiswa', element: DetailMahasiswa},
   { path: '/admin/mahasiswa/tambah', name: 'TambahMahasiswa', element: TambahMahasiswa},
