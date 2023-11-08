@@ -12,7 +12,8 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('Data_Pengajuan', [{
+    await queryInterface.bulkInsert('Data_Pengajuan', [
+      {
       ID_Mahasiswa: 1,
       Keterangan: 'Sakit',
       Jenis_Izin: 'Sakit',
@@ -63,7 +64,86 @@ module.exports = {
       Alasan_Penolakan: '-',
       createdAt: new Date(),
       updatedAt: new Date()
-    }])
+    },
+    {
+      ID_Mahasiswa: 7,
+      Keterangan: 'Izin aja',
+      Jenis_Izin: 'Izin',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file4.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      ID_Mahasiswa: 7,
+      Keterangan: 'sakit aja',
+      Jenis_Izin: 'Sakit',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file5.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      ID_Mahasiswa: 7,
+      Keterangan: 'sakit terus',
+      Jenis_Izin: 'Sakit',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file5.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      ID_Mahasiswa: 8,
+      Keterangan: 'sakit aja',
+      Jenis_Izin: 'Sakit',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file5.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      ID_Mahasiswa: 8,
+      Keterangan: 'sakit terus',
+      Jenis_Izin: 'Sakit',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file5.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      ID_Mahasiswa: 8,
+      Keterangan: 'Izin aja',
+      Jenis_Izin: 'Izin',
+      ID_Jadwal_Kelas: 1,
+      Tanggal_Pengajuan: new Date(),
+      Tanggal_Izin: new Date(),
+      File_Pengajuan: 'file4.pdf',
+      Status_Pengajuan: 'Delivered',
+      Alasan_Penolakan: '-',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ])
   },
 
   async down (queryInterface, Sequelize) {

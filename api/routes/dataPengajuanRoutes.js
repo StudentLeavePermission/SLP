@@ -22,6 +22,10 @@ router.get('/download/:filename', dataPengajuanController.downloadFile);
 
 router.get('/pengajuan/:id', dataPengajuanController.getPengajuanFormatted);
 
+router.get('/leave/request/:prodi', dataPengajuanController.getCountOfLeaveRequestsTable);
+
+router.get('/pengajuantrend/:id', dataPengajuanController.getAllDataPengajuan);
+
 router.get('/leave/request/:jenis/:prodi', dataPengajuanController.getCountOfLeaveRequests);
 
 router.post('/', uploadFile.single('File_Pengajuan'), dataPengajuanController.createLeaveRequest);
