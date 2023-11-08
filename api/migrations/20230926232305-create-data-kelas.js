@@ -17,12 +17,12 @@ module.exports = {
       },
       ID_Dosen_Wali: {
         type: Sequelize.INTEGER,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Data_Dosen_Wali',
-          key: 'id',
-          as: 'ID_Dosen_Wali',
-        }
+        // onDelete: 'CASCADE',
+        // references: {
+        //   model: 'Data_Dosen_Wali',
+        //   key: 'id',
+        //   as: 'ID_Dosen_Wali',
+        // }
       },
       createdAt: {
         allowNull: false,

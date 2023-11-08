@@ -114,17 +114,17 @@ module.exports = (models) => {
     onUpdate: 'CASCADE'
   });
 
-  Data_Kelas.hasOne(Data_Dosen_Wali, {
-    foreignKey: 'ID_Dosen_Wali',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  })
+  // Data_Kelas.hasOne(Data_Dosen_Wali, {
+  //   foreignKey: 'ID_Dosen_Wali',
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE'
+  // })
 
-  Data_Dosen_Wali.belongsTo(Data_Kelas, {
-    foreignKey: 'ID_Dosen_Wali',
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
-  });
+  // Data_Dosen_Wali.belongsTo(Data_Kelas, {
+  //   foreignKey: 'ID_Dosen_Wali',
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE'
+  // });
 
   // Define other associations here if needed
 };
