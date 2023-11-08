@@ -1,12 +1,20 @@
 // const Data_Pengajuan = require('../models/models/dataPengajuan');
 const path = require('path');
+const nodemailer = require('nodemailer');
 const basename = path.basename(__filename);
-const {mainModel} = require('../common/models');
+const { mainModel } = require('../common/models');
 const Data_Pengajuan = new mainModel("Data_Pengajuan");
 const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const Data_Kelas = new mainModel("Data_Kelas");
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 const { Op } = require('sequelize');
+
+// const React = require('react');
+// const ReactDOMServer = require('react-dom/server');
+// const EmailContent = require('../../react/src/componentSLP/EmailContent');
+
+// import { render } from '@react-email/render';
+// import { EmailContent } from '../../react/src/componentSLP/EmailContent';
 
 // Get all leave requests
 exports.getAllLeaveRequests = async (req, res) => {
@@ -38,8 +46,8 @@ exports.getLeaveRequestMahasiswa = async (req, res) => {
     if (request) {
       res.send({
         message: "Request found successfully",
-        data : request,
-        jadwal : jadwal,
+        data: request,
+        jadwal: jadwal,
         mahasiswa : mahasiswa
       });
       console.log(request)
@@ -105,22 +113,60 @@ exports.getAllFormattedLeaveRequests = async (req, res) => {
 
 exports.createLeaveRequest = async (req, res) => {
   try {
-    const { ID_Mahasiswa, Keterangan, Jenis_Izin, Tanggal_Pengajuan, Tanggal_Izin,ID_Jadwal_Kelas,Status_Pengajuan   } = req.body;
+    const { ID_Mahasiswa, Keterangan, Jenis_Izin, Tanggal_Pengajuan, Tanggal_Izin, ID_Jadwal_Kelas, Status_Pengajuan } = req.body;
     const filename = req.body.filename;
     await Data_Pengajuan.post(
       {
-        ID_Mahasiswa : ID_Mahasiswa,
-        Keterangan : Keterangan,
-        Jenis_Izin : Jenis_Izin,
-        ID_Jadwal_Kelas : ID_Jadwal_Kelas,
-        Tanggal_Pengajuan : Tanggal_Pengajuan,
-        Tanggal_Izin : Tanggal_Izin,
+        ID_Mahasiswa: ID_Mahasiswa,
+        Keterangan: Keterangan,
+        Jenis_Izin: Jenis_Izin,
+        ID_Jadwal_Kelas: ID_Jadwal_Kelas,
+        Tanggal_Pengajuan: Tanggal_Pengajuan,
+        Tanggal_Izin: Tanggal_Izin,
         File_Pengajuan: filename,
-        Status_Pengajuan :  Status_Pengajuan,
-        Alasan_Penolakan : ''
+        Status_Pengajuan: Status_Pengajuan,
+        Alasan_Penolakan: ''
       }
     );
     res.status(201).json({ msg: 'Leave Request created' });
+
+    // Create a Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'intljax6@gmail.com', // Your Gmail email address
+        pass: 'esxddggcmpvbfwwf', // Your Gmail email password or app password
+      },
+    });
+
+    // Create an instance of your EmailContent component
+    // const emailComponent = (
+    //   <EmailContent
+    //     ID_Mahasiswa={ID_Mahasiswa} 
+    //     Jenis_Izin={Jenis_Izin} 
+    //     Keterangan={Keterangan}
+    //   />
+    // );
+
+    // Render the component to an HTML string
+    const emailHTML = ReactDOMServer.renderToStaticMarkup(emailComponent? emailComponent : 'Ada permohonan baru!');
+
+    // Define your email message
+    const mailOptions = {
+      from: 'intljax6@gmail.com',
+      to: 'jaxsix06@gmail.com',
+      subject: 'New Request',
+      emailHTML,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error sending email: ' + error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -153,10 +199,10 @@ exports.downloadFile = async (req, res) => {
   console.log(filePath)
 
   res.download(filePath, (err) => {
-      if (err) {
-          console.error(`Error downloading file: ${err}`);
-          res.status(500).send('Error downloading file');
-      }
+    if (err) {
+      console.error(`Error downloading file: ${err}`);
+      res.status(500).send('Error downloading file');
+    }
   });
 };
 
