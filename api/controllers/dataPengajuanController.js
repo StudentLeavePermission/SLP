@@ -6,6 +6,7 @@ const Data_Pengajuan = new mainModel("Data_Pengajuan");
 const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const Data_Kelas = new mainModel("Data_Kelas");
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
+const Data_Dosen = new mainModel("Data_Dosen");
 const { Op } = require('sequelize');
 
 // Get all leave requests
@@ -164,9 +165,17 @@ exports.getPengajuanFormatted = async (req, res) => {
   try {
     const { id } = req.params;
 
+    const dosen = await Data_Dosen.get({
+      where: { id: id },
+    });
+
+    if (!dosen) {
+      return res.status(404).json({ message: "Data Dosen not found" });
+    }
+
     // Ambil data kelas
     const kelas = await Data_Kelas.get({
-      where: { id: id },
+      where: { ID_Dosen_Wali: dosen.id },
     });
 
     if (!kelas) {
@@ -225,6 +234,7 @@ exports.getPengajuanFormatted = async (req, res) => {
 
     res.send({
       message: "Pengajuan found successfully",
+      dataDosen: dosen,
       dataKelas: formattedDataKelas,
       dataMahasiswa: mahasiswa,
       dataPengajuan: pengajuan,
@@ -242,6 +252,288 @@ function formatDate(dateString) {
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return new Date(dateString).toLocaleDateString('id-ID', options);
 }
+
+exports.getAllDataPengajuan = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const dosen = await Data_Dosen.get({
+      where: { id: id },
+    });
+
+    if (!dosen) {
+      return res.status(404).json({ message: "Data Dosen not found" });
+    }
+
+    // Ambil data kelas
+    const kelas = await Data_Kelas.get({
+      where: { ID_Dosen_Wali: dosen.id },
+    });
+
+    if (!kelas) {
+      return res.status(404).json({ message: "Data Kelas not found" });
+    }
+
+    // Ambil data mahasiswa berdasarkan ID_Kelas
+    const mahasiswa = await Data_Mahasiswa.getAll({
+      where: { ID_Kelas: kelas.id },
+    });
+
+    // Ambil data pengajuan berdasarkan ID_Mahasiswa
+    const pengajuan = await Data_Pengajuan.getAll({
+      where: { ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id) },
+    });
+
+    // Ambil data Jadwal_Kelas
+    const jadwal = await Jadwal_Kelas.getAll();
+
+    // Inisialisasi struktur data untuk jumlah izin dan sakit per bulan
+    const jumlahIzinPerBulan = Array(12).fill(0);
+    const jumlahSakitPerBulan = Array(12).fill(0);
+
+    // Fungsi untuk mendapatkan bulan dari tanggal
+    function getMonthFromDate(date) {
+      return new Date(date).getMonth();
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    pengajuan.forEach((item) => {
+      if (item.Jenis_Izin === 'Izin' && item.Status_Pengajuan === 'Accepted') {
+        const bulan = getMonthFromDate(item.Tanggal_Pengajuan);
+        const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+        const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+        if (jamStart !== "NULL" && jamEnd !== "NULL") {
+          jumlahIzinPerBulan[bulan] += jamEnd - jamStart + 1;
+        }
+      }
+      if (item.Jenis_Izin === 'Sakit' && item.Status_Pengajuan === 'Accepted') {
+        const bulan = getMonthFromDate(item.Tanggal_Pengajuan);
+        const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+        const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+        if (jamStart !== "NULL" && jamEnd !== "NULL") {
+          jumlahSakitPerBulan[bulan] += jamEnd - jamStart + 1;
+        }
+      }
+    });
+
+    // Inisialisasi semester ganjil/genap
+    const currentMonth = new Date().getMonth();
+    const isOddSemester = currentMonth >= 7; // Agustus-Januari termasuk semester ganjil
+
+    // Menambahkan nilai izin dan sakit pada semester ganjil saja
+    if (isOddSemester) {
+      for (let i = 0; i < jumlahIzinPerBulan.length; i++) {
+        if (i % 6 >= 0 && i % 6 < 6) {
+          jumlahIzinPerBulan[i] += jumlahIzinPerBulan[i % 6];
+          jumlahSakitPerBulan[i] += jumlahSakitPerBulan[i % 6];
+        }
+      }
+    }
+
+    // Formatting data kelas
+    const currentYear = new Date().getFullYear();
+    let angka_kelas;
+    if (new Date().getMonth() >= 7) {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran + 1;
+    } else {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran;
+    }
+
+    const formattedDataKelas = {
+      id: kelas.id,
+      Nama_Kelas: `${angka_kelas}${kelas.Nama_Kelas}`,
+      Tahun_Ajaran: kelas.Tahun_Ajaran,
+      ID_Dosen_Wali: kelas.ID_Dosen_Wali,
+      createdAt: kelas.createdAt,
+      updatedAt: kelas.updatedAt,
+    };
+
+    // Mengembalikan semester ganjil/genap dalam respons
+    const semester = isOddSemester ? "Ganjil" : "Genap";
+
+    res.send({
+      message: "Request found successfully",
+      dataDosen: dosen,
+      dataKelas: formattedDataKelas,
+      dataMahasiswa: mahasiswa,
+      dataPengajuan: pengajuan,
+      dataJadwal: jadwal,
+      dataJumlahSakit: jumlahSakitPerBulan,
+      dataJumlahIzin: jumlahIzinPerBulan,
+      semester: semester,
+    });
+    console.log(req);
+    console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+
+
+
+exports.getAllDataPengajuan = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const dosen = await Data_Dosen.get({
+      where: { id: id },
+    });
+
+    if (!dosen) {
+      return res.status(404).json({ message: "Data Dosen not found" });
+    }
+
+    // Ambil data kelas
+    const kelas = await Data_Kelas.get({
+      where: { ID_Dosen_Wali: dosen.id },
+    });
+
+    if (!kelas) {
+      return res.status(404).json({ message: "Data Kelas not found" });
+    }
+
+    // Ambil data mahasiswa berdasarkan ID_Kelas
+    const mahasiswa = await Data_Mahasiswa.getAll({
+      where: { ID_Kelas: kelas.id },
+    });
+
+    // Ambil data pengajuan berdasarkan ID_Mahasiswa
+    const pengajuan = await Data_Pengajuan.getAll({
+      where: { ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id) },
+    });
+
+    // Ambil data Jadwal_Kelas
+    const jadwal = await Jadwal_Kelas.getAll();
+
+    // Inisialisasi struktur data untuk jumlah izin dan sakit per bulan
+    const jumlahIzinPerBulan = Array(12).fill(0);
+    const jumlahSakitPerBulan = Array(12).fill(0);
+
+    // Fungsi untuk mendapatkan bulan dari tanggal
+    function getMonthFromDate(date) {
+      return new Date(date).getMonth();
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    pengajuan.forEach((item) => {
+      if (item.Jenis_Izin === 'Izin' && item.Status_Pengajuan === 'Accepted') {
+        const bulan = getMonthFromDate(item.Tanggal_Pengajuan);
+        const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+        const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+        if (jamStart !== "NULL" && jamEnd !== "NULL") {
+          jumlahIzinPerBulan[bulan] += jamEnd - jamStart + 1;
+        }
+      }
+      if (item.Jenis_Izin === 'Sakit' && item.Status_Pengajuan === 'Accepted') {
+        const bulan = getMonthFromDate(item.Tanggal_Pengajuan);
+        const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+        const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+        if (jamStart !== "NULL" && jamEnd !== "NULL") {
+          jumlahSakitPerBulan[bulan] += jamEnd - jamStart + 1;
+        }
+      }
+    });
+
+    // Inisialisasi semester ganjil/genap
+    const currentMonth = new Date().getMonth();
+    const isOddSemester = currentMonth >= 7; // Agustus-Januari termasuk semester ganjil
+
+    // Menambahkan nilai izin dan sakit pada semester ganjil saja
+    if (isOddSemester) {
+      for (let i = 0; i < jumlahIzinPerBulan.length; i++) {
+        if (i % 6 >= 0 && i % 6 < 6) {
+          jumlahIzinPerBulan[i] += jumlahIzinPerBulan[i % 6];
+          jumlahSakitPerBulan[i] += jumlahSakitPerBulan[i % 6];
+        }
+      }
+    }
+
+    // Formatting data kelas
+    const currentYear = new Date().getFullYear();
+    let angka_kelas;
+    if (new Date().getMonth() >= 7) {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran + 1;
+    } else {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran;
+    }
+
+    const formattedDataKelas = {
+      id: kelas.id,
+      Nama_Kelas: `${angka_kelas}${kelas.Nama_Kelas}`,
+      Tahun_Ajaran: kelas.Tahun_Ajaran,
+      ID_Dosen_Wali: kelas.ID_Dosen_Wali,
+      createdAt: kelas.createdAt,
+      updatedAt: kelas.updatedAt,
+    };
+
+    // Mengembalikan semester ganjil/genap dalam respons
+    const semester = isOddSemester ? "Ganjil" : "Genap";
+
+    res.send({
+      message: "Request found successfully",
+      dataDosen: dosen,
+      dataKelas: formattedDataKelas,
+      dataMahasiswa: mahasiswa,
+      dataPengajuan: pengajuan,
+      dataJadwal: jadwal,
+      dataJumlahSakit: jumlahSakitPerBulan,
+      dataJumlahIzin: jumlahIzinPerBulan,
+      semester: semester,
+    });
+    console.log(req);
+    console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+
+
 
 exports.getCountOfLeaveRequests = async (req, res) => {
   try {
@@ -328,7 +620,3 @@ exports.deleteLeaveRequest = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-
-
-
