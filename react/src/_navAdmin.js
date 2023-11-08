@@ -11,48 +11,16 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Data Siswa',
-    to: '/admin/mahasiswa/',
+    name: 'Data Kelas',
+    to: '/admin/dataMahasiswa/',
     icon: cilFolderOpen,
   },
-  // {
-  //   component: CNavGroup,
-  //   name: 'Data Siswa',
-  //   to: '/buttons',
-  //   icon: cibHackhands,
-  //   items: [
-  //     {
-  //       component: CNavItem,
-  //       name: '1A-JTK',
-  //       to: '/dashboard',
-  //     },
-  //     {
-  //       component: CNavItem,
-  //       name: '1B-JTK',
-  //       to: '/buttons/buttons',
-  //     },
-  //     {
-  //       component: CNavItem,
-  //       name: '2A-JTK',
-  //       to: '/buttons/buttons',
-  //     },
-  //     {
-  //       component: CNavItem,
-  //       name: '2B-JTK',
-  //       to: '/buttons/buttons',
-  //     },
-  //     {
-  //       component: CNavItem,
-  //       name: '3A-JTK',
-  //       to: '/buttons/buttons',
-  //     },
-  //     {
-  //       component: CNavItem,
-  //       name: '3B-JTK',
-  //       to: '/buttons/buttons',
-  //     },
-  //   ],
-  // },
+  {
+    component: CNavItem,
+    name: 'Data Siswa',
+    to: '/admin/dataKelas/',
+    icon: cilFolderOpen,
+  },
   {
     component: CNavItem,
     name: 'Data Dosen',
@@ -63,6 +31,12 @@ const _nav = [
     component: CNavItem,
     name: 'Data Jadwal',
     to: '/admin/dataJadwal',
+    icon: cilFolderOpen,
+  },
+  {
+    component: CNavItem,
+    name: 'Rekap Pengajuan',
+    to: '/admin/rekap',
     icon: cilFolderOpen,
   },
   // {
