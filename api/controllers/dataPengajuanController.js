@@ -530,6 +530,123 @@ exports.getAllDataPengajuan = async (req, res) => {
   }
 };
 
+exports.getAllDataTabelPengajuan = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const dosen = await Data_Dosen.get({
+      where: { id: id },
+    });
+
+    if (!dosen) {
+      return res.status(404).json({ message: "Data Dosen not found" });
+    }
+
+    const kelas = await Data_Kelas.get({
+      where: { ID_Dosen_Wali: dosen.id },
+    });
+
+    if (!kelas) {
+      return res.status(404).json({ message: "Data Kelas not found" });
+    }
+
+    const mahasiswa = await Data_Mahasiswa.getAll({
+      where: { ID_Kelas: kelas.id },
+    });
+
+    const pengajuan = await Data_Pengajuan.getAll({
+      where: { ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id) },
+    });
+
+    const jadwal = await Jadwal_Kelas.getAll();
+
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+
+    const currentYear = new Date().getFullYear();
+    let angka_kelas;
+    if (new Date().getMonth() >= 7) {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran + 1;
+    } else {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran;
+    }
+
+    const formattedDataKelas = {
+      id: kelas.id,
+      Nama_Kelas: `${angka_kelas}${kelas.Nama_Kelas}`,
+      Tahun_Ajaran: kelas.Tahun_Ajaran,
+      ID_Dosen_Wali: kelas.ID_Dosen_Wali,
+      createdAt: kelas.createdAt,
+      updatedAt: kelas.updatedAt,
+    };
+
+    // Data Mahasiswa dan Jumlah Izin serta Jumlah Sakit
+    const dataMahasiswaPengajuan = mahasiswa.map((mhs) => {
+      const totalIzinMhs = pengajuan.filter((item) => item.ID_Mahasiswa === mhs.id && item.Jenis_Izin === 'Izin' && item.Status_Pengajuan === 'Accepted')
+        .reduce((total, item) => {
+          const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+          const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+          if (jamStart !== "NULL" && jamEnd !== "NULL") {
+            total += jamEnd - jamStart + 1;
+          }
+          return total;
+        }, 0);
+
+      const totalSakitMhs = pengajuan.filter((item) => item.ID_Mahasiswa === mhs.id && item.Jenis_Izin === 'Sakit' && item.Status_Pengajuan === 'Accepted')
+        .reduce((total, item) => {
+          const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+          const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+          if (jamStart !== "NULL" && jamEnd !== "NULL") {
+            total += jamEnd - jamStart + 1;
+          }
+          return total;
+        }, 0);
+
+      return {
+        id: mhs.id, // Tambahkan ID mahasiswa
+        Nama: mhs.Nama, // Ganti dengan nama field yang sesuai
+        NIM: mhs.NIM, // Ganti dengan nama field yang sesuai
+        JumlahIzin: totalIzinMhs,
+        JumlahSakit: totalSakitMhs,
+      };
+    });
+
+    res.send({
+      message: "Request found successfully",
+      dataDosen: dosen,
+      dataKelas: formattedDataKelas,
+      dataMahasiswa: mahasiswa,
+      dataMahasiswaPengajuan: dataMahasiswaPengajuan, // Tambahkan dataMahasiswaPengajuan ke respons
+    });
+
+    console.log(req);
+    console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+
+
 exports.getCountOfLeaveRequests = async (req, res) => {
   try {
     const { jenis, prodi } = req.params;
