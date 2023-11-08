@@ -56,7 +56,7 @@ const CustomCheckboxTable = () => {
   const [checkboxStatus, setCheckboxStatus] = useState({})
   const selectedDatesExist = selectedDates.length > 0
   const navigate = useNavigate()
-  const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/coba/${id}`;
+  const urlMahasiswaGetOne = `http://localhost:3000/data-mahasiswa/students/${id}`;
 
   // const formatSelectedDate = (date) => {
   //   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
