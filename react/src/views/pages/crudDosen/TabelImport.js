@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 
@@ -6,6 +7,7 @@ function TabelImport() {
   const [importedData, setImportedData] = useState([]);
   const [importedFile, setImportedFile] = useState(null);
   const [alertShown, setAlertShown] = useState(false);
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
     setAlertShown(false);
@@ -60,6 +62,7 @@ function TabelImport() {
       if (allSuccess) {
         alert('Data berhasil ditambahkan!');
         setAlertShown(true);
+        navigate('/admin/dataDosen');
       } else {
         alert('Gagal menambahkan beberapa data. Periksa konsol untuk detail kesalahan.');
       }
@@ -69,10 +72,26 @@ function TabelImport() {
     }
   };
 
+  const downloadTemplate = () => {
+    const header = ["Nama_Dosen", "NIP", "Kode_Dosen", "InitialID", "Email_Dosen"];
+    const templateData = [header];
+    const ws = XLSX.utils.aoa_to_sheet(templateData);
+  
+    const colWidths = [15, 10, 15, 10, 20]; // Sesuaikan lebar kolom sesuai kebutuhan
+  
+    // Menerapkan lebar kolom yang telah ditentukan
+    ws['!cols'] = colWidths.map((width, i) => ({ wch: width }));
+  
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Template");
+    XLSX.writeFile(wb, "import-template.xlsx");
+  };
+
   return (
     <div>
       <input type="file" accept=".xlsx" onChange={handleFileChange} />
       <button onClick={handleImportData}>Impor Data</button>
+      <button onClick={downloadTemplate}>Unduh Template</button>
     </div>
   );
 }
