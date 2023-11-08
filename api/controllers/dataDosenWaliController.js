@@ -3,7 +3,7 @@ const path = require('path');
 const basename = path.basename(__filename);
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const {mainModel} = require('../common/models');
+const { mainModel } = require('../common/models');
 const Data_Dosen_Wali = new mainModel("Data_Dosen_Wali");
 const Data_Dosen = new mainModel("Data_Dosen");
 
@@ -25,7 +25,7 @@ exports.getAllAdviserLecturers = async (req, res) => {
 
 exports.loginAdviserLecturer = async (req, res) => {
   try {
-    const {Email_Dosen, Password} = req.body;
+    const { Email_Dosen, Password } = req.body;
     const dosenWali = await Data_Dosen.get({
       where: {
         Email_Dosen: Email_Dosen
@@ -33,7 +33,7 @@ exports.loginAdviserLecturer = async (req, res) => {
     });
     console.log('dosenWali: ', JSON.stringify(dosenWali.id));
     if (!dosenWali) {
-      return res.status(401).json({message: 'Invalid username or password'});
+      return res.status(401).json({ message: 'Invalid username or password' });
     } else {
       const pwd = await Data_Dosen_Wali.get({
         where: {
@@ -42,9 +42,9 @@ exports.loginAdviserLecturer = async (req, res) => {
       });
       const passwordMatch = await bcrypt.compare(Password, pwd.Password);
       if (!passwordMatch) {
-        return res.status(401).json({message: 'Invalid username or password'});
+        return res.status(401).json({ message: 'Invalid username or password' });
       } else {
-        const token = jwt.sign({userId: dosenWali.Email_Dosen}, 'secretKey', { expiresIn: '1h' });
+        const token = jwt.sign({ userId: dosenWali.Email_Dosen }, 'secretKey', { expiresIn: '1h' });
         res.status(200).json({ token });
       }
     }
@@ -61,9 +61,9 @@ exports.getIdDosenWali = async (req, res) => {
         Email_Dosen: username
       }
     });
-    
+
     if (!dosenWali) {
-      return res.status(401).json({message: 'Invalid username or password'});
+      return res.status(401).json({ message: 'Invalid username or password' });
     } else {
       const pwd = await Data_Dosen_Wali.get({
         where: {
@@ -72,7 +72,7 @@ exports.getIdDosenWali = async (req, res) => {
       });
 
       if (!pwd) {
-        return res.status(401).json({message: 'Data not found'});
+        return res.status(401).json({ message: 'Data not found' });
       } else {
         res.send({
           message: "Adviser Lecturers sent successfully",
@@ -87,13 +87,13 @@ exports.getIdDosenWali = async (req, res) => {
 
 exports.registerAdviserLecturer = async (req, res) => {
   try {
-    const {Email_Dosen, Password} = req.body;
+    const { Email_Dosen, Password } = req.body;
     const dosenWali = await Data_Dosen_Wali.get(Email_Dosen);
     const passwordMatch = await bcrypt.compare(Password, dosenWali.Password);
     if (!dosenWali || !passwordMatch) {
-      return res.status(401).json({message: 'Invalid username or password'});
+      return res.status(401).json({ message: 'Invalid username or password' });
     }
-    const token = jwt.sign({userId: dosenWali.Email_Dosen}, 'secretKey', { expiresIn: '1h' });
+    const token = jwt.sign({ userId: dosenWali.Email_Dosen }, 'secretKey', { expiresIn: '1h' });
     res.status(200).json({ token });
   } catch (error) {
     console.error(error);
@@ -136,7 +136,7 @@ exports.createDataDosenWali = async (req, res) => { //sudah bisa menjadi fk di d
 
     // Lanjutkan dengan membuat Data Dosen Wali
     await Data_Dosen_Wali.post({
-      Password : await bcrypt.hash(Password, 10),
+      Password: await bcrypt.hash(Password, 10),
       ID_Dosen, // Pastikan Anda sudah mengirimkan ID_Dosen dalam permintaan POST
     });
 

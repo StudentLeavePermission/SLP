@@ -1,6 +1,7 @@
 const express = require('express');
 const routes = express();
 
+routes.use('/admin',require('./_adminRoutes'));
 routes.use('/data-dosen',require('./dataDosenRoutes'));
 routes.use('/data-dosen-wali',require('./dataDosenWaliRoutes'));
 routes.use('/data-jam-pelajaran',require('./dataJamPelajaranRoutes'));
