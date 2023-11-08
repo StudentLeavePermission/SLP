@@ -679,8 +679,18 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
     const jadwal = await Jadwal_Kelas.getAll();
 
     // Inisialisasi struktur data untuk jumlah izin dan sakit per semester
-    const jumlahIzinPerSemester = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]; // 2 semester (genap dan ganjil) x 6 bulan
-    const jumlahSakitPerSemester = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]; // 2 semester (genap dan ganjil) x 6 bulan
+    const jumlahIzinPerSemester = {
+      Genap: {
+        Izin: [0, 0, 0, 0, 0, 0],
+        Sakit: [0, 0, 0, 0, 0, 0],
+      },
+      Ganjil: {
+        Izin: [0, 0, 0, 0, 0, 0],
+        Sakit: [0, 0, 0, 0, 0, 0],
+      },
+    };
+    const BulanSemesterGenap = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni'];
+    const BulanSemeterGanjil = ['Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
     // Fungsi untuk mendapatkan bulan dari tanggal
     function getMonthFromDate(date) {
@@ -714,16 +724,14 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
         const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
 
         if (jamStart !== "NULL" && jamEnd !== "NULL") {
-          // Tentukan semester (genap atau ganjil) berdasarkan bulan
-          const isOddSemester = bulan >= 6; // Januari-Juni termasuk semester genap
-          const semesterIndex = isOddSemester ? 1 : 0; // Index 1 untuk ganjil, 0 untuk genap
-          const monthIndex = isOddSemester ? bulan - 6 : bulan; // Sesuaikan indeks bulan (0-5 atau 6-11)
+          const isOddSemester = bulan >= 6;
+          const semesterKey = isOddSemester ? "Ganjil" : "Genap";
+          const monthIndex = isOddSemester ? bulan - 6 : bulan;
 
-          // Akumulasi data izin dan sakit per semester
           if (item.Jenis_Izin === 'Izin') {
-            jumlahIzinPerSemester[semesterIndex][monthIndex] += jamEnd - jamStart + 1;
+            jumlahIzinPerSemester[semesterKey]["Izin"][monthIndex] += jamEnd - jamStart + 1;
           } else if (item.Jenis_Izin === 'Sakit') {
-            jumlahSakitPerSemester[semesterIndex][monthIndex] += jamEnd - jamStart + 1;
+            jumlahIzinPerSemester[semesterKey]["Sakit"][monthIndex] += jamEnd - jamStart + 1;
           }
         }
       }
@@ -733,6 +741,11 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
     const currentMonth = new Date().getMonth();
     const isOddSemester = currentMonth >= 6;
     const semester = isOddSemester ? "Ganjil" : "Genap";
+
+    const dataJumlahIzinGenap = jumlahIzinPerSemester["Genap"]["Izin"];
+    const dataJumlahIzinGanjil = jumlahIzinPerSemester["Ganjil"]["Izin"];
+    const dataJumlahSakitGenap = jumlahIzinPerSemester["Genap"]["Sakit"];
+    const dataJumlahSakitGanjil = jumlahIzinPerSemester["Ganjil"]["Sakit"];
 
     // Formatting data kelas
     const currentYear = new Date().getFullYear();
@@ -759,9 +772,15 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
       dataMahasiswa: mahasiswa,
       dataPengajuan: pengajuan,
       dataJadwal: jadwal,
-      dataJumlahSakit: jumlahSakitPerSemester[isOddSemester ? 1 : 0],
-      dataJumlahIzin: jumlahIzinPerSemester[isOddSemester ? 1 : 0],
+      // dataJumlahSakit: jumlahSakitPerSemester[isOddSemester ? 1 : 0],
+      // dataJumlahIzin: jumlahIzinPerSemester[isOddSemester ? 1 : 0],
       semester: semester,
+      dataBulanGenap: BulanSemesterGenap, 
+      dataBulanGanjil: BulanSemeterGanjil,
+      dataJumlahIzinGenap,
+      dataJumlahIzinGanjil,
+      dataJumlahSakitGenap,
+      dataJumlahSakitGanjil,
     });
   } catch (error) {
     console.error(error);
