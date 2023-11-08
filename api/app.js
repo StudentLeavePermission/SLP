@@ -9,6 +9,8 @@ const path_main = require('path');
 const winston = require('winston');
 const cookieParser = require('cookie-parser');
 const routesIndex = require('./routes');
+const config = require('./config/config.json');
+const host = config.development.host;
 
 
 app.use(bodyParser.json());
@@ -65,7 +67,7 @@ app.use('/', routesIndex);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on host ${host} port ${PORT}`);
 });
 
 //Handling incorrect url & db con error
@@ -75,6 +77,7 @@ app.use((req, res, next) => {
   error.status = 404;
   next(error);
 });
+
 app.use((error, req, res, next) => {
   console.log("Error");
   console.log("(db error)"); //this is me trying to log the error(s) related to DB error
