@@ -234,7 +234,7 @@ function TambahDataDosen() {
               });
   
               if (dosenWaliResponse.status === 201) {
-                alert('Data Dosen berhasil ditambahkan!', formData.Password);
+                alert('Data Dosen berhasil ditambahkan!');
                 navigate('/admin/dataDosen');
               } else {
                 console.error('Gagal menambahkan data Dosen Wali:', dosenWaliResponse.data.error);
