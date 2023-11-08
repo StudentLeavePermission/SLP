@@ -40,6 +40,7 @@ const TabelPengajuanMahasiswa = () => {
                 let idMhs = dataPengajuan[0].ID_Mahasiswa;
                 let Tanggal_Izin = dataPengajuan[0].Tanggal_Pengajuan;
                 let jenis = dataPengajuan[0].Jenis_Izin;
+                let keterangan = dataPengajuan[0].Keterangan;
                 console.log('id', idMhs);
                 const formattedData = {
                     ID: dataPengajuan[0].id,
@@ -47,12 +48,12 @@ const TabelPengajuanMahasiswa = () => {
                     Keterangan: dataPengajuan[0].Keterangan,
                     Tanggal: dataPengajuan[0].Tanggal_Pengajuan,
                     Status: dataPengajuan[0].Status_Pengajuan,
-                    JamPelajaran: getJumlahJamIzin(dataPengajuan, jadwal, dataPengajuan[0].Tanggal_Pengajuan, dataPengajuan[0].Jenis_Izin) + " " + "Jam"
+                    JamPelajaran: getJumlahJamIzin(dataPengajuan, jadwal, dataPengajuan[0].Tanggal_Pengajuan, dataPengajuan[0].Jenis_Izin, keterangan) + " " + "Jam"
                 };
                 console.log('format', formattedData);
                 setDaftarPengajuan(prevData => [...prevData, formattedData]);
                 dataPengajuan = dataPengajuan.filter(item =>
-                    item.Tanggal_Pengajuan !== Tanggal_Izin.toString() || item.Jenis_Izin !== jenis
+                    item.Tanggal_Pengajuan !== Tanggal_Izin.toString() || item.Jenis_Izin !== jenis|| item.Keterangan !== keterangan
                 );
                 console.log('dataPengajuan baru ', dataPengajuan);
             }
@@ -83,8 +84,8 @@ const TabelPengajuanMahasiswa = () => {
         return "NULL";
     }
 
-    function getJumlahJamIzin(mahasiswa, jadwal, tgl, jenis) {
-        const response = mahasiswa.filter(item => item.Jenis_Izin === jenis && item.Tanggal_Pengajuan === tgl);
+    function getJumlahJamIzin(mahasiswa, jadwal, tgl, jenis, keterangan) {
+        const response = mahasiswa.filter(item => item.Jenis_Izin === jenis && item.Tanggal_Pengajuan === tgl && item.Keterangan.toLowerCase() === keterangan.toLowerCase());
         let jumlahJP = 0;
         response.forEach(item => {
             jumlahJP += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) + 1;
