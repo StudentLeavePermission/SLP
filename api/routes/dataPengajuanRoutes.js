@@ -22,6 +22,8 @@ router.get('/download/:filename', dataPengajuanController.downloadFile);
 
 router.get('/pengajuan/:id', dataPengajuanController.getPengajuanFormatted);
 
+router.get('/pengajuantabel/:id', dataPengajuanController.getAllDataTabelPengajuan);
+
 router.get('/leave/request/:prodi', dataPengajuanController.getCountOfLeaveRequestsTable);
 
 router.get('/pengajuantrend/:id', dataPengajuanController.getAllDataPengajuan);
