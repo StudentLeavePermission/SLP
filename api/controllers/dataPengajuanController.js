@@ -838,8 +838,17 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
 
 exports.getCountOfLeaveRequests = async (req, res) => {
   try {
-    const { jenis, prodi } = req.params;
-    
+    const { jenis, IDProdi } = req.params;
+
+    let prodi = '';
+
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+    }
+
     const jmlPengajuan = Array.from({ length: 6 }, () => 0);
 
     let namaBulan = [];
@@ -994,11 +1003,20 @@ exports.deleteLeaveRequest = async (req, res) => {
 
 exports.getCountOfLeaveRequestsTable = async (req, res) => {
   try {
-    const { prodi } = req.params;
+    const { IDProdi } = req.params;
     
     const jmlPengajuan = Array.from({ length: 6 }, () => 0);
 
     let namaBulan = [];
+
+    let prodi = '';
+
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+    }
 
     const currentMonth = new Date().getMonth();
 
