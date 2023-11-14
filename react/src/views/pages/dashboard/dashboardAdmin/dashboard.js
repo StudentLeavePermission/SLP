@@ -86,7 +86,7 @@ const DashboardTU = () => {
             <div className="box-grafik">
               <div className='box-blue-grafik box-grafik'>
                 <div className='box-white-grafik box-grafik'>
-                  <CCard className="mb-4 card-grafik">
+                  <CCard className="card-grafik">
                     <CCardHeader className="text-header-grafik">
                       Jumlah Sakit Mahasiswa
                     </CCardHeader>
