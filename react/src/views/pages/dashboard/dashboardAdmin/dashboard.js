@@ -11,6 +11,8 @@ const DashboardTU = () => {
     const [jmlPengajuanSakit, setJmlPengajuanSakit] = useState([]);
     const [dataTable, setDataTable] = useState([]);
     const [namaBulan, setNamaBulan] = useState([]);
+    const [id, setId] = useState(sessionStorage.getItem('idAdmin'));
+    const [prodi, setProdi] = useState('');
 
     useEffect(() => {
       getDataPengajuanIzin();
@@ -28,22 +30,27 @@ const DashboardTU = () => {
     }, []);
 
     useEffect(() => {
+      console.log('ini id', id);
+    }, [id]);
+
+    useEffect(() => {
       console.log(dataTable);
     }, [dataTable]);
     
     const getDataPengajuanIzin = async () => {
-      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/Izin/D4`);
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/Izin/${id}`);
       setJmlPengajuanIzin(response.data.data);
       setNamaBulan(response.data.months);
     }
 
     const getDataPengajuanSakit = async () => {
-      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/Sakit/D4`);
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/Sakit/${id}`);
       setJmlPengajuanSakit(response.data.data);
+      setNamaBulan(response.data.months);
     }
 
     const getDataTable = async () => {
-      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/D4`);
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/${id}`);
       setDataTable(response.data.data);
     }
 
