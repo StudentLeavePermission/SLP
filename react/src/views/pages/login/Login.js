@@ -149,14 +149,20 @@ const Login = () => {
           setRole('admin');
 
           //set idAdmin
-          idAdmin = 'D3';
+          idAdmin = 1;
+          setSearchParams({ idAdmin });
+
+          sessionStorage.setItem('idAdmin', idAdmin);
 
         } else if (username === 'adminD4' && password === 'adminD4') {
           // Jika username adalah 'admin', set role ke 'admin'
           setRole('admin');
           
           //set idAdmin
-          idAdmin = 'D4';
+          idAdmin = 2;
+          setSearchParams({ idAdmin });
+
+          sessionStorage.setItem('idAdmin', idAdmin);
 
         }else if (isNIM(username)) {
           // Jika input adalah NIM, lakukan request login untuk data mahasiswa
