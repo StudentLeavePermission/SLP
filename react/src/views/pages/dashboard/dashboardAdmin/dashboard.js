@@ -133,49 +133,6 @@ const DashboardTU = () => {
               </div>
             </div>
           </CCol>
-          <CCol>
-            <div className="box-grafik">
-              <div className='box-blue-grafik box-grafik'>
-                <div className='box-white-grafik box-grafik'>
-                  <CCard className="mb-4 card-grafik">
-                    <CCardHeader className="text-header-grafik">Jumlah Izin Mahasiswa</CCardHeader>
-                    <CCardBody>
-                      <CChartBar
-                        data={{
-                          
-                          labels: [
-                            namaBulan[0], 
-                            namaBulan[1], 
-                            namaBulan[2], 
-                            namaBulan[3], 
-                            namaBulan[4], 
-                            namaBulan[5]
-                          ],
-
-                          datasets: [
-                            {
-                              label: 'Jumlah izin per jam pelajaran',
-                              backgroundColor: '#324567',
-                              data: [
-                                jmlPengajuanIzin[0], 
-                                jmlPengajuanIzin[1], 
-                                jmlPengajuanIzin[2], 
-                                jmlPengajuanIzin[3], 
-                                jmlPengajuanIzin[4], 
-                                jmlPengajuanIzin[5]
-                              ],
-                            }
-                          ],
-                        }}
-                        labels="months"
-                        style={{ width: '430px' }}
-                      />
-                    </CCardBody>
-                  </CCard>
-                </div>
-              </div>
-            </div>
-          </CCol>
         </CRow>
         <CRow>
           <div>
