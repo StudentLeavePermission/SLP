@@ -53,6 +53,11 @@ const DashboardTU = () => {
       getJmlMahasiswa();
       // console.log(jmlMahasiswa);
     }, []);
+    
+    useEffect(() => {
+      getJmlDosen();
+      // console.log(jmlDosen);
+    }, []);
 
     useEffect(() => {
       console.log('ini id', id);
@@ -82,6 +87,10 @@ const DashboardTU = () => {
     const getJmlMahasiswa = async () => {
       const response = await axios.get(`http://localhost:3000/data-mahasiswa/count/mhs/${id}`);
       setJmlMahasiswa(response.data.data);
+    }
+    const getJmlDosen = async () => {
+      const response = await axios.get(`http://localhost:3000/data-dosen/count/dosen`);
+      setJmlDosen(response.data.data);
     }
 
     useEffect(() => {
@@ -194,7 +203,7 @@ const DashboardTU = () => {
                     <div className="box-text-information">
                           <div className="d-flex justify-content-center flex-column">
                             <div className="text-information-admin text-blue">Jumlah Dosen</div>
-                              <div className="text-information">Jam Pelajaran</div>
+                              <div className="text-information">{jmlDosen} Dosen</div>
                           </div>
                           <div>
                               <CIcon size={'5xl'}  icon={cilPeople} />
