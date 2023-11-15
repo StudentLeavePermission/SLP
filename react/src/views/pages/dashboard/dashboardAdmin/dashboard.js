@@ -38,7 +38,18 @@ const DashboardTU = () => {
       getDataPengajuanIzin();
       // console.log(jmlPengajuanIzin);
     }, []);
-    
+  
+    useEffect(() => {
+      if (id){
+        if (id === '1'){
+          setProdi('D3');
+        } else if (id === '2'){
+          setProdi('D4');
+        }
+      }
+      // console.log(prodi);
+    }, []);
+
     useEffect(() => {
       getDataPengajuanSakit();
       // console.log(jmlPengajuanSakit);
@@ -186,7 +197,7 @@ const DashboardTU = () => {
                     <div className="box-text-information">
                           <div className="d-flex justify-content-center flex-column">
                             <div className="text-information-admin text-blue">Jumlah Mahasiswa</div>
-                              <div className="text-information">{jmlMahasiswa} Mahasiswa</div>
+                              <div className="text-information">{jmlMahasiswa} Mahasiswa di Prodi {prodi}</div>
                           </div>
                           <div>
                               <CIcon size={'5xl'}  icon={cilPeople} />
