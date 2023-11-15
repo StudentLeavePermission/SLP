@@ -11,6 +11,7 @@ import * as XLSX from 'xlsx';
 
 function TabelCRUD({}) {
   const tableRef = useRef(null);  
+  const [idAdmin, setIdAdmin] = useState(sessionStorage.getItem('idAdmin'));
 
   // penampung data untuk table
   const [dataJadwal, setDataJadwal] = useState([]);
@@ -20,10 +21,12 @@ function TabelCRUD({}) {
     getAllClassSchedules();
   }, []);
 
+
   //method untuk mengambil data dari database
   const getAllClassSchedules = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/jadwal-kelas/formatted');
+      console.log('ini id admin', idAdmin);
+      const response = await axios.get(`http://localhost:3000/jadwal-kelas/tabel/formatted/${idAdmin}`);
       const dataJamPelajaran = response.data.jam_pelajaran; 
 
       console.log(dataJamPelajaran);
