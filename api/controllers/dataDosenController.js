@@ -381,4 +381,18 @@ exports.getAllDosenExport = async (req, res) => {
   }
 };
 
+exports.getJmlDosen = async (req, res) => {
+  try {
+    const dataDosen = await Data_Dosen.getAll(); // Menggunakan metode 'getAll'
 
+    res.send({
+      message: "Data Dosen sent successfully",
+      data: dataDosen.length
+    });
+
+    console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
