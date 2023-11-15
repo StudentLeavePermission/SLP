@@ -39,6 +39,8 @@ router.get('/rekap', dataMahasiswaController.RekapIzin);
 
 router.get('/rekap/detail/:id', dataMahasiswaController.RekapIzinDetail);
 
+router.get('/count/mhs/:IDProdi', dataMahasiswaController.getJmlMahasiswaProdi);
+
 router.get('/protected', mhsAuth.authorizedUser, dataMahasiswaController.protectedContent);
 
 
