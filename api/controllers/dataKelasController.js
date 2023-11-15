@@ -3,6 +3,7 @@ const path = require('path');
 const basename = path.basename(__filename);
 const {mainModel} = require('../common/models');
 const Data_Kelas = new mainModel("Data_Kelas");
+const { Op } = require('sequelize');
 
 // Get all classes
 exports.getAllClasses = async (req, res) => {
@@ -70,7 +71,30 @@ exports.createDataKelas = async (req, res) => {
 
 exports.getAllClassFormated = async (req, res) => {
   try {
-    const classes = await Data_Kelas.getAll();
+    console.log('///////////////////////////////////////////////////////// masukkkkkk');
+    const IDProdi = req.params.IDProdi;
+
+    let prodi = '';
+    console.log('//////////////////////////////////////////////ini id', IDProdi);
+
+    //mengubah id prodi menjadi prodinya
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+      console.log('//////////////////////////////////////////////ini id', prodi);
+    }
+
+    //mengambil data kelas dengan prodi yang sama
+    const classes = await Data_Kelas.getAllWhere({
+      where: {
+        Nama_Kelas: {
+          [Op.like]: `%${prodi}`
+        }
+      }
+    });
+
     const currentYear = new Date().getFullYear();
 
     // Ubah format setiap kelas
