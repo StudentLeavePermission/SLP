@@ -11,7 +11,7 @@ router.post('/create', dataKelasController.createDataKelas);
 
 // router.patch('/patch/:id', dataKelasController.editDataKelas);
 
-router.get('/getallformat', dataKelasController.getAllClassFormated);
+router.get('/getallformat/:IDProdi', dataKelasController.getAllClassFormated); 
 
 router.get('/getoneformat/:id', dataKelasController.getOneClassFormated);
 
