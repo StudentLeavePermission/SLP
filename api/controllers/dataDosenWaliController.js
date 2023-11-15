@@ -1,13 +1,32 @@
 // const Data_Dosen_Wali = require('../models/models/dataDosenWali');
 const path = require('path');
 const basename = path.basename(__filename);
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
+const ejs = require('ejs');
 const jwt = require('jsonwebtoken');
 const { mainModel } = require('../common/models');
 const Data_Dosen_Wali = new mainModel("Data_Dosen_Wali");
 const Data_Dosen = new mainModel("Data_Dosen");
 const hbs = require('nodemailer-express-handlebars');
 const nodemailer = require('nodemailer');
+
+function generatePassword() {
+  // Bagian awal password
+  const prefix = "*Polbanjtk";
+
+  // Mendapatkan angka acak antara 1000 hingga 9999
+  const randomDigits = Math.floor(1000 + Math.random() * 9000);
+
+  // Bagian akhir password
+  const suffix = "#";
+
+  // Menggabungkan semua bagian untuk membuat password
+  const password = `${prefix}${randomDigits}${suffix}`;
+
+  return password;
+}
 
 // Get all adviser lecturers
 exports.getAllAdviserLecturers = async (req, res) => {
@@ -227,3 +246,60 @@ exports.deleteDataDosenWali = async (req, res) => {
   }
 };
 
+// Forgot Password
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { Email_Dosen } = req.body;
+    const dosenWali = await Data_Dosen.get({ where: { Email_Dosen } });
+    const ID_Dosen = dosenWali.id;
+    if (!dosenWali) {
+      return res.status(404).json({ message: 'Data Dosen Wali not found' });
+    }
+    const Password = generatePassword();
+    const hashedPassword = await bcrypt.hash(Password, 10);
+    await Data_Dosen_Wali.patch({ Password: hashedPassword }, { ID_Dosen });
+    res.status(200).json({ message: 'Password updated successfully' });
+
+    // Create a Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'intljax6@gmail.com', // Your Gmail email address
+        pass: 'esxddggcmpvbfwwf', // Your Gmail email password or app password
+      },
+    });
+
+    // Create an instance of your EmailContent component
+    // const emailComponent = (
+    //   <EmailContent
+    //     ID_Mahasiswa={ID_Mahasiswa} 
+    //     Jenis_Izin={Jenis_Izin} 
+    //     Keterangan={Keterangan}
+    //   />
+    // );
+
+    // Render the component to an HTML string
+    // const emailHTML = ReactDOMServer.renderToStaticMarkup(emailComponent? emailComponent : 'Ada permohonan baru!');
+
+    // Define your email message
+    const mailOptions = {
+      from: 'intljax6@gmail.com',
+      to: 'jaxsix06@gmail.com',
+      subject: 'New Password',
+      // emailHTML,
+      html: `<html><h1>Hello, ${Email_Dosen}! Your new password is ${Password}</h1></html>`
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error sending email: ' + error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
