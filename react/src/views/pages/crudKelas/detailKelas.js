@@ -7,8 +7,10 @@ import axios from 'axios';
 const DetailKelas = () => {
   const { key } = useParams();
   const [dataKelas, setDataKelas] = useState(null);
+  const [dataDosen, setDataDosen] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [matchingDosen, setMatchingDosen] = useState(null);
 
   useEffect(() => {
     getKelasData();
@@ -18,8 +20,51 @@ const DetailKelas = () => {
     try {
       const response = await axios.get(`http://localhost:3000/data-kelas/getoneformat/${key}`);
       setDataKelas(response.data.dataKelas);
-      setLoading(false);
+      setLoading(false); // Move setLoading inside the try block
+      return response.data.dataKelas;
     } catch (error) {
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getDataDosen();
+      await getNamaDosenWali();
+    };
+  
+    fetchData();
+  }, []);
+
+  const getDataDosen = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/data-dosen`);
+      return response.data.data;
+    } catch (error) {
+    }
+  };
+
+  const getNamaDosenWali = async (key) => {
+    try {
+      const dataDosen = await getDataDosen();
+      console.log("nih data dosen", dataDosen);
+      const dataKelas = await getKelasData(key);
+      console.log("nih data kelas", dataKelas);
+  
+      if (dataKelas && dataKelas.ID_Dosen_Wali) {
+        const matchingDosen = dataDosen.find(dosen => dosen.id === dataKelas.ID_Dosen_Wali);
+        console.log("matching:", matchingDosen);
+        if (matchingDosen) {
+          console.log("Nama Dosen Wali:", matchingDosen.Nama_Dosen);
+          setMatchingDosen(matchingDosen); // Set the state
+        } else {
+          console.log("Dosen tidak ditemukan");
+        }
+      } else {
+        console.log("ID Dosen Wali tidak tersedia di data kelas");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
     }
   };
 
@@ -62,6 +107,10 @@ const DetailKelas = () => {
                   <div className="item">
                     <div className="label">Tahun Masuk</div>
                     <div className="value">: {dataKelas.Tahun_Ajaran}</div>
+                  </div>
+                  <div className="item">
+                    <div className="label">Nama Dosen Wali</div>
+                    <div className="value">: { matchingDosen ? matchingDosen.Nama_Dosen : '-' }</div>
                   </div>
                 </div>
               </div>

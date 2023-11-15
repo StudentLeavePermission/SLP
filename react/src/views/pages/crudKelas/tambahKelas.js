@@ -41,16 +41,20 @@ function TambahDataKelas() {
     });
   }, []);
 
-  const kelasOptions = [ // Daftar pilihan kelas
+  const kelasOptions = [ 
     'A',
     'B',
     'C',
   ];
 
-  const prodiOptions = [ // Daftar pilihan kelas
+  const prodiOptions = [ 
     'D3',
     'D4',
   ];
+
+  const getCurrentYear = () => {
+    return new Date().getFullYear();
+  };
 
   useEffect(() => {
     if (done) {
@@ -154,7 +158,8 @@ function TambahDataKelas() {
               id="Tahun_Ajaran"
               value={formData.Tahun_Ajaran}
               onChange={(e) => handleChange('Tahun_Ajaran', e.target.value)}
-              disabled
+              min={2019}
+              max={getCurrentYear()} // Set max to the current year
             />
             {formErrors.Tahun_Ajaran && <div className="text-danger">{formErrors.Tahun_Ajaran}</div>}
           </div>
