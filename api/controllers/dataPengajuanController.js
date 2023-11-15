@@ -9,6 +9,7 @@ const Data_Kelas = new mainModel("Data_Kelas");
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 const Data_Dosen = new mainModel("Data_Dosen");
 const { Op } = require('sequelize');
+const hbs = require('nodemailer-express-handlebars')
 
 // const React = require('react');
 // const ReactDOMServer = require('react-dom/server');
@@ -36,11 +37,11 @@ exports.getLeaveRequestMahasiswa = async (req, res) => {
       },
     });
 
-    const mahasiswa= await Data_Pengajuan.getAllInclude({
+    const mahasiswa = await Data_Pengajuan.getAllInclude({
       where: {
         ID_Mahasiswa: req.params.idMahasiswa,
       },
-      include : ['Data_Mahasiswa']
+      include: ['Data_Mahasiswa']
     });
     const jadwal = await Jadwal_Kelas.getAll();
 
@@ -49,7 +50,7 @@ exports.getLeaveRequestMahasiswa = async (req, res) => {
         message: "Request found successfully",
         data: request,
         jadwal: jadwal,
-        mahasiswa : mahasiswa
+        mahasiswa: mahasiswa
       });
       console.log(request)
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
@@ -74,7 +75,7 @@ exports.getLeaveRequest = async (req, res) => {
       where: {
         id: req.params.id,
       },
-      include : ['Data_Mahasiswa']
+      include: ['Data_Mahasiswa']
     });
 
     const jadwal = await Jadwal_Kelas.getAll();
@@ -82,9 +83,9 @@ exports.getLeaveRequest = async (req, res) => {
     if (request) {
       res.send({
         message: "Request found successfully",
-        data : request,
-        mahasiswa : mahasiswa,
-        jadwal : jadwal,
+        data: request,
+        mahasiswa: mahasiswa,
+        jadwal: jadwal,
       });
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
     } else {
@@ -176,16 +177,77 @@ exports.createLeaveRequest = async (req, res) => {
 };
 
 exports.editLeaveRequest = async (req, res) => {
+
   try {
-    const { id } = req.params; // Ambil ID dari parameter URL
-    const newData = req.body; // Data yang akan digunakan untuk mengganti data yang ada
-    const whereClause = { id }; // Kriteria untuk menentukan data yang akan diedit
+    const { id } = req.params;
+    const newData = req.body;
+    const whereClause = { id };
 
     const [updatedRowCount] = await Data_Pengajuan.patch(newData, whereClause);
+    const data_pengajuan = await Data_Pengajuan.get({
+      where: {
+        id: id,
+      }
+    });
+
+    const mahasiswa = await Data_Mahasiswa.get({
+      where: { id: data_pengajuan.ID_Mahasiswa },
+    });
+
+    const kelas = await Data_Kelas.get({
+      where: { id: mahasiswa.ID_Kelas },
+    });
+
+    const dosenWali = await Data_Dosen.get({
+      where: {
+        id: kelas.ID_Dosen_Wali,
+      }
+    });
 
     if (updatedRowCount === 0) {
       return res.status(404).json({ msg: 'LeaveRequest not found' });
     }
+
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'intljax6@gmail.com', // Your Gmail email address
+        pass: 'esxddggcmpvbfwwf', // Your Gmail email password or app password
+      },
+    });
+
+    const handlebarOptions = {
+      viewEngine: {
+        partialsDir: path.resolve('./views'),
+        defaultLayout: false,
+      },
+      viewPath: path.resolve('./views/'),
+    };
+
+    transporter.use('compile', hbs(handlebarOptions))
+
+    const mailOptions = {
+      from: 'intljax6@gmail.com', // sender address
+      template: "emailVerify", // the name of the template file, i.e., email.handlebars
+      to:mahasiswa.Email, //mahasiswa.Email,
+      subject: `Update: Keputusan Terkait Pengajuan ${mahasiswa.Nama}`,
+      context: {
+        nama: mahasiswa.Nama,
+        tanggal: data_pengajuan.Tanggal_Pengajuan,
+        nim: mahasiswa.NIM,
+        jenis: data_pengajuan.Jenis_Izin,
+        status: data_pengajuan.Status_Pengajuan,
+        dosen: dosenWali.Nama_Dosen
+      },
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error sending email: ' + error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
 
     res.status(200).json({ msg: 'LeaveRequest updated' });
   } catch (error) {
@@ -822,7 +884,7 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
       // dataJumlahSakit: jumlahSakitPerSemester[isOddSemester ? 1 : 0],
       // dataJumlahIzin: jumlahIzinPerSemester[isOddSemester ? 1 : 0],
       semester: semester,
-      dataBulanGenap: BulanSemesterGenap, 
+      dataBulanGenap: BulanSemesterGenap,
       dataBulanGanjil: BulanSemeterGanjil,
       dataJumlahIzinGenap,
       dataJumlahIzinGanjil,
@@ -842,9 +904,9 @@ exports.getCountOfLeaveRequests = async (req, res) => {
 
     let prodi = '';
 
-    if (IDProdi === '1'){
+    if (IDProdi === '1') {
       prodi = 'D3';
-    } else if (IDProdi === '2'){
+    } else if (IDProdi === '2') {
       console.log('//////////////////////////////////////////////ini id', IDProdi);
       prodi = 'D4';
     }
@@ -867,7 +929,7 @@ exports.getCountOfLeaveRequests = async (req, res) => {
         'Nov',
         'Dec'
       ]
-      
+
       month = 7;
     } else {
       namaBulan = [
@@ -883,7 +945,7 @@ exports.getCountOfLeaveRequests = async (req, res) => {
     }
 
     // Mendapatkan tahun sekarang
-    const currentYear = new Date().getFullYear(); 
+    const currentYear = new Date().getFullYear();
 
     const kelas = await Data_Kelas.getAllWhere({
       where: {
@@ -918,13 +980,13 @@ exports.getCountOfLeaveRequests = async (req, res) => {
     });
 
     //Cek bulan untuk memisahkan semester
-    while (month <= 12 && month >=1){
+    while (month <= 12 && month >= 1) {
       // Tanggal awal bulan
-      let startDate = new Date(currentYear, month, 1); 
+      let startDate = new Date(currentYear, month, 1);
 
       // Tanggal akhir bulan
-      let endDate = new Date(currentYear, month, 31); 
-      
+      let endDate = new Date(currentYear, month, 31);
+
       const dataPengajuan = await Data_Pengajuan.getAll({
         where: {
           ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id),
@@ -941,8 +1003,8 @@ exports.getCountOfLeaveRequests = async (req, res) => {
 
       // Ambil data pengajuan berdasarkan ID_Mahasiswa
       const jadwal = await Jadwal_Kelas.getAll({
-        where: { 
-          id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas) 
+        where: {
+          id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas)
         },
       });
 
@@ -960,10 +1022,10 @@ exports.getCountOfLeaveRequests = async (req, res) => {
           }
         });
 
-        if (currentMonth > 6){
-          jmlPengajuan[month-6]  = jmlPengajuanPerJP;
+        if (currentMonth > 6) {
+          jmlPengajuan[month - 6] = jmlPengajuanPerJP;
         } else {
-          jmlPengajuan[month]  = jmlPengajuanPerJP;
+          jmlPengajuan[month] = jmlPengajuanPerJP;
         }
       }
 
@@ -991,7 +1053,7 @@ exports.deleteLeaveRequest = async (req, res) => {
 
     if (deletedRowCount === 0) {
       return res.status(404).json({ msg: 'Leave Request not found' });
-    }else{
+    } else {
       res.status(200).json({ msg: 'Leave Request deleted' });
     }
   } catch (error) {
@@ -1004,16 +1066,16 @@ exports.deleteLeaveRequest = async (req, res) => {
 exports.getCountOfLeaveRequestsTable = async (req, res) => {
   try {
     const { IDProdi } = req.params;
-    
+
     const jmlPengajuan = Array.from({ length: 6 }, () => 0);
 
     let namaBulan = [];
 
     let prodi = '';
 
-    if (IDProdi === '1'){
+    if (IDProdi === '1') {
       prodi = 'D3';
-    } else if (IDProdi === '2'){
+    } else if (IDProdi === '2') {
       console.log('//////////////////////////////////////////////ini id', IDProdi);
       prodi = 'D4';
     }
@@ -1027,7 +1089,7 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
     const jenisSurat = ['Sakit', 'Izin'];
 
     // Mendapatkan tahun sekarang
-    const currentYear = new Date().getFullYear(); 
+    const currentYear = new Date().getFullYear();
 
     const kelas = await Data_Kelas.getAllWhere({
       where: {
@@ -1060,7 +1122,7 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
     let mahasiswa = [];
 
     let i = 0;
-    
+
     for (i = 0; i < kelas.length; i++) {
       mahasiswa[i] = await Data_Mahasiswa.getAllWhere({
         where: { ID_Kelas: kelas[i].id },
@@ -1088,16 +1150,16 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
           month = 7;
         } else {
           namaBulan =
-          month = 1;
+            month = 1;
         }
         //Cek bulan untuk memisahkan semester
-        while (month <= 12 && month >=1){
+        while (month <= 12 && month >= 1) {
           // Tanggal awal bulan
-          let startDate = new Date(currentYear, month, 1); 
+          let startDate = new Date(currentYear, month, 1);
 
           // Tanggal akhir bulan
-          let endDate = new Date(currentYear, month, 31); 
-          
+          let endDate = new Date(currentYear, month, 31);
+
           const dataPengajuan = await Data_Pengajuan.getAll({
             where: {
               ID_Mahasiswa: mahasiswa[i].map((mhs) => mhs.id),
@@ -1114,11 +1176,11 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
 
           // Ambil data pengajuan berdasarkan ID_Mahasiswa
           const jadwal = await Jadwal_Kelas.getAll({
-            where: { 
-              id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas) 
+            where: {
+              id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas)
             },
           });
-          
+
           let jmlPengajuanPerJP = 0;
 
           if (dataPengajuan) {
@@ -1133,13 +1195,13 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
                 }
               }
             });
-            
-            if (j == 0){
+
+            if (j == 0) {
               jmlPengajuanSakit += jmlPengajuanPerJP;
-            } else if (j == 1){
+            } else if (j == 1) {
               jmlPengajuanIzin += jmlPengajuanPerJP;
             }
-          
+
             month += 1;
           }
         }
@@ -1159,7 +1221,7 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
 
     //   // Tanggal akhir bulan
     //   let endDate = new Date(currentYear, month, 31); 
-      
+
     //   const dataPengajuan = await Data_Pengajuan.getAll({
     //     where: {
     //       ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id),

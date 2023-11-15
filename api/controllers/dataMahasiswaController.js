@@ -13,6 +13,8 @@ const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const sq = require('sequelize');
 const excel = require("exceljs");
 const { Op } = require('sequelize');
+const hbs = require('nodemailer-express-handlebars');
+const nodemailer = require('nodemailer');
 
 
 // Get all students
@@ -308,7 +310,7 @@ const importStudentsFromExcel = async (req, res) => {
 
       const studentData = {
         NIM: row.getCell(1).value,
-        Nama: 'ahaha',
+        Nama: row.getCell(2).value,
         Password: row.getCell(3).value, // Anda mungkin ingin mengenkripsi ini
         Nomor_Telp: row.getCell(4).value,
         Email: row.getCell(5).value,
@@ -321,6 +323,41 @@ const importStudentsFromExcel = async (req, res) => {
       try {
         await Data_Mahasiswa.post(studentData);
         console.log(`Student data imported: ${JSON.stringify(studentData)}`);
+        const transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user: 'intljax6@gmail.com', // Your Gmail email address
+            pass: 'esxddggcmpvbfwwf', // Your Gmail email password or app password
+          },
+        });
+    
+        const handlebarOptions = {
+          viewEngine: {
+            partialsDir: path.resolve('./views'),
+            defaultLayout: false,
+          },
+          viewPath: path.resolve('./views/'),
+        };
+    
+        transporter.use('compile', hbs(handlebarOptions))
+    
+        const mailOptions = {
+          from: 'intljax6@gmail.com', // sender address
+          template: "emailNewAccount", // the name of the template file, i.e., email.handlebars
+          to: row.getCell(5).value, //mahasiswa.Email,
+          subject: `Halo ${row.getCell(2).value}, ini akun baru anda`,
+          context: {
+            username : row.getCell(1).value,
+            password : row.getCell(3).value,
+          },
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log('Error sending email: ' + error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
       } catch (error) {
         console.error(`Error importing student data: ${JSON.stringify(studentData)}`);
       }
