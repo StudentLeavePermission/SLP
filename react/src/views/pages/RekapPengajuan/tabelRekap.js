@@ -5,6 +5,9 @@ import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } 
 import { CButton } from '@coreui/react';
 import axios from "axios";
 import Modal from 'react-modal';
+import * as XLSX from 'xlsx';
+
+
 const customStyles = {
   content: {
     top: '50%',
@@ -16,8 +19,6 @@ const customStyles = {
   },
 };
 function TabelRekap() {
-
-
   let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -54,21 +55,6 @@ function TabelRekap() {
     }
   };
 
-  // Function to delete data
-  const hapusData = async (id) => {
-    const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
-
-    if (confirmation) {
-      try {
-        await axios.delete(`http://localhost:3000/data-dosen/delete/${id}`);
-        const newData = data.filter(item => item.id !== id);
-        setData(newData);
-      } catch (error) {
-        console.error('Error deleting data:', error);
-      }
-    }
-  };
-
   const handleSort = (criteria) => {
     if (criteria === sortBy) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -80,15 +66,21 @@ function TabelRekap() {
 
   const sortedData = [...data].sort((a, b) => {
     const order = sortOrder === 'asc' ? 1 : -1;
-
-    // if (sortBy === 'Nama') {
-    //   return order * a.Nama.localeCompare(b.Nama);
-    // } else if (sortBy === 'NIM ') {
-    //   return order * a.NIM.localeCompare(b.NIM);;
-    // } else if (sortBy === 'ID_Kelas') {
-    //   return order * a.Kelas.localeCompare(b.Kelas);
-    // }
-  });
+  
+    // Convert NIM to string for proper sorting
+    const nimA = String(a.Mahasiswa.NIM);
+    const nimB = String(b.Mahasiswa.NIM);
+  
+    if (sortBy === 'NIM') {
+      return order * nimA.localeCompare(nimB);
+    } else if (sortBy === 'Nama') {
+      return order * a.Mahasiswa.Nama.localeCompare(b.Mahasiswa.Nama);
+    } else if (sortBy === 'Jumlah_Izin') {
+      return order * (a.count_izin - b.count_izin);
+    } else if (sortBy === 'Jumlah_Sakit') {
+      return order * (a.count_sakit - b.count_sakit);
+    }
+  });   
 
   // JSX for the header section
   const headerSection = (
@@ -117,26 +109,46 @@ function TabelRekap() {
     }
   };
 
-  const ExportData = () => {
-    axios({
-      url: 'http://localhost:3000/data-mahasiswa/export',
-      method: 'GET',
-      responseType: 'blob', // Menentukan tipe respons sebagai blob
-    })
-      .then((response) => {
-        // Membuat objek URL dari blob
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        // Membuat link untuk mengunduh file
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'data_mahasiswa.xlsx');
-        // Simulasikan klik link
-        link.click();
-      })
-      .catch((error) => {
-        console.error('Error exporting data:', error);
-      });
-  };
+  const exportToExcel = () => {
+    try {
+      if (data && data.length > 0) {
+        // Formatting data
+        const dataToExport = data.map((item, index) => ({
+          No: index + 1 + (currentPage - 1) * itemsPerPage,
+          NIM: item.Mahasiswa.NIM,
+          Nama: item.Mahasiswa.Nama,
+          Jumlah_Izin: item.count_izin,
+          Jumlah_Sakit: item.count_sakit,
+        }));
+  
+        // Create a worksheet
+        const ws = XLSX.utils.json_to_sheet(dataToExport);
+  
+        // Set column widths
+        const columnWidths = [
+          { wch: 3 },
+          { wch: 10 },
+          { wch: 35 },
+          { wch: 20 },
+          { wch: 20 },
+        ];
+  
+        ws['!cols'] = columnWidths;
+  
+        // Create a workbook
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'DataPengajuan');
+  
+        // Save the Excel file with a specific name
+        XLSX.writeFile(wb, 'data-pengajuan.xlsx');
+      } else {
+        console.warn('No data to export.');
+      }
+    } catch (error) {
+      console.error('Error exporting data:', error);
+    }
+  };  
+  
 
   return (
     <>
@@ -145,8 +157,8 @@ function TabelRekap() {
         <div className="containerTabel box-blue"></div>
         <div className="table-box">
 
-          <CButton onClick={ExportData} className="btn-tambah table-font">
-            Export
+          <CButton onClick={exportToExcel} className="btn-eksport table-font">
+            Ekspor
           </CButton>
 
 
@@ -182,19 +194,19 @@ function TabelRekap() {
                 </th>
 
                 <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Nama')}>
+                  <div onClick={() => handleSort('Jumlah_Izin')}>
                     Izin
                     <span className="sort-icon">
-                      {sortBy === 'Nama' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                      {sortBy === 'Jumlah_Izin' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                     </span>
                   </div>
                 </th>
 
                 <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Nama')}>
+                  <div onClick={() => handleSort('Jumlah_Sakit')}>
                     Sakit
                     <span className="sort-icon">
-                      {sortBy === 'Nama' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                      {sortBy === 'Jumlah_Sakit' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
                     </span>
                   </div>
                 </th>
