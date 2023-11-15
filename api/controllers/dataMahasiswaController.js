@@ -37,14 +37,39 @@ function generatePassword() {
 
 const getAllStudents = async (req, res) => {
   try {
-    const students = await Data_Mahasiswa.getAll();
+    console.log('///////////////////////////////////////////////////////// masukkkkkk');
+    const IDProdi = req.params.IDProdi;
+
+    let prodi = '';
+    console.log('//////////////////////////////////////////////ini id', IDProdi);
+
+    //mengubah id prodi menjadi prodinya
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+      console.log('//////////////////////////////////////////////ini id', prodi);
+    }
+
+    //mengambil data kelas dengan prodi yang sama
+    const kelas = await Data_Kelas.getAllWhere({
+      where: {
+        Nama_Kelas: {
+          [Op.like]: `%${prodi}`
+        }
+      }
+    });
+    
+    const students = await Data_Mahasiswa.getAllWhere({
+      where: { ID_Kelas: kelas.map((kls) => kls.id) },
+    });
 
     // Membuat objek untuk memetakan ID_Kelas ke Nama_Kelas
     const kelasMap = {};
 
-    // Mengambil data kelas
-    const kelas = await Data_Kelas.getAll();
     const AllKelas = await Data_Kelas.getAll();
+
     // Mengisi objek kelasMap dengan ID_Kelas dan Nama_Kelas
     kelas.forEach((kelasItem) => {
       kelasMap[kelasItem.ID_Kelas] = kelasItem.Nama_Kelas;
