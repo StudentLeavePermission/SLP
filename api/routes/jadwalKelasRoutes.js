@@ -22,6 +22,6 @@ router.get('/:idKelas/:hari', jadwalKelasController.getClassScheduleWithTwoParam
 
 router.get('/getDataAll', jadwalKelasController.toClearClassSchedule);
 
-router.get('/formatted', jadwalKelasController.getClassScheduleFormatted);
+router.get('/tabel/formatted/:IDProdi', jadwalKelasController.getClassScheduleFormatted);
 
 module.exports = router;
