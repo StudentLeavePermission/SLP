@@ -72,8 +72,8 @@ const TabelImport = React.lazy(() => import('./views/pages/crudDosen/TabelImport
 // const ImporTabel = React.lazy(() => import('./views/pages/crudJadwal/imporTabel'))
 // const EksporTabel = React.lazy(() => import('./views/pages/crudJadwal/eksporTabel'))
 const EditDosen = React.lazy(() => import('./views/pages/crudDosen/editDosen'))
-const VerifyPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/VerifyPengajuan'));
-const TabelPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/tabelPengajuan'));
+const VerifyPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/VerifyPengajuan'))
+const TabelPengajuan = React.lazy(() => import('./views/pages/verifyPengajuan/tabelPengajuan'))
 const CrudJadwal = React.lazy(() => import('./views/pages/crudJadwal/TabelCRUD'))
 const TambahJadwal = React.lazy(() => import('./views/pages/crudJadwal/TambahData'))
 const EditJadwal = React.lazy(() => import('./views/pages/crudJadwal/EditJadwal'))
@@ -82,16 +82,20 @@ const CrudKelas = React.lazy(() => import('./views/pages/crudKelas/tabelKelas'))
 const TambahKelas = React.lazy(() => import('./views/pages/crudKelas/tambahKelas'))
 const EditKelas = React.lazy(() => import('./views/pages/crudKelas/editKelas'))
 const DetailKelas = React.lazy(() => import('./views/pages/crudKelas/detailKelas'))
+
 //dashboard
 const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardSiswa/dashboard'))
 const DashboardDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/dashboard'))
 const DashboardAdmin = React.lazy(() => import('./views/pages/dashboard/dashboardAdmin/dashboard'))
 
-
 const DaftarMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/daftarMahasiswa'))
+
 //Rekap
 const RekapPengajuan = React.lazy(() => import('./views/pages/RekapPengajuan/tabelRekap.js'))
 const RekapPengajuanDetail = React.lazy(() => import('./views/pages/RekapPengajuan/tabelDetailRekap.js'))
+
+//Profile
+const ProfileMahasiswa = React.lazy(() => import('./views/pages/profile/profileMahasiswa'))
 
 const wrapComponent = (Component, isProtected, props) => {
   // Return a component that wraps the provided Component
@@ -189,7 +193,8 @@ const routes = [
   { path: '/admin/editKelas/:key', name: 'EditKelas', element: EditKelas},
   { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: DetailKelas},
   { path: '/admin/dashboard', name: 'DashboardAdmin', element: DashboardAdmin },
-  { path: '/dosen/dashboard/daftarMahasiswa', name: 'DaftarMahasiswa', element: DaftarMahasiswa }
+  { path: '/dosen/dashboard/daftarMahasiswa', name: 'DaftarMahasiswa', element: DaftarMahasiswa },
+  { path: '/mahasiswa/profile', name: 'ProfileMahasiswa', element: ProfileMahasiswa }
 
   // Untuk route yang di-proteksi, berikut definisinya:
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
