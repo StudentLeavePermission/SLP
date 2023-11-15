@@ -6,6 +6,7 @@ const Data_Jam_Pelajaran = new mainModel("Data_Jam_Pelajaran");
 const Data_Kelas = new mainModel("Data_Kelas");
 const Data_Dosen = new mainModel("Data_Dosen");
 const Data_Mata_Kuliah = new mainModel("Data_Mata_Kuliah");
+const { Op } = require('sequelize');
 
 // console.log(Jadwal_Kelas);
 // const Jadwal_Kelas = require('../models/models/jadwalKelas');
@@ -80,6 +81,7 @@ exports.editClassSchedule = async (req, res) => {
 exports.getClassSchedule = async (req, res) => {
   try {
     const { id } = req.params; // Assuming NIM is passed as a route parameter
+    
     const jadwal = await Jadwal_Kelas.get({
       where: { id: id },
     });
@@ -150,21 +152,52 @@ exports.getClassScheduleWithTwoParams = async (req, res) => {
 
 exports.getClassScheduleFormatted = async (req, res) => {
   try {
-    const schedules = await Jadwal_Kelas.getAll();
+    console.log('///////////////////////////////////////////////////////// masukkkkkk');
+    const IDProdi = req.params.IDProdi;
 
+    let prodi = '';
+    console.log('//////////////////////////////////////////////ini id', IDProdi);
+
+    //mengubah id prodi menjadi prodinya
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+      console.log('//////////////////////////////////////////////ini id', prodi);
+    }
+
+    //mengambil data kelas dengan prodi yang sama
+    const kelas = await Data_Kelas.getAllWhere({
+      where: {
+        Nama_Kelas: {
+          [Op.like]: `%${prodi}`
+        }
+      }
+    });
+
+    // Ambil data jadwal
+    const schedules = await Jadwal_Kelas.getAllWhere({
+      where: { ID_Kelas: kelas.map((kls) => kls.id) },
+    });
     
+    //mengambil jam matkul
     const dataJamPelajaran = await Data_Jam_Pelajaran.getAll();
 
+    //mengambil data dosen
     const dataDosen = await Jadwal_Kelas.getAllJustInclude({
       include: ['Data_Dosen']
     });
 
+    //mengambil data mata kuliah
     const dataMatkul = await Jadwal_Kelas.getAllJustInclude({
       include: ['Data_Mata_Kuliah']
     });
 
-    const dataKelas = await Data_Kelas.getAll();
+    //mengambil data kelas
+    const dataKelas = [];
 
+    //mengembalikan data-data yang sudah diambil ke frontend
     if (schedules) {
       res.send({
         message: "Schedule found successfully",
@@ -172,7 +205,7 @@ exports.getClassScheduleFormatted = async (req, res) => {
         jam_pelajaran: dataJamPelajaran,
         dosen: dataDosen,
         mata_kuliah: dataMatkul,
-        kelas: dataKelas
+        kelas: kelas
       });
       
       console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");
@@ -184,8 +217,6 @@ exports.getClassScheduleFormatted = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-
 
 exports.toClearClassSchedule = async (req, res) => {
   try {    
