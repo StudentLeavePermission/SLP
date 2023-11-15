@@ -16,6 +16,7 @@ function TabelCRUD({}) {
   const [searchText, setSearchText] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const [idAdmin, setIdAdmin] = useState(sessionStorage.getItem('idAdmin'));
 
   useEffect(() => {
     getAllClass();
@@ -23,7 +24,7 @@ function TabelCRUD({}) {
 
   const getAllClass = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/data-kelas/getallformat');
+      const response = await axios.get(`http://localhost:3000/data-kelas/getallformat/${idAdmin}`);
       // Menambahkan pemisahan kelas dan prodi dari nama_kelas
       const modifiedData = response.data.data.map((item) => {
         const nama_kelas = item.Nama_Kelas;
