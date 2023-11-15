@@ -1,14 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { CCard, CCardBody, CCol, CCardHeader, CRow, CButton } from '@coreui/react';
+import { 
+  CCard, 
+  CCardBody, 
+  CCol, 
+  CCardHeader, 
+  CRow, 
+  CButton 
+} from '@coreui/react';
 import {
   CChartBar,
 } from '@coreui/react-chartjs';
+import CIcon from '@coreui/icons-react';
+import { 
+  cilInfo, 
+  cilTrash, 
+  cilPencil, 
+  cilSearch, 
+  cilArrowTop, 
+  cilArrowBottom, 
+  cilChartPie,
+  cilPeople
+} from '@coreui/icons';
 import axios from 'axios';
 import '../../../../scss/styleCrud.css';
 
 const DashboardTU = () => {
     const [jmlPengajuanIzin, setJmlPengajuanIzin] = useState([]);
     const [jmlPengajuanSakit, setJmlPengajuanSakit] = useState([]);
+    const [jmlMahasiswa, setJmlMahasiswa] = useState('');
+    const [jmlDosen, setJmlDosen] = useState('');
     const [dataTable, setDataTable] = useState([]);
     const [namaBulan, setNamaBulan] = useState([]);
     const [id, setId] = useState(sessionStorage.getItem('idAdmin'));
@@ -18,7 +38,18 @@ const DashboardTU = () => {
       getDataPengajuanIzin();
       // console.log(jmlPengajuanIzin);
     }, []);
-    
+  
+    useEffect(() => {
+      if (id){
+        if (id === '1'){
+          setProdi('D3');
+        } else if (id === '2'){
+          setProdi('D4');
+        }
+      }
+      // console.log(prodi);
+    }, []);
+
     useEffect(() => {
       getDataPengajuanSakit();
       // console.log(jmlPengajuanSakit);
@@ -27,6 +58,16 @@ const DashboardTU = () => {
     useEffect(() => {
       getDataTable();
       // console.log(dataTable);
+    }, []);
+    
+    useEffect(() => {
+      getJmlMahasiswa();
+      // console.log(jmlMahasiswa);
+    }, []);
+    
+    useEffect(() => {
+      getJmlDosen();
+      // console.log(jmlDosen);
     }, []);
 
     useEffect(() => {
@@ -52,6 +93,15 @@ const DashboardTU = () => {
     const getDataTable = async () => {
       const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/${id}`);
       setDataTable(response.data.data);
+    }
+
+    const getJmlMahasiswa = async () => {
+      const response = await axios.get(`http://localhost:3000/data-mahasiswa/count/mhs/${id}`);
+      setJmlMahasiswa(response.data.data);
+    }
+    const getJmlDosen = async () => {
+      const response = await axios.get(`http://localhost:3000/data-dosen/count/dosen`);
+      setJmlDosen(response.data.data);
     }
 
     useEffect(() => {
@@ -80,10 +130,9 @@ const DashboardTU = () => {
     };
 
     return (
-      <div>
+      <div style={{ width: '100%', minWidth: '1200px' }} >
         <CRow>
           <CCol>
-            <div className="box-grafik">
               <div className='box-blue-grafik box-grafik'>
                 <div className='box-white-grafik box-grafik'>
                   <CCard className="card-grafik">
@@ -138,7 +187,42 @@ const DashboardTU = () => {
                   </CCard>
                 </div>
               </div>
-            </div>
+          </CCol>
+          <CCol>
+            <CRow >
+              <div className="box-information-admin" >
+                  <div className='box-blue-info box-information-admin'>
+                  </div>
+                  <div className='box-white box-information-admin'>
+                    <div className="box-text-information">
+                          <div className="d-flex justify-content-center flex-column">
+                            <div className="text-information-admin text-blue">Jumlah Mahasiswa</div>
+                              <div className="text-information">{jmlMahasiswa} Mahasiswa di Prodi {prodi}</div>
+                          </div>
+                          <div>
+                              <CIcon size={'5xl'}  icon={cilPeople} />
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </CRow>
+            <CRow>
+              <div className="box-information-admin">
+                  <div className='box-blue-info box-information-admin'>
+                  </div>
+                  <div className='box-white box-information-admin'>
+                    <div className="box-text-information">
+                          <div className="d-flex justify-content-center flex-column">
+                            <div className="text-information-admin text-blue">Jumlah Dosen</div>
+                              <div className="text-information">{jmlDosen} Dosen</div>
+                          </div>
+                          <div>
+                              <CIcon size={'5xl'}  icon={cilPeople} />
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            </CRow>
           </CCol>
         </CRow>
         <CRow>

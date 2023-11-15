@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const { mainModel } = require('../common/models');
 const Data_Dosen_Wali = new mainModel("Data_Dosen_Wali");
 const Data_Dosen = new mainModel("Data_Dosen");
+const hbs = require('nodemailer-express-handlebars');
+const nodemailer = require('nodemailer');
 
 // Get all adviser lecturers
 exports.getAllAdviserLecturers = async (req, res) => {
@@ -138,6 +140,48 @@ exports.createDataDosenWali = async (req, res) => { //sudah bisa menjadi fk di d
     await Data_Dosen_Wali.post({
       Password: await bcrypt.hash(Password, 10),
       ID_Dosen, // Pastikan Anda sudah mengirimkan ID_Dosen dalam permintaan POST
+    });
+
+    const dosenWali = await Data_Dosen.get({
+      where: {
+        id: ID_Dosen,
+      }
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'intljax6@gmail.com', // Your Gmail email address
+        pass: 'esxddggcmpvbfwwf', // Your Gmail email password or app password
+      },
+    });
+
+    const handlebarOptions = {
+      viewEngine: {
+        partialsDir: path.resolve('./views'),
+        defaultLayout: false,
+      },
+      viewPath: path.resolve('./views/'),
+    };
+
+    transporter.use('compile', hbs(handlebarOptions))
+
+    const mailOptions = {
+      from: 'intljax6@gmail.com', // sender address
+      template: "emailNewAccount", // the name of the template file, i.e., email.handlebars
+      to: dosenWali.Email_Dosen, //mahasiswa.Email,
+      subject: `Halo ${dosenWali.Nama_Dosen}, ini akun baru anda`,
+      context: {
+        username : dosenWali.Email_Dosen,
+        password : Password,
+      },
+    };
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error sending email: ' + error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
     });
 
     res.status(201).json({ msg: 'Data Dosen Wali created' });
