@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CCard, CCardBody, CCol, CCardHeader, CRow } from '@coreui/react';
+import { CCard, CCardBody, CCol, CCardHeader, CRow, CButton } from '@coreui/react';
 import {
   CChartBar,
 } from '@coreui/react-chartjs';
@@ -9,6 +9,10 @@ import '../../../../scss/styleCrud.css';
 const DashboardTU = () => {
     const [jmlPengajuanIzin, setJmlPengajuanIzin] = useState([]);
     const [jmlPengajuanSakit, setJmlPengajuanSakit] = useState([]);
+    const [dataTable, setDataTable] = useState([]);
+    const [namaBulan, setNamaBulan] = useState([]);
+    const [id, setId] = useState(sessionStorage.getItem('idAdmin'));
+    const [prodi, setProdi] = useState('');
 
     useEffect(() => {
       getDataPengajuanIzin();
@@ -20,14 +24,34 @@ const DashboardTU = () => {
       // console.log(jmlPengajuanSakit);
     }, []);
     
+    useEffect(() => {
+      getDataTable();
+      // console.log(dataTable);
+    }, []);
+
+    useEffect(() => {
+      console.log('ini id', id);
+    }, [id]);
+
+    useEffect(() => {
+      console.log(dataTable);
+    }, [dataTable]);
+    
     const getDataPengajuanIzin = async () => {
-      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/Izin/D3`);
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/Izin/${id}`);
       setJmlPengajuanIzin(response.data.data);
+      setNamaBulan(response.data.months);
     }
 
     const getDataPengajuanSakit = async () => {
-      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/Sakit/D3`);
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/Sakit/${id}`);
       setJmlPengajuanSakit(response.data.data);
+      setNamaBulan(response.data.months);
+    }
+
+    const getDataTable = async () => {
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/${id}`);
+      setDataTable(response.data.data);
     }
 
     useEffect(() => {
@@ -56,108 +80,57 @@ const DashboardTU = () => {
     };
 
     return (
-      <div className="page-dashboard">
+      <div>
         <CRow>
           <CCol>
             <div className="box-grafik">
               <div className='box-blue-grafik box-grafik'>
                 <div className='box-white-grafik box-grafik'>
-                  <CCard className="mb-4 card-grafik">
+                  <CCard className="card-grafik">
                     <CCardHeader className="text-header-grafik">
                       Jumlah Sakit Mahasiswa
                     </CCardHeader>
                     <CCardBody>
                       <CChartBar
-                        data={{
-                          labels: [
-                            'July', 
-                            'August', 
-                            'Sept', 
-                            'Okt', 
-                            'Nov', 
-                            'Des', 
-                            'Jan', 
-                            'Feb', 
-                            'March', 
-                            'April', 
-                            'May', 
-                            'June'
-                          ],
+                        data={
+                          {
+                            labels: [
+                              namaBulan[0], 
+                              namaBulan[1], 
+                              namaBulan[2], 
+                              namaBulan[3], 
+                              namaBulan[4], 
+                              namaBulan[5]
+                            ],
 
-                          datasets: [
-                            {
-                              label: 'Jumlah sakit per jam pelajaran',
-                              backgroundColor: '#324567',
-                              data: [
-                                jmlPengajuanSakit[6],
-                                jmlPengajuanSakit[7], 
-                                jmlPengajuanSakit[8], 
-                                jmlPengajuanSakit[9], 
-                                jmlPengajuanSakit[10], 
-                                jmlPengajuanSakit[11], 
-                                jmlPengajuanSakit[0], 
-                                jmlPengajuanSakit[1], 
-                                jmlPengajuanSakit[2], 
-                                jmlPengajuanSakit[3], 
-                                jmlPengajuanSakit[4], 
-                                jmlPengajuanSakit[5]
-                              ],
-                            }
-                          ],
-                        }}
-                        labels="months"
-                        style={{ width: '430px' }}
-                      />
-                    </CCardBody>
-                  </CCard>
-                </div>
-              </div>
-            </div>
-          </CCol>
-          <CCol>
-            <div className="box-grafik">
-              <div className='box-blue-grafik box-grafik'>
-                <div className='box-white-grafik box-grafik'>
-                  <CCard className="mb-4 card-grafik">
-                    <CCardHeader className="text-header-grafik">Jumlah Izin Mahasiswa</CCardHeader>
-                    <CCardBody>
-                      <CChartBar
-                        data={{
-                          labels: ['July', 'August', 'Sept', 'Okt', 'Nov', 'Des', 'Jan', 'Feb', 'March', 'April', 'May', 'June'],
-                          datasets: [
-                            {
-                              labels: [
-                                'July', 
-                                'August', 
-                                'Sept', 
-                                'Okt', 
-                                'Nov', 
-                                'Des', 
-                                'Jan', 
-                                'Feb', 
-                                'March', 
-                                'April', 
-                                'May', 
-                                'June'
-                              ],
-                              backgroundColor: '#324567',
-                              data: [
-                                jmlPengajuanIzin[6], 
-                                jmlPengajuanIzin[7],
-                                jmlPengajuanIzin[8], 
-                                jmlPengajuanIzin[9], 
-                                jmlPengajuanIzin[10], 
-                                jmlPengajuanIzin[11], 
-                                jmlPengajuanIzin[0], 
-                                jmlPengajuanIzin[1], 
-                                jmlPengajuanIzin[2], 
-                                jmlPengajuanIzin[3], 
-                                jmlPengajuanIzin[4], 
-                                jmlPengajuanIzin[5]
-                              ],
-                            }
-                          ],
-                        }}
+                            datasets: [
+                              {
+                                label: 'Jumlah sakit perjam pelajaran',
+                                backgroundColor: '#324567',
+                                data: [
+                                  jmlPengajuanSakit[0], 
+                                  jmlPengajuanSakit[1], 
+                                  jmlPengajuanSakit[2], 
+                                  jmlPengajuanSakit[3], 
+                                  jmlPengajuanSakit[4], 
+                                  jmlPengajuanSakit[5]
+                                ],
+                              }, 
+                              {
+                                label: 'Jumlah izin perjam pelajaran',
+                                backgroundColor: '#5A719D',
+                                data: [
+                                  jmlPengajuanIzin[0], 
+                                  jmlPengajuanIzin[1], 
+                                  jmlPengajuanIzin[2], 
+                                  jmlPengajuanIzin[3], 
+                                  jmlPengajuanIzin[4], 
+                                  jmlPengajuanIzin[5]
+                                ],
+                              }
+                            ],
+                          }
+                        }
                         labels="months"
                         style={{ width: '430px' }}
                       />
@@ -175,7 +148,7 @@ const DashboardTU = () => {
               </div>
               <div className="containerTabel table-box">
                 <div className="table-font">
-                    <h2>Jadwal Kuliah Hari Ini</h2>
+                    <h2>Rekap Pengajuan Mahasiswa Perkelas</h2>
                 </div>
                 <table className="tabel">
                   <thead>
@@ -204,14 +177,20 @@ const DashboardTU = () => {
                       </tr>
                   </thead>
                   <tbody>
-                      {/* {currentData.map((item, index) => (
-                          <tr key={index}>
-                              <td className="cell rata table-font">{index +1 + (currentPage - 1) * itemsPerPage}</td>
-                              <td className="cell rata table-font">{item.Mata_Kuliah}</td>
-                              <td className="cell rata table-font">{item.Jam}</td>
-                              <td className="cell rata table-font">{item.Nama_Dosen}</td>
-                          </tr>
-                      ))} */}
+                    {dataTable.map((kelas, index) => (
+                      <tr key={index}>
+                        <td style={{ width: '150px'}} className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                        <td style={{ width: '300px'}} className="cell rata table-font">{kelas[0].Nama_Kelas}</td>
+                        <td style={{ width: '250px'}} className="cell rata table-font">{kelas[0].Izin}</td>
+                        <td style={{ width: '250px'}} className="cell rata table-font">{kelas[0].Sakit}</td>
+                        <td style={{ width: '250px'}} className="cell rata table-font">
+                          <CButton
+                            style={{ width: '110px', height: '30px', paddingTop: '3px' }}
+                            onClick={() => handleDetailClick(index)}
+                          >Detail</CButton>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
                     <div className="pagination">

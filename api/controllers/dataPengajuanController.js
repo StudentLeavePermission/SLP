@@ -726,8 +726,18 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
     const jadwal = await Jadwal_Kelas.getAll();
 
     // Inisialisasi struktur data untuk jumlah izin dan sakit per semester
-    const jumlahIzinPerSemester = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]; // 2 semester (genap dan ganjil) x 6 bulan
-    const jumlahSakitPerSemester = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]; // 2 semester (genap dan ganjil) x 6 bulan
+    const jumlahIzinPerSemester = {
+      Genap: {
+        Izin: [0, 0, 0, 0, 0, 0],
+        Sakit: [0, 0, 0, 0, 0, 0],
+      },
+      Ganjil: {
+        Izin: [0, 0, 0, 0, 0, 0],
+        Sakit: [0, 0, 0, 0, 0, 0],
+      },
+    };
+    const BulanSemesterGenap = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni'];
+    const BulanSemeterGanjil = ['Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
     // Fungsi untuk mendapatkan bulan dari tanggal
     function getMonthFromDate(date) {
@@ -761,16 +771,14 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
         const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
 
         if (jamStart !== "NULL" && jamEnd !== "NULL") {
-          // Tentukan semester (genap atau ganjil) berdasarkan bulan
-          const isOddSemester = bulan >= 6; // Januari-Juni termasuk semester genap
-          const semesterIndex = isOddSemester ? 1 : 0; // Index 1 untuk ganjil, 0 untuk genap
-          const monthIndex = isOddSemester ? bulan - 6 : bulan; // Sesuaikan indeks bulan (0-5 atau 6-11)
+          const isOddSemester = bulan >= 6;
+          const semesterKey = isOddSemester ? "Ganjil" : "Genap";
+          const monthIndex = isOddSemester ? bulan - 6 : bulan;
 
-          // Akumulasi data izin dan sakit per semester
           if (item.Jenis_Izin === 'Izin') {
-            jumlahIzinPerSemester[semesterIndex][monthIndex] += jamEnd - jamStart + 1;
+            jumlahIzinPerSemester[semesterKey]["Izin"][monthIndex] += jamEnd - jamStart + 1;
           } else if (item.Jenis_Izin === 'Sakit') {
-            jumlahSakitPerSemester[semesterIndex][monthIndex] += jamEnd - jamStart + 1;
+            jumlahIzinPerSemester[semesterKey]["Sakit"][monthIndex] += jamEnd - jamStart + 1;
           }
         }
       }
@@ -780,6 +788,11 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
     const currentMonth = new Date().getMonth();
     const isOddSemester = currentMonth >= 6;
     const semester = isOddSemester ? "Ganjil" : "Genap";
+
+    const dataJumlahIzinGenap = jumlahIzinPerSemester["Genap"]["Izin"];
+    const dataJumlahIzinGanjil = jumlahIzinPerSemester["Ganjil"]["Izin"];
+    const dataJumlahSakitGenap = jumlahIzinPerSemester["Genap"]["Sakit"];
+    const dataJumlahSakitGanjil = jumlahIzinPerSemester["Ganjil"]["Sakit"];
 
     // Formatting data kelas
     const currentYear = new Date().getFullYear();
@@ -806,9 +819,15 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
       dataMahasiswa: mahasiswa,
       dataPengajuan: pengajuan,
       dataJadwal: jadwal,
-      dataJumlahSakit: jumlahSakitPerSemester[isOddSemester ? 1 : 0],
-      dataJumlahIzin: jumlahIzinPerSemester[isOddSemester ? 1 : 0],
+      // dataJumlahSakit: jumlahSakitPerSemester[isOddSemester ? 1 : 0],
+      // dataJumlahIzin: jumlahIzinPerSemester[isOddSemester ? 1 : 0],
       semester: semester,
+      dataBulanGenap: BulanSemesterGenap, 
+      dataBulanGanjil: BulanSemeterGanjil,
+      dataJumlahIzinGenap,
+      dataJumlahIzinGanjil,
+      dataJumlahSakitGenap,
+      dataJumlahSakitGanjil,
     });
   } catch (error) {
     console.error(error);
@@ -819,8 +838,17 @@ exports.getAllDataPengajuanTrend = async (req, res) => {
 
 exports.getCountOfLeaveRequests = async (req, res) => {
   try {
-    const { jenis, prodi } = req.params;
-    
+    const { jenis, IDProdi } = req.params;
+
+    let prodi = '';
+
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+    }
+
     const jmlPengajuan = Array.from({ length: 6 }, () => 0);
 
     let namaBulan = [];
@@ -865,13 +893,29 @@ exports.getCountOfLeaveRequests = async (req, res) => {
       }
     });
 
-    console.log ('ini data kelas:', kelas);
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
 
     const mahasiswa = await Data_Mahasiswa.getAll({
       where: { ID_Kelas: kelas.map((kls) => kls.id) },
     });
-
-    console.log ('ini data mahasiswa:', mahasiswa);
 
     //Cek bulan untuk memisahkan semester
     while (month <= 12 && month >=1){
@@ -890,16 +934,37 @@ exports.getCountOfLeaveRequests = async (req, res) => {
               { [Op.lte]: endDate } // Tanggal izin <= tanggal akhir Januari
             ]
           },
-          Status_Pengajuan: 'Delivered',
+          Status_Pengajuan: 'Accepted',
           Jenis_Izin: jenis
         }
       });
 
+      // Ambil data pengajuan berdasarkan ID_Mahasiswa
+      const jadwal = await Jadwal_Kelas.getAll({
+        where: { 
+          id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas) 
+        },
+      });
+
+      let jmlPengajuanPerJP = 0;
+
       if (dataPengajuan) {
-        if (currentMonth >= 7){
-          jmlPengajuan[month-6]  = dataPengajuan.length;
+        dataPengajuan.forEach((item) => {
+          if (item.Status_Pengajuan === 'Accepted') {
+            const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+            const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+
+            if (jamStart !== "NULL" && jamEnd !== "NULL") {
+              jmlPengajuanPerJP += jamEnd - jamStart;
+            }
+          }
+        });
+
+        if (currentMonth > 6){
+          jmlPengajuan[month-6]  = jmlPengajuanPerJP;
         } else {
-          jmlPengajuan[month]  = dataPengajuan.length;}
+          jmlPengajuan[month]  = jmlPengajuanPerJP;
+        }
       }
 
       month += 1;
@@ -938,53 +1003,220 @@ exports.deleteLeaveRequest = async (req, res) => {
 
 exports.getCountOfLeaveRequestsTable = async (req, res) => {
   try {
-    const { prodi } = req.params;
+    const { IDProdi } = req.params;
     
-    const jmlPengajuan = Array.from({ length: 12 }, () => 0);
+    const jmlPengajuan = Array.from({ length: 6 }, () => 0);
+
+    let namaBulan = [];
+
+    let prodi = '';
+
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+    }
+
+    const currentMonth = new Date().getMonth();
+
+    // Mengecek dari bulan januari
+
+    let jmlPengajuanKelas = [];
+
+    const jenisSurat = ['Sakit', 'Izin'];
 
     // Mendapatkan tahun sekarang
     const currentYear = new Date().getFullYear(); 
 
-    //variabel untuk sakit
-
-
-    //variabel untuk izin
-
-    //Cek bulan untuk memisahkan semester
-    while (month < 12){
-      // Tanggal awal bulan
-      const startDate = new Date(currentYear, month, 1); 
-
-      // Tanggal akhir bulan
-      const endDate = new Date(currentYear, month, 31); 
-      
-
-
-      
-      const dataPengajuan = await Data_Pengajuan.getAll({
-        where: {
-          Tanggal_Izin: {
-            [Op.and]: [
-              { [Op.gte]: startDate }, // Tanggal izin >= tanggal awal Januari
-              { [Op.lte]: endDate } // Tanggal izin <= tanggal akhir Januari
-            ]
-          },
-          Status_Pengajuan: 'Delivered',
-          Jenis_Izin: jenis
+    const kelas = await Data_Kelas.getAllWhere({
+      where: {
+        Nama_Kelas: {
+          [Op.like]: `%${prodi}`
         }
-      });
-
-      if (dataPengajuan) {
-        jmlPengajuan[month]  = dataPengajuan.length;
       }
+    });
 
-      month += 1;
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
     }
 
-    if (jmlPengajuan) {
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    let mahasiswa = [];
+
+    let i = 0;
+    
+    for (i = 0; i < kelas.length; i++) {
+      mahasiswa[i] = await Data_Mahasiswa.getAllWhere({
+        where: { ID_Kelas: kelas[i].id },
+      });
+    }
+
+    for (let i = 0; i < kelas.length; i++) {
+      let jmlPengajuanSakit = 0;
+      let jmlPengajuanIzin = 0;
+      jmlPengajuanKelas[i] = [];
+      let angkaKelas = 0;
+
+      if (currentMonth > 6) {
+        angkaKelas = currentYear - kelas[i].Tahun_Ajaran + 1;
+      } else {
+        angkaKelas = currentYear - kelas[i].Tahun_Ajaran;
+      }
+
+      const tingkat = angkaKelas.toString();
+
+      for (let j = 0; j < 2; j++) {
+        let month = 0;
+
+        if (currentMonth > 6) {
+          month = 7;
+        } else {
+          namaBulan =
+          month = 1;
+        }
+        //Cek bulan untuk memisahkan semester
+        while (month <= 12 && month >=1){
+          // Tanggal awal bulan
+          let startDate = new Date(currentYear, month, 1); 
+
+          // Tanggal akhir bulan
+          let endDate = new Date(currentYear, month, 31); 
+          
+          const dataPengajuan = await Data_Pengajuan.getAll({
+            where: {
+              ID_Mahasiswa: mahasiswa[i].map((mhs) => mhs.id),
+              Tanggal_Izin: {
+                [Op.and]: [
+                  { [Op.gte]: startDate }, // Tanggal izin >= tanggal awal Januari
+                  { [Op.lte]: endDate } // Tanggal izin <= tanggal akhir Januari
+                ]
+              },
+              Status_Pengajuan: 'Accepted',
+              Jenis_Izin: jenisSurat[j]
+            }
+          });
+
+          // Ambil data pengajuan berdasarkan ID_Mahasiswa
+          const jadwal = await Jadwal_Kelas.getAll({
+            where: { 
+              id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas) 
+            },
+          });
+          
+          let jmlPengajuanPerJP = 0;
+
+          if (dataPengajuan) {
+            dataPengajuan.forEach((item) => {
+              if (item.Status_Pengajuan === 'Accepted') {
+                const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+                const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+
+                if (jamStart !== "NULL" && jamEnd !== "NULL") {
+                  jmlPengajuanPerJP += jamEnd - jamStart;
+                  console.log('////////////////////////////////////////////////////////////////////', j)
+                }
+              }
+            });
+            
+            if (j == 0){
+              jmlPengajuanSakit += jmlPengajuanPerJP;
+            } else if (j == 1){
+              jmlPengajuanIzin += jmlPengajuanPerJP;
+            }
+          
+            month += 1;
+          }
+        }
+      }
+
+      jmlPengajuanKelas[i].push({
+        Nama_Kelas: tingkat + kelas[i].Nama_Kelas[0] + "-" + kelas[i].Nama_Kelas.slice(1),
+        Sakit: jmlPengajuanSakit,
+        Izin: jmlPengajuanIzin,
+      });
+    }
+
+    // //Cek bulan untuk memisahkan semester
+    // while (month <= 12 && month >=1){
+    //   // Tanggal awal bulan
+    //   let startDate = new Date(currentYear, month, 1); 
+
+    //   // Tanggal akhir bulan
+    //   let endDate = new Date(currentYear, month, 31); 
+      
+    //   const dataPengajuan = await Data_Pengajuan.getAll({
+    //     where: {
+    //       ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id),
+    //       Tanggal_Izin: {
+    //         [Op.and]: [
+    //           { [Op.gte]: startDate }, // Tanggal izin >= tanggal awal Januari
+    //           { [Op.lte]: endDate } // Tanggal izin <= tanggal akhir Januari
+    //         ]
+    //       },
+    //       Status_Pengajuan: 'Accepted',
+    //       Jenis_Izin: jenis
+    //     }
+    //   });
+
+    //   console.log ('data pengajuan per prodi: ', dataPengajuan);
+
+    //   // Ambil data pengajuan berdasarkan ID_Mahasiswa
+    //   const jadwal = await Jadwal_Kelas.getAll({
+    //     where: { 
+    //       id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas) 
+    //     },
+    //   });
+
+    //   console.log ('data jadwal per prodi: ', jadwal);
+
+    //   let jmlPengajuanPerJP = 0;
+
+    //   if (dataPengajuan) {
+    //     dataPengajuan.forEach((item) => {
+    //       if (item.Status_Pengajuan === 'Accepted') {
+    //         const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+    //         const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+
+    //         console.log('/////////////////////////////////////////////////', jamStart, jamEnd);
+
+    //         if (jamStart !== "NULL" && jamEnd !== "NULL") {
+    //           jmlPengajuanPerJP += jamEnd - jamStart;
+    //         }
+    //       }
+    //     });
+
+    //     if (currentMonth > 6){
+    //       jmlPengajuan[month-6]  = jmlPengajuanPerJP;
+    //     } else {
+    //       jmlPengajuan[month]  = jmlPengajuanPerJP;
+    //     }
+    //   }
+
+    //   month += 1;
+    // }
+
+    console.log(jmlPengajuanKelas);
+
+    if (jmlPengajuanKelas) {
       res.send({
         message: "Leave Requests found successfully",
-        data: jmlPengajuan
+        data: jmlPengajuanKelas
       })
     }
   } catch (error) {
