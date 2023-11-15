@@ -17,7 +17,7 @@ const uploadxlsx = require('../middleware/multerBuffer');
 router.use(cookieParser());
 
 // Get all students
-router.get('/students', dataMahasiswaController.getAllStudents);
+router.get('/students/all/:IDProdi', dataMahasiswaController.getAllStudents);
 
 router.get('/students/:id', dataMahasiswaController.getStudent);
 
