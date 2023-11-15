@@ -17,6 +17,8 @@ const customStyles = {
 };
 function TabelCRUD() {
 
+  
+  const [idAdmin, setIdAdmin] = useState(sessionStorage.getItem('idAdmin'));
 
   let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -47,7 +49,7 @@ function TabelCRUD() {
 
   const getAllDataDosen = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/data-mahasiswa/students/');
+      const response = await axios.get(`http://localhost:3000/data-mahasiswa/students/all/${idAdmin}`);
       setData(response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
