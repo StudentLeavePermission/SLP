@@ -12,6 +12,9 @@ const Data_Pengajuan = new mainModel("Data_Pengajuan");
 const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const sq = require('sequelize');
 const excel = require("exceljs");
+const { Op } = require('sequelize');
+
+
 // Get all students
 
 function generatePassword() {
@@ -406,6 +409,47 @@ const RekapIzinDetail = async (req, res) => {
 }
 
 
+
+const getJmlMahasiswaProdi = async (req, res) => {
+  try {
+    const { IDProdi } = req.params;
+
+    let prodi = '';
+
+    //mengubah id prodi menjadi prodinya
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+    }
+
+    //mengambil data kelas dengan prodi yang sama
+    const kelas = await Data_Kelas.getAllWhere({
+      where: {
+        Nama_Kelas: {
+          [Op.like]: `%${prodi}`
+        }
+      }
+    });
+    
+    // Ambil data dari tabel "Data_Mahasiswa"
+    const mahasiswa = await Data_Mahasiswa.getAllWhere({
+      where: { ID_Kelas: kelas.map((kls) => kls.id) },
+    });
+
+    res.send({
+      message: "Mahasiswa found successfully",
+      //mengembalikan jumlah mahasiswa pada satu prodi
+      data: mahasiswa.length,
+    });
+  } catch (error) {
+    console.error('Terjadi kesalahan:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+
 module.exports = {
   getAllStudents,
   getStudent,
@@ -418,5 +462,6 @@ module.exports = {
   exportExcel,
   importStudentsFromExcel,
   RekapIzin,
-  RekapIzinDetail
+  RekapIzinDetail,
+  getJmlMahasiswaProdi
 }
