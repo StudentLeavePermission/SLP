@@ -204,6 +204,16 @@ exports.editLeaveRequest = async (req, res) => {
       }
     });
 
+    const jadwal = await Jadwal_Kelas.get({
+      where: { id: data_pengajuan.ID_Jadwal_Kelas },
+    });
+
+    const dosenPengampu = await Data_Dosen.get({
+      where: {
+        id: jadwal.ID_Dosen,
+      }
+    });
+
     if (updatedRowCount === 0) {
       return res.status(404).json({ msg: 'LeaveRequest not found' });
     }
@@ -247,6 +257,28 @@ exports.editLeaveRequest = async (req, res) => {
         console.log('Email sent: ' + info.response);
       }
     });
+
+    if(data_pengajuan.Status_Pengajuan == 'Accepted'){
+        console.log('email', dosenPengampu.Email_Dosen)
+        const mailOptions = {
+          from: 'intljax6@gmail.com', // sender address
+          template: "emailDosenPengampu", // the name of the template file, i.e., email.handlebars
+          to:dosenPengampu.Email_Dosen, //mahasiswa.Email,
+          context: {
+            nama: mahasiswa.Nama,
+            nim: mahasiswa.NIM,
+            jenis: data_pengajuan.Jenis_Izin,
+            keterangan: data_pengajuan.Keterangan,
+          },
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log('Error sending email: ' + error);
+          } else {
+            console.log('Email sent: ' + info.response);
+          }
+        });
+    }
 
 
     res.status(200).json({ msg: 'LeaveRequest updated' });
