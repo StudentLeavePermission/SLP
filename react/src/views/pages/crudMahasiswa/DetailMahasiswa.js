@@ -57,7 +57,7 @@ const DetailMahasiswa = () => {
               </div>
               <div className="item">
                 <div className="label">Kelas</div>
-                <div className="value">: {post.kelas.kelas.Nama_Kelas}</div>
+                <div className="value">: {post.kelas.kelas}</div>
               </div>
               <div className="item">
                 <div className="label">No Telp Ortu</div>
