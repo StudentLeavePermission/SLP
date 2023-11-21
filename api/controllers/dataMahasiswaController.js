@@ -133,11 +133,32 @@ const getStudent = async(req, res) => {
             const NKelas = (kelas.Nama_Kelas).slice(0, -2); // Mengambil semua karakter kecuali yang terakhir
             const prodi = (kelas.Nama_Kelas).slice(-2); // Mengambil karakter terakhir
 
+            // Mendapatkan tahun sekarang
+            const currentYear = new Date().getFullYear(); 
+            
+            // mendapatkan bulan sekarang untuk menentukan tingkat mahasiswa
+            const currentMonth = new Date().getMonth();
+
+            let angkaKelas = 0;
+
+            if (currentMonth > 6) {
+                //kalau akhir tahun berarti tambah satu
+                angkaKelas = currentYear - kelas.Tahun_Ajaran + 1;
+            } else {
+                //kalau akhir tahun sesuai
+                angkaKelas = currentYear - kelas.Tahun_Ajaran;
+            }
+
+            const tingkat = angkaKelas.toString();
+
+            //formating data biar jadi contoh 2A-D3
+            const kelasFormatted = tingkat + kelas.Nama_Kelas[0] + "-" + kelas.Nama_Kelas.slice(1);
+
             res.send({
                 message: "Student found successfully",
                 data: student,
                 kelas: {
-                    kelas,
+                    kelas: kelasFormatted,
                     Nama_kelas: NKelas,
                     prodi: prodi
                 },
