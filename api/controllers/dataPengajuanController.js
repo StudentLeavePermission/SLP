@@ -17,7 +17,45 @@ const hbs = require('nodemailer-express-handlebars')
 
 // import { render } from '@react-email/render';
 // import { EmailContent } from '../../react/src/componentSLP/EmailContent';
+function sendEmailDosenPengampu(nama, nim, jenis, keterangan,  emailDosen) {
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: 'intljax6@gmail.com', // Your Gmail email address
+      pass: 'esxddggcmpvbfwwf', // Your Gmail email password or app password
+    },
+  });
 
+  const handlebarOptions = {
+    viewEngine: {
+      partialsDir: path.resolve('./views'),
+      defaultLayout: false,
+    },
+    viewPath: path.resolve('./views/'),
+  };
+
+  transporter.use('compile', hbs(handlebarOptions));
+
+  const mailOptions = {
+    from: 'intljax6@gmail.com', // sender address
+    template: "emailDosenPengampu", // the name of the template file, i.e., email.handlebars
+    to: emailDosen, //mahasiswa.Email,
+    context: {
+      nama: nama,
+      nim: nim,
+      jenis: jenis,
+      keterangan: keterangan,
+    },
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Error sending email: ' + error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+}
 // Get all leave requests
 exports.getAllLeaveRequests = async (req, res) => {
   try {
@@ -218,6 +256,41 @@ exports.editLeaveRequest = async (req, res) => {
       return res.status(404).json({ msg: 'LeaveRequest not found' });
     }
 
+    if (data_pengajuan.Status_Pengajuan == 'Accepted') {
+      console.log('email', dosenPengampu.Email_Dosen)
+      sendEmailDosenPengampu(mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin,data_pengajuan.Keterangan, dosenPengampu.Email_Dosen)
+    }
+    res.status(200).json({ msg: 'LeaveRequest updated' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.emailInformationStatus = async (req, res) => {
+
+  try {
+    const { id } = req.params;
+    const data_pengajuan = await Data_Pengajuan.get({
+      where: {
+        id: id,
+      }
+    });
+
+    const mahasiswa = await Data_Mahasiswa.get({
+      where: { id: data_pengajuan.ID_Mahasiswa },
+    });
+
+    const kelas = await Data_Kelas.get({
+      where: { id: mahasiswa.ID_Kelas },
+    });
+
+    const dosenWali = await Data_Dosen.get({
+      where: {
+        id: kelas.ID_Dosen_Wali,
+      }
+    });
+
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
@@ -239,7 +312,7 @@ exports.editLeaveRequest = async (req, res) => {
     const mailOptions = {
       from: 'intljax6@gmail.com', // sender address
       template: "emailVerify", // the name of the template file, i.e., email.handlebars
-      to:mahasiswa.Email, //mahasiswa.Email,
+      to: mahasiswa.Email,
       subject: `Update: Keputusan Terkait Pengajuan ${mahasiswa.Nama}`,
       context: {
         nama: mahasiswa.Nama,
@@ -250,6 +323,7 @@ exports.editLeaveRequest = async (req, res) => {
         dosen: dosenWali.Nama_Dosen
       },
     };
+
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log('Error sending email: ' + error);
@@ -257,31 +331,6 @@ exports.editLeaveRequest = async (req, res) => {
         console.log('Email sent: ' + info.response);
       }
     });
-
-    if(data_pengajuan.Status_Pengajuan == 'Accepted'){
-        console.log('email', dosenPengampu.Email_Dosen)
-        const mailOptions = {
-          from: 'intljax6@gmail.com', // sender address
-          template: "emailDosenPengampu", // the name of the template file, i.e., email.handlebars
-          to:dosenPengampu.Email_Dosen, //mahasiswa.Email,
-          context: {
-            nama: mahasiswa.Nama,
-            nim: mahasiswa.NIM,
-            jenis: data_pengajuan.Jenis_Izin,
-            keterangan: data_pengajuan.Keterangan,
-          },
-        };
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.log('Error sending email: ' + error);
-          } else {
-            console.log('Email sent: ' + info.response);
-          }
-        });
-    }
-
-
-    res.status(200).json({ msg: 'LeaveRequest updated' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
