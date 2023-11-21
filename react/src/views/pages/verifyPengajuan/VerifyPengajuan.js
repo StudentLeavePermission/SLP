@@ -247,6 +247,7 @@ const CustomCheckboxTable = () => {
       if (response.status === 200) {
         console.log('Data berhasil diubah di database:', response.data);
         alert("Berhasil mengubah data! " + formData.Status_Pengajuan + "Alasan Ditolak: " + formData.Alasan_Penolakan);
+        await axios.get(`http://localhost:3000/data-pengajuan/emailVerify/${key}`);
         setValidated(true)
         nav('../tabelPengajuan');
       } else {
