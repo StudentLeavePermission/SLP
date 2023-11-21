@@ -12,13 +12,13 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Data Kelas',
-    to: '/admin/dataMahasiswa/',
+    to: '/admin/dataKelas/',
     icon: cilFolderOpen,
   },
   {
     component: CNavItem,
-    name: 'Data Siswa',
-    to: '/admin/dataKelas/',
+    name: 'Data Mahasiswa',
+    to: '/admin/dataMahasiswa/',
     icon: cilFolderOpen,
   },
   {
