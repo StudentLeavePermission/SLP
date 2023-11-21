@@ -139,3 +139,6 @@ dist
 **/*.sql
 
 .idea
+
+**/react/src/assets/files
+**/react/src/assets/ProfilPic

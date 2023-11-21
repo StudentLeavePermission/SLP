@@ -18,6 +18,8 @@ router.get('/mahasiswa/:idMahasiswa', dataPengajuanController.getLeaveRequestMah
 
 router.patch('/update/:id', dataPengajuanController.editLeaveRequest);
 
+router.get('/emailVerify/:id', dataPengajuanController.emailInformationStatus);
+
 router.get('/download/:filename', dataPengajuanController.downloadFile);
 
 router.get('/pengajuan/:id', dataPengajuanController.getPengajuanFormatted);
