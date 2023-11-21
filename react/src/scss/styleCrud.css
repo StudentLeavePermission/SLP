@@ -18,17 +18,14 @@
     .tabel td.cell {
       text-align: center;
     }
-  }
-  
-  /* Tambahkan CSS agar tombol menjadi lebih responsif */
-  @media screen and (max-width: 768px) {
-    /* Atur lebar tombol tambah, eksport, dan impor */
     .btn-tambah,
     .btn-eksport,
     .btn-impor {
       width: 100%; /* Gunakan lebar penuh */
       margin: 5px 0; /* Beri sedikit margin */
     }
+
+    
   }
   
   .tabel {
