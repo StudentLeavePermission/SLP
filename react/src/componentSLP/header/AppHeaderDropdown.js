@@ -21,10 +21,25 @@ import {
   cilUser,
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
-
-import avatar8 from './../../assets/images/avatars/8.jpg'
+import { useParams, useNavigate } from 'react-router-dom';
+import avatar8 from './../../assets/images/avatars/8.jpg';
+import Cookies from 'js-cookie';
 
 const AppHeaderDropdown = () => {
+  const navigate = useNavigate();
+  const Logout = () => {
+    // Perform any necessary logout logic (clear tokens, etc.)
+    // For example, you can clear the sessionStorage items you set during login
+    sessionStorage.removeItem('idMhs');
+    sessionStorage.removeItem('idDosen');
+    sessionStorage.removeItem('idAdmin');
+
+    Cookies.remove('jwt');
+
+    // Navigate to the logout page or endpoint
+    navigate('/');
+  }
+
   return (
     <CDropdown variant="nav-item" >
 
@@ -95,7 +110,7 @@ const AppHeaderDropdown = () => {
                   </CDropdownItem>
                   <CDropdownDivider /> */
         }
-        <CDropdownItem href="#" >
+        <CDropdownItem onClick={Logout} >
           <CIcon icon={cilLockLocked}
             className="me-2" />
           Logout
