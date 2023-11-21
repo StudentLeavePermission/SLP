@@ -113,9 +113,22 @@ h3{
         left: 0;
         top: 300px;
     }
+
+    .button-edit-profile{
+        width: 90%;
+        margin: 0 auto;
+        background-color: #5A719D !important;
+    }
+
+    
+    .button-edit-profile:hover {
+        background-color:  #002A88;
+    }
+
     .details{
         width: 100%;
     }
+
     .item {
         width: 100%; 
         margin: 10px 0; 
