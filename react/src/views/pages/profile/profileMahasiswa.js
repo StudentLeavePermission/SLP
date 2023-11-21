@@ -1,12 +1,28 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { CCol, CRow } from '@coreui/react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCardGroup,
+  CContainer,
+  CForm,
+  CFormInput,
+  CInputGroup,
+  CInputGroupText,
+  CCol,
+  CRow,
+} from '@coreui/react';
 import '../../../scss/styleProfile.css';
 import axios from "axios";
 
 
 const ProfileMahasiswa = () => {
+  const navigate = useNavigate();
+  const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs'));
+  
   const [post, setPost] = React.useState(null);
+
   React.useEffect(() => {
     axios.get(`http://localhost:3000/data-mahasiswa/students/1`).then((response) => {
       setPost(response.data);
@@ -25,8 +41,19 @@ const ProfileMahasiswa = () => {
     <div className="container">
       <CRow>
         <CCol xs={12} sm={6} md={4} lg={3} className="img-container">
-          <img className="img" src={require(`../../../assets/ProfilPic/${imgSrc}`)} alt={`Foto ${post.Nama}`} />
-          <div className="nama">{post.Nama}</div>
+          <CRow>
+            <img className="img" src={require(`../../../assets/ProfilPic/${imgSrc}`)} alt={`Foto ${post.Nama}`} />
+            <div className="nama">{post.Nama}</div>
+          </CRow>
+          <CRow>
+            <CButton
+              className="button-edit-profile"
+              onClick={() => navigate('/mahasiswa/dashboard')}
+              style={{ backgroundColor: '#5A719D', borderColor: '#5A719D' }}
+            >
+              <span> Edit Profile </span>
+            </CButton>
+          </CRow>
         </CCol>
         <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
           <div className="details">
