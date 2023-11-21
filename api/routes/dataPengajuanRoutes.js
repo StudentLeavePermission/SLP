@@ -38,4 +38,6 @@ router.post('/', uploadFile.single('File_Pengajuan'), dataPengajuanController.cr
 
 router.delete('/delete/:id', dataPengajuanController.deleteLeaveRequest);
 
+router.get('/mahasiswa/rekap/pengajuan', dataPengajuanController.getRekapLeaveRequest);
+
 module.exports = router;
