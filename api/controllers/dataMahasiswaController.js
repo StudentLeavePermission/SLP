@@ -394,6 +394,7 @@ const importStudentsFromExcel = async(req, res) => {
                     to: row.getCell(5).value, //mahasiswa.Email,
                     subject: `Halo ${row.getCell(2).value}, ini akun baru anda`,
                     context: {
+                        nama : row.getCell(2).value,
                         username: row.getCell(1).value,
                         password: row.getCell(3).value,
                     },

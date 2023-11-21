@@ -17,7 +17,7 @@ const hbs = require('nodemailer-express-handlebars')
 
 // import { render } from '@react-email/render';
 // import { EmailContent } from '../../react/src/componentSLP/EmailContent';
-function sendEmailDosenPengampu(nama, nim, jenis, keterangan,  emailDosen) {
+function sendEmailDosenPengampu(namaDosen, nama, nim, jenis, keterangan,  emailDosen) {
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -41,7 +41,8 @@ function sendEmailDosenPengampu(nama, nim, jenis, keterangan,  emailDosen) {
     template: "emailDosenPengampu", // the name of the template file, i.e., email.handlebars
     to: emailDosen, //mahasiswa.Email,
     context: {
-      nama: nama,
+      nama : namaDosen,
+      namaMahasiswa: nama,
       nim: nim,
       jenis: jenis,
       keterangan: keterangan,
@@ -258,7 +259,7 @@ exports.editLeaveRequest = async (req, res) => {
 
     if (data_pengajuan.Status_Pengajuan == 'Accepted') {
       console.log('email', dosenPengampu.Email_Dosen)
-      sendEmailDosenPengampu(mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin,data_pengajuan.Keterangan, dosenPengampu.Email_Dosen)
+      sendEmailDosenPengampu(dosenPengampu.Nama_Dosen, mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin,data_pengajuan.Keterangan, dosenPengampu.Email_Dosen)
     }
     res.status(200).json({ msg: 'LeaveRequest updated' });
   } catch (error) {
@@ -312,7 +313,7 @@ exports.emailInformationStatus = async (req, res) => {
     const mailOptions = {
       from: 'intljax6@gmail.com', // sender address
       template: "emailVerify", // the name of the template file, i.e., email.handlebars
-      to: mahasiswa.Email,
+      to: 'nisrinawafaz@gmail.com',//mahasiswa.Email,
       subject: `Update: Keputusan Terkait Pengajuan ${mahasiswa.Nama}`,
       context: {
         nama: mahasiswa.Nama,
@@ -323,6 +324,7 @@ exports.emailInformationStatus = async (req, res) => {
         dosen: dosenWali.Nama_Dosen
       },
     };
+    
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -1368,8 +1370,6 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-
 
 exports.getRekapLeaveRequest = async (req, res) => {
   try {

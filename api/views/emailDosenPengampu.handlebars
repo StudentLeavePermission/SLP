@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-</head>
-<body>
-     <p>siswa dengan nama {{namaMahasiswa}} nim {{nim}} dari kelas {{kelas}} sedang {{jenis}} karena {{keterangan}}</p><br>
 
+<head>
+    <meta charset="UTF-8" />
+    <title>title</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div style="background-color: #324567;">
+          <br>
+        </div>
+        
+        <div style="padding: 10px;">
+            <div style="font-size: 40px; text-align: center;">
+                <p class="fw-bold">Halo, {{nama}} !</p>
+            </div>
+            <div style="padding-left: 20%">
+                <div>
+                Terdapat pengajuan baru dengan detail berikut : <br>
+                Nama Mahasiswa : <b>{{namaMahasiswa}}</b> <br>
+                NIM : <b>{{nim}}</b> <br>
+                Kelas : <b>{{kelas}}</b> <br>
+                Jenis Izin : <b>{{jenis}}</b> <br>
+                Keterangan :<b>{{keterangan}}</b> <br><br>
+
+                Mohon untuk segera lakukan verifikasi pengajuan yang masuk.
+                </div>
+            </div>
+        </div>
+        <div style="background-color: #324567;">
+            <br>
+        </div>
+    </div>
 </body>
 </html>
