@@ -115,10 +115,10 @@ function TabelRekap() {
         // Formatting data
         const dataToExport = data.map((item, index) => ({
           No: index + 1 + (currentPage - 1) * itemsPerPage,
-          NIM: item.Mahasiswa.NIM,
-          Nama: item.Mahasiswa.Nama,
-          Jumlah_Izin: item.count_izin,
-          Jumlah_Sakit: item.count_sakit,
+          NIM: item.NIM,
+          Nama: item.Nama,
+          Jumlah_Izin: item.TotalIzin,
+          Jumlah_Sakit: item.TotalSakit,
         }));
 
         // Create a worksheet
