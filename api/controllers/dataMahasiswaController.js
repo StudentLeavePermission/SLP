@@ -260,6 +260,7 @@ const protectedContent = async(req, res) => {
 
 const logoutStudent = async(req, res) => {
     return res.clearCookie('access_token').status(200).json({ message: 'Logged out' });
+
 }
 
 const editStudent = async(req, res) => {
@@ -536,14 +537,14 @@ const getJmlMahasiswaProdi = async(req, res) => {
 const ForgotPassword = async(req, res) => {
     try {
         const { NIM } = req.body;
-        const mahasiswa = await Data_Dosen.get({ where: { NIM } });
-        const ID_Mahasiswa = mahasiswa.id;
+        const mahasiswa = await Data_Mahasiswa.get({ where: { NIM } });
+        const id = mahasiswa.id;
         if (!mahasiswa) {
             return res.status(404).json({ message: 'Mahasiswa Wali not found' });
         }
         const Password = generatePassword();
         const hashedPassword = await bcrypt.hash(Password, 10);
-        await Data_Mahasiswa.patch({ Password: hashedPassword }, { ID_Mahasiswa });
+        await Data_Mahasiswa.patch({ Password: hashedPassword }, { id });
         res.status(200).json({ message: 'Password updated successfully' });
 
         const transporter = nodemailer.createTransport({
@@ -569,7 +570,7 @@ const ForgotPassword = async(req, res) => {
             template: "emailForgotPassword", // the name of the template file, i.e., email.handlebars
             // to: dosenWali.Email_Dosen, //mahasiswa.Email,
             to: 'jaxsix06@gmail.com',
-            subject: `Halo ${mahasiswa.Nama}, ini akun baru anda`,
+            subject: `Halo ${mahasiswa.Nama}, ini password baru anda`,
             context: {
                 password: Password,
             },
