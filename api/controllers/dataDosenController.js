@@ -8,6 +8,7 @@ const Data_Dosen_Wali = new mainModel("Data_Dosen_Wali");
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 const XLSX = require('xlsx');
 
+
 // Mengambil semua data dosen
 exports.getAllDataDosen = async (req, res) => {
   try {
@@ -63,6 +64,32 @@ exports.deleteDataDosen = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.editDosen = async (req, res) => {
+  try {
+      const { id } = req.params; 
+      const dosen = await Data_Dosen.get({
+          where: { id: id },
+      });
+
+      if (!dosen) {
+          return res.status(404).json({ error: 'Dosen tidak ditemukan' });
+      }
+
+      // Menangani data lainnya
+      const { Nama_Dosen, Email_Dosen } = req.body;
+      const filename = req.body.filename;
+      dosen.Foto_Profil = filename;
+      dosen.Nama_Dosen = Nama_Dosen;
+      dosen.Email_Dosen = Email_Dosen;
+
+      await dosen.save();
+
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
