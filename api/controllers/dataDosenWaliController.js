@@ -259,7 +259,6 @@ exports.forgotPassword = async(req, res) => {
         await Data_Dosen_Wali.patch({ Password: hashedPassword }, { ID_Dosen });
         res.status(200).json({ message: 'Password updated successfully' });
 
-        // Create a Nodemailer transporter
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
@@ -268,28 +267,26 @@ exports.forgotPassword = async(req, res) => {
             },
         });
 
-        // Create an instance of your EmailContent component
-        // const emailComponent = (
-        //   <EmailContent
-        //     ID_Mahasiswa={ID_Mahasiswa} 
-        //     Jenis_Izin={Jenis_Izin} 
-        //     Keterangan={Keterangan}
-        //   />
-        // );
-
-        // Render the component to an HTML string
-        // const emailHTML = ReactDOMServer.renderToStaticMarkup(emailComponent? emailComponent : 'Ada permohonan baru!');
-
-        // Define your email message
-        const mailOptions = {
-            from: 'intljax6@gmail.com',
-            to: 'jaxsix06@gmail.com',
-            subject: 'New Password',
-            // emailHTML,
-            html: `<html><h1>Hello, ${Email_Dosen}! Your new password is ${Password}</h1></html>`
+        const handlebarOptions = {
+            viewEngine: {
+                partialsDir: path.resolve('./views'),
+                defaultLayout: false,
+            },
+            viewPath: path.resolve('./views/'),
         };
 
-        // Send the email
+        transporter.use('compile', hbs(handlebarOptions))
+
+        const mailOptions = {
+            from: 'intljax6@gmail.com', // sender address
+            template: "emailForgotPassword", // the name of the template file, i.e., email.handlebars
+            // to: dosenWali.Email_Dosen, //mahasiswa.Email,
+            to: 'jaxsix06@gmail.com',
+            subject: `Halo ${dosenWali.Nama_Dosen}, ini password baru anda`,
+            context: {
+                password: Password,
+            },
+        };
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.log('Error sending email: ' + error);

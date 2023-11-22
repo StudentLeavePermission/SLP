@@ -48,7 +48,7 @@ function TabelRekap() {
 
   const getRekapPengajuan = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/data-mahasiswa/rekap/');
+      const response = await axios.get('http://localhost:3000/data-pengajuan/mahasiswa/rekap/pengajuan/');
       setData(response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -66,21 +66,21 @@ function TabelRekap() {
 
   const sortedData = [...data].sort((a, b) => {
     const order = sortOrder === 'asc' ? 1 : -1;
-  
+
     // Convert NIM to string for proper sorting
-    const nimA = String(a.Mahasiswa.NIM);
-    const nimB = String(b.Mahasiswa.NIM);
-  
+    const nimA = String(a.NIM);
+    const nimB = String(b.NIM);
+
     if (sortBy === 'NIM') {
       return order * nimA.localeCompare(nimB);
     } else if (sortBy === 'Nama') {
-      return order * a.Mahasiswa.Nama.localeCompare(b.Mahasiswa.Nama);
+      return order * a.Nama.localeCompare(b.Nama);
     } else if (sortBy === 'Jumlah_Izin') {
-      return order * (a.count_izin - b.count_izin);
+      return order * (a.TotalIzin - b.TotalIzin);
     } else if (sortBy === 'Jumlah_Sakit') {
-      return order * (a.count_sakit - b.count_sakit);
+      return order * (a.TotalSakit - b.TotalSakit);
     }
-  });   
+  });
 
   // JSX for the header section
   const headerSection = (
@@ -115,15 +115,15 @@ function TabelRekap() {
         // Formatting data
         const dataToExport = data.map((item, index) => ({
           No: index + 1 + (currentPage - 1) * itemsPerPage,
-          NIM: item.Mahasiswa.NIM,
-          Nama: item.Mahasiswa.Nama,
-          Jumlah_Izin: item.count_izin,
-          Jumlah_Sakit: item.count_sakit,
+          NIM: item.NIM,
+          Nama: item.Nama,
+          Jumlah_Izin: item.TotalIzin,
+          Jumlah_Sakit: item.TotalSakit,
         }));
-  
+
         // Create a worksheet
         const ws = XLSX.utils.json_to_sheet(dataToExport);
-  
+
         // Set column widths
         const columnWidths = [
           { wch: 3 },
@@ -132,13 +132,13 @@ function TabelRekap() {
           { wch: 20 },
           { wch: 20 },
         ];
-  
+
         ws['!cols'] = columnWidths;
-  
+
         // Create a workbook
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'DataPengajuan');
-  
+
         // Save the Excel file with a specific name
         XLSX.writeFile(wb, 'data-pengajuan.xlsx');
       } else {
@@ -147,8 +147,8 @@ function TabelRekap() {
     } catch (error) {
       console.error('Error exporting data:', error);
     }
-  };  
-  
+  };
+
 
   return (
     <>
@@ -219,10 +219,10 @@ function TabelRekap() {
               {currentData.map((item, index) => (
                 <tr key={item.id}>
                   <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                  <td className="cell rata table-font">{item.Mahasiswa.NIM}</td>
-                  <td className="cell rata table-font">{item.Mahasiswa.Nama}</td>
-                  <td className="cell rata table-font">{item.count_izin}</td>
-                  <td className="cell rata table-font">{item.count_sakit}</td>
+                  <td className="cell rata table-font">{item.NIM}</td>
+                  <td className="cell rata table-font">{item.Nama}</td>
+                  <td className="cell rata table-font">{item.TotalIzin}</td>
+                  <td className="cell rata table-font">{item.TotalSakit}</td>
 
 
                   <td className="cell aksi">

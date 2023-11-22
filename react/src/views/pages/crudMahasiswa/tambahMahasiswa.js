@@ -133,28 +133,24 @@ const TambahMahasiswa = () => {
     return errors;
   };
 
-  const baseURL = `http://localhost:3000/data-mahasiswa/register`;
+  const baseURL = `http://localhost:3000/data-mahasiswa/create`;
   const createPost = () => {
 
 
-    const data = new FormData();
-    data.append("NIM", NIM);
-    data.append("Nama", Nama);
-    data.append("Nomor_Telp", NoTelp);
-    data.append("Email", Email);
-    data.append("ID_Kelas", 1);
-    data.append("Nama_Ortu", Nama_Ortu);
-    data.append("Nomor_Telp_Ortu", NoTelpOrtu);
+    const CrMHS = axios.post('http://localhost:3000/data-mahasiswa/create', {
+      Nama: Nama,
+      NIM: NIM,
+      Password : "1234",
+      Email: Email,
+      Nama_Ortu : Nama_Ortu,
+      Nomor_Telp : NoTelp,
+      Nomor_Telp_Ortu : NoTelpOrtu,
+      ID_Kelas : 1
+    });
 
 
-    axios
-      .post(baseURL, data)
-      .then((response) => {
-        setPost(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+
+
   };
 
 

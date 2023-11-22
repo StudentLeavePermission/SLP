@@ -13,6 +13,8 @@ router.post('/create', dataDosenWaliController.createDataDosenWali);
 
 router.patch('/patch/:id', dataDosenWaliController.editDataDosenWali);
 
+router.patch('/forgot-password', dataDosenWaliController.forgotPassword);
+
 router.get('/get/:id', dataDosenWaliController.getOneDataDosenWali);
 
 router.get('/get/id/:username', dataDosenWaliController.getIdDosenWali);

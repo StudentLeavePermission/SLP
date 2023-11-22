@@ -1,14 +1,34 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-</head>
-<body>
-     <p>Pengajuan tanggal {{tanggal}}, oleh :</p>  
-     <p>Nama : {{nama}}</p>
-     <p>NIM : {{nim}}</p><br>
 
-     <p>dengan jenis pengajuan {{jenis}} telah di {{status}} oleh {{dosen}}</p>
+<head>
+    <meta charset="UTF-8" />
+    <title>title</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div style="background-color: #324567;">
+          <br>
+        </div>
+        
+        <div style="padding: 10px;">
+            <div style="font-size: 40px; text-align: center;">
+                <p class="fw-bold">Halo, {{nama}} !</p>
+            </div>
+            <div style="padding-left: 20%">
+                <div>
+                Pengajuan tanggal <b>{{tanggal}}</b>, oleh : <br>
+                Nama : <b>{{nama}}</b> <br>
+                NIM : <b>{{nim}}</b> <br>
+
+                dengan jenis pengajuan <b>{{jenis}}</b> telah di <b>{{status}}</b> oleh <b>{{dosen}}</b>
+                </div>
+            </div>
+        </div>
+        <div style="background-color: #324567;">
+            <br>
+        </div>
+    </div>
 </body>
 </html>

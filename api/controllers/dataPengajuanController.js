@@ -17,7 +17,46 @@ const hbs = require('nodemailer-express-handlebars')
 
 // import { render } from '@react-email/render';
 // import { EmailContent } from '../../react/src/componentSLP/EmailContent';
+function sendEmailDosenPengampu(namaDosen, nama, nim, jenis, keterangan,  emailDosen) {
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: 'intljax6@gmail.com', // Your Gmail email address
+      pass: 'esxddggcmpvbfwwf', // Your Gmail email password or app password
+    },
+  });
 
+  const handlebarOptions = {
+    viewEngine: {
+      partialsDir: path.resolve('./views'),
+      defaultLayout: false,
+    },
+    viewPath: path.resolve('./views/'),
+  };
+
+  transporter.use('compile', hbs(handlebarOptions));
+
+  const mailOptions = {
+    from: 'intljax6@gmail.com', // sender address
+    template: "emailDosenPengampu", // the name of the template file, i.e., email.handlebars
+    to: emailDosen, //mahasiswa.Email,
+    context: {
+      nama : namaDosen,
+      namaMahasiswa: nama,
+      nim: nim,
+      jenis: jenis,
+      keterangan: keterangan,
+    },
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log('Error sending email: ' + error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+}
 // Get all leave requests
 exports.getAllLeaveRequests = async (req, res) => {
   try {
@@ -218,6 +257,41 @@ exports.editLeaveRequest = async (req, res) => {
       return res.status(404).json({ msg: 'LeaveRequest not found' });
     }
 
+    if (data_pengajuan.Status_Pengajuan == 'Accepted') {
+      console.log('email', dosenPengampu.Email_Dosen)
+      sendEmailDosenPengampu(dosenPengampu.Nama_Dosen, mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin,data_pengajuan.Keterangan, dosenPengampu.Email_Dosen)
+    }
+    res.status(200).json({ msg: 'LeaveRequest updated' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.emailInformationStatus = async (req, res) => {
+
+  try {
+    const { id } = req.params;
+    const data_pengajuan = await Data_Pengajuan.get({
+      where: {
+        id: id,
+      }
+    });
+
+    const mahasiswa = await Data_Mahasiswa.get({
+      where: { id: data_pengajuan.ID_Mahasiswa },
+    });
+
+    const kelas = await Data_Kelas.get({
+      where: { id: mahasiswa.ID_Kelas },
+    });
+
+    const dosenWali = await Data_Dosen.get({
+      where: {
+        id: kelas.ID_Dosen_Wali,
+      }
+    });
+
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
@@ -239,7 +313,7 @@ exports.editLeaveRequest = async (req, res) => {
     const mailOptions = {
       from: 'intljax6@gmail.com', // sender address
       template: "emailVerify", // the name of the template file, i.e., email.handlebars
-      to:mahasiswa.Email, //mahasiswa.Email,
+      to: 'nisrinawafaz@gmail.com',//mahasiswa.Email,
       subject: `Update: Keputusan Terkait Pengajuan ${mahasiswa.Nama}`,
       context: {
         nama: mahasiswa.Nama,
@@ -250,6 +324,8 @@ exports.editLeaveRequest = async (req, res) => {
         dosen: dosenWali.Nama_Dosen
       },
     };
+    
+
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log('Error sending email: ' + error);
@@ -257,31 +333,6 @@ exports.editLeaveRequest = async (req, res) => {
         console.log('Email sent: ' + info.response);
       }
     });
-
-    if(data_pengajuan.Status_Pengajuan == 'Accepted'){
-        console.log('email', dosenPengampu.Email_Dosen)
-        const mailOptions = {
-          from: 'intljax6@gmail.com', // sender address
-          template: "emailDosenPengampu", // the name of the template file, i.e., email.handlebars
-          to:dosenPengampu.Email_Dosen, //mahasiswa.Email,
-          context: {
-            nama: mahasiswa.Nama,
-            nim: mahasiswa.NIM,
-            jenis: data_pengajuan.Jenis_Izin,
-            keterangan: data_pengajuan.Keterangan,
-          },
-        };
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.log('Error sending email: ' + error);
-          } else {
-            console.log('Email sent: ' + info.response);
-          }
-        });
-    }
-
-
-    res.status(200).json({ msg: 'LeaveRequest updated' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -1316,6 +1367,89 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
   } catch (error) {
     console.error(error);
 
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.getRekapLeaveRequest = async (req, res) => {
+  try {
+    const dataPengajuan = await Data_Pengajuan.getAll();
+    const dataMahasiswa = await Data_Mahasiswa.getAll();
+    const jadwalKelas = await Jadwal_Kelas.getAll();
+
+    const dataPengajuanWithMahasiswaAndJadwal = await Promise.all(dataPengajuan.map(async (pengajuan) => {
+      const mahasiswa = dataMahasiswa.find((m) => m.id === pengajuan.ID_Mahasiswa);
+      const jadwal = jadwalKelas.find((j) => j.id === pengajuan.ID_Jadwal_Kelas);
+
+      return {
+        ID_Mahasiswa: mahasiswa.id,
+        NIM: mahasiswa.NIM,
+        Nama: mahasiswa.Nama,
+      };
+    }));
+
+    // Hitung totalIzin dan totalSakit di luar loop
+    const totalIzin = {};
+    const totalSakit = {};
+
+    dataPengajuan.forEach((pengajuan) => {
+      const jadwal = jadwalKelas.find((j) => j.id === pengajuan.ID_Jadwal_Kelas);
+    
+      if (pengajuan.Jenis_Izin === 'Izin' || pengajuan.Jenis_Izin === 'Sakit') {
+        const durasiJamPelajaran = jadwal.ID_Jam_Pelajaran_End - jadwal.ID_Jam_Pelajaran_Start + 1;
+    
+        if (pengajuan.Jenis_Izin === 'Izin') {
+          if (!totalIzin[pengajuan.ID_Mahasiswa]) {
+            totalIzin[pengajuan.ID_Mahasiswa] = 0;
+          }
+          totalIzin[pengajuan.ID_Mahasiswa] += durasiJamPelajaran;
+        } else if (pengajuan.Jenis_Izin === 'Sakit') {
+          if (!totalSakit[pengajuan.ID_Mahasiswa]) {
+            totalSakit[pengajuan.ID_Mahasiswa] = 0;
+          }
+          totalSakit[pengajuan.ID_Mahasiswa] += durasiJamPelajaran;
+        }
+      }
+    });
+    
+
+    // Tambahkan TotalSakit dan TotalIzin ke setiap entri dalam dataPengajuanWithMahasiswaAndJadwal
+    dataPengajuanWithMahasiswaAndJadwal.forEach((data) => {
+      data.TotalSakit = totalSakit[data.ID_Mahasiswa] || 0;
+      data.TotalIzin = totalIzin[data.ID_Mahasiswa] || 0;
+    });
+
+    const distinctDataPengajuan = dataPengajuanWithMahasiswaAndJadwal.filter((value, index, self) =>
+      self.findIndex((entry) => entry.ID_Mahasiswa === value.ID_Mahasiswa) === index
+    );
+
+    // Ambil ID mahasiswa yang sudah ada di distinctDataPengajuan
+    const existingMahasiswaIDs = distinctDataPengajuan.map((item) => item.ID_Mahasiswa);
+
+    // Ambil data mahasiswa yang belum ada di distinctDataPengajuan
+    const newMahasiswaData = dataMahasiswa.filter((mahasiswa) => !existingMahasiswaIDs.includes(mahasiswa.id));
+
+    // Tambahkan data mahasiswa yang belum ada ke distinctDataPengajuan
+    newMahasiswaData.forEach((mahasiswa) => {
+      distinctDataPengajuan.push({
+        ID_Mahasiswa: mahasiswa.id,
+        NIM: mahasiswa.NIM,
+        Nama: mahasiswa.Nama,
+        TotalSakit: 0,
+        TotalIzin: 0,
+      });
+    });
+
+    res.send({
+      message: 'Rekap Leave Request sent successfully',
+      data: distinctDataPengajuan,
+
+    });
+
+    console.log(dataPengajuan);
+    console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };

@@ -24,6 +24,10 @@ module.exports = {
       Email_Dosen: {
         type: Sequelize.STRING
       },
+      Foto_Profil: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -1,12 +1,28 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import { CCol, CRow } from '@coreui/react';
-import '../../../scss/styleProfile.css';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  CButton,
+  CCard,
+  CCardBody,
+  CCardGroup,
+  CContainer,
+  CForm,
+  CFormInput,
+  CInputGroup,
+  CInputGroupText,
+  CCol,
+  CRow,
+} from '@coreui/react';
+import '../../../../scss/styleProfile.css';
 import axios from "axios";
 
 
 const ProfileMahasiswa = () => {
+  const navigate = useNavigate();
+  const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs'));
+  
   const [post, setPost] = React.useState(null);
+
   React.useEffect(() => {
     axios.get(`http://localhost:3000/data-mahasiswa/students/1`).then((response) => {
       setPost(response.data);
@@ -25,22 +41,29 @@ const ProfileMahasiswa = () => {
     <div className="container">
       <CRow>
         <CCol xs={12} sm={6} md={4} lg={3} className="img-container">
-          <img className="img" src={require(`../../../assets/ProfilPic/${imgSrc}`)} alt={`Foto ${post.Nama}`} />
-          <div className="nama">{post.Nama}</div>
+          <CRow>
+            <img className="img" src={require(`../../../../assets/ProfilPic/${imgSrc}`)} alt={`Foto ${post.Nama}`} />
+            <div className="nama">{post.Nama}</div>
+          </CRow>
+          <CRow>
+            <CButton
+              className="button-edit-profile"
+              onClick={() => navigate('/mahasiswa/dashboard/edit')}
+              style={{ backgroundColor: '#5A719D', borderColor: '#5A719D' }}
+            >
+              <span> Edit Profile </span>
+            </CButton>
+          </CRow>
         </CCol>
         <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
           <div className="details">
             <div className="identitas">
-              <h3>Identitas Mahasiswa</h3>
+              <h3>Data Diri</h3>
             </div>
             <div className="label-data">
               <div className="item">
                 <div className="label">NIM</div>
                 <div className="value">: {post.data.NIM}</div>
-              </div>
-              <div className="item">
-                <div className="label">ID</div>
-                <div className="value">: {post.data.id}</div>
               </div>
               <div className="item">
                 <div className="label">Nama</div>
@@ -56,7 +79,11 @@ const ProfileMahasiswa = () => {
               </div>
               <div className="item">
                 <div className="label">Kelas</div>
-                <div className="value">: {post.kelas.kelas.Nama_Kelas}</div>
+                <div className="value">: {post.kelas.kelas}</div>
+              </div>
+              <div className="item">
+                <div className="label">Jurusan</div>
+                <div className="value">: Teknik Komputer dan Informatika</div>
               </div>
               <div className="item">
                 <div className="label">No Telp Ortu</div>

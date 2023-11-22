@@ -23,17 +23,21 @@ router.get('/students/:id', dataMahasiswaController.getStudent);
 
 router.get('/students/getId/:NIM', dataMahasiswaController.getStudentId);
 
+router.post('/create', dataMahasiswaController.createMhs);
+
 router.post('/students/edit/:id', uploadImg.single('photo'), dataMahasiswaController.editStudent);
 
-router.post('/register',  dataMahasiswaController.registerStudent);
+router.post('/register', dataMahasiswaController.registerStudent);
 
 router.post('/login', dataMahasiswaController.loginStudent);
+
+router.patch('/forgot-password', dataMahasiswaController.ForgotPassword);
 
 router.get('/logout', mhsAuth.authorizedUser, dataMahasiswaController.logoutStudent);
 
 router.get('/export', dataMahasiswaController.exportExcel);
 
-router.post('/import', uploadxlsx.single('xlsx'),dataMahasiswaController.importStudentsFromExcel);
+router.post('/import', uploadxlsx.single('xlsx'), dataMahasiswaController.importStudentsFromExcel);
 
 router.get('/rekap', dataMahasiswaController.RekapIzin);
 

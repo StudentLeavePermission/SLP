@@ -18,6 +18,8 @@ router.get('/mahasiswa/:idMahasiswa', dataPengajuanController.getLeaveRequestMah
 
 router.patch('/update/:id', dataPengajuanController.editLeaveRequest);
 
+router.get('/emailVerify/:id', dataPengajuanController.emailInformationStatus);
+
 router.get('/download/:filename', dataPengajuanController.downloadFile);
 
 router.get('/pengajuan/:id', dataPengajuanController.getPengajuanFormatted);
@@ -35,5 +37,7 @@ router.get('/leave/request/:IDProdi', dataPengajuanController.getCountOfLeaveReq
 router.post('/', uploadFile.single('File_Pengajuan'), dataPengajuanController.createLeaveRequest);
 
 router.delete('/delete/:id', dataPengajuanController.deleteLeaveRequest);
+
+router.get('/mahasiswa/rekap/pengajuan', dataPengajuanController.getRekapLeaveRequest);
 
 module.exports = router;
