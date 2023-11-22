@@ -46,7 +46,7 @@ const ProfileDosen = () => {
           <div className="nama">{dataDosen.Nama_Dosen}</div>
         </CCol>
         <CRow>
-          <CButton className="btn-edit table-font">
+          <CButton href={`/#/dosen/dashboard/edit`}className="btn-edit table-font">
             Edit Profile
           </CButton>
         </CRow>
