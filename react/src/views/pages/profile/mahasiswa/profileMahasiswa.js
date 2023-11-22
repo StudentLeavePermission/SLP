@@ -48,7 +48,7 @@ const ProfileMahasiswa = () => {
           <CRow>
             <CButton
               className="button-edit-profile"
-              onClick={() => navigate('/mahasiswa/dashboard/edit')}
+              onClick={() => navigate('/mahasiswa/profile/edit')}
               style={{ backgroundColor: '#5A719D', borderColor: '#5A719D' }}
             >
               <span> Edit Profile </span>
