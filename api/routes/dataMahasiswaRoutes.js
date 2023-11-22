@@ -23,6 +23,8 @@ router.get('/students/:id', dataMahasiswaController.getStudent);
 
 router.get('/students/getId/:NIM', dataMahasiswaController.getStudentId);
 
+router.post('/create', dataMahasiswaController.createMhs);
+
 router.post('/students/edit/:id', uploadImg.single('photo'), dataMahasiswaController.editStudent);
 
 router.post('/register', dataMahasiswaController.registerStudent);
