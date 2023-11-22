@@ -132,28 +132,9 @@ const dashboardMahasiswa = () => {
 
   const getAllLeaveRequests = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/data-pengajuan/mahasiswa/${id}`);
-      console.log('pengajuan', response.data);
-      const jadwal = response.data.jadwal;
-      const sakit = response.data.data.filter(item => item.Jenis_Izin === 'Sakit' && item.Status_Pengajuan === 'Accepted');
-      const izin = response.data.data.filter(item => item.Jenis_Izin === 'Izin' && item.Status_Pengajuan === 'Accepted');
-      console.log('Jumlah Izin:', izin);
-      console.log('Jumlah Sakit:', sakit);
-      if (izin.length > 0) {
-        let jumlahIzin = 0;
-        izin.forEach(item => {
-          jumlahIzin += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) + 1;
-        });
-        setIzin(jumlahIzin);
-      }
-
-      if (sakit.length > 0) {
-        let jumlahSakit = 0;
-        sakit.forEach(item => {
-          jumlahSakit += getJamEnd(jadwal, item.ID_Jadwal_Kelas) - getJamStart(jadwal, item.ID_Jadwal_Kelas) + 1;
-        });
-        setSakit(jumlahSakit);
-      }
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/mahasiswa/${id}`);
+      setSakit(response.data.data.Sakit);
+      setIzin(response.data.data.Izin);
 
 
     } catch (error) {
