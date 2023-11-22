@@ -85,7 +85,7 @@ const DetailKelas = React.lazy(() => import('./views/pages/crudKelas/detailKelas
 
 //dashboard
 const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardSiswa/dashboard'))
-const DashboardDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/dashboard'))
+const DashboardDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/profileDosen'))
 const DashboardAdmin = React.lazy(() => import('./views/pages/dashboard/dashboardAdmin/dashboard'))
 
 const DaftarMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/daftarMahasiswa'))
