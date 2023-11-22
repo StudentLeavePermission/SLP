@@ -1297,65 +1297,6 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
       });
     }
 
-    // //Cek bulan untuk memisahkan semester
-    // while (month <= 12 && month >=1){
-    //   // Tanggal awal bulan
-    //   let startDate = new Date(currentYear, month, 1); 
-
-    //   // Tanggal akhir bulan
-    //   let endDate = new Date(currentYear, month, 31); 
-
-    //   const dataPengajuan = await Data_Pengajuan.getAll({
-    //     where: {
-    //       ID_Mahasiswa: mahasiswa.map((mhs) => mhs.id),
-    //       Tanggal_Izin: {
-    //         [Op.and]: [
-    //           { [Op.gte]: startDate }, // Tanggal izin >= tanggal awal Januari
-    //           { [Op.lte]: endDate } // Tanggal izin <= tanggal akhir Januari
-    //         ]
-    //       },
-    //       Status_Pengajuan: 'Accepted',
-    //       Jenis_Izin: jenis
-    //     }
-    //   });
-
-    //   console.log ('data pengajuan per prodi: ', dataPengajuan);
-
-    //   // Ambil data pengajuan berdasarkan ID_Mahasiswa
-    //   const jadwal = await Jadwal_Kelas.getAll({
-    //     where: { 
-    //       id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas) 
-    //     },
-    //   });
-
-    //   console.log ('data jadwal per prodi: ', jadwal);
-
-    //   let jmlPengajuanPerJP = 0;
-
-    //   if (dataPengajuan) {
-    //     dataPengajuan.forEach((item) => {
-    //       if (item.Status_Pengajuan === 'Accepted') {
-    //         const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
-    //         const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
-
-    //         console.log('/////////////////////////////////////////////////', jamStart, jamEnd);
-
-    //         if (jamStart !== "NULL" && jamEnd !== "NULL") {
-    //           jmlPengajuanPerJP += jamEnd - jamStart;
-    //         }
-    //       }
-    //     });
-
-    //     if (currentMonth > 6){
-    //       jmlPengajuan[month-6]  = jmlPengajuanPerJP;
-    //     } else {
-    //       jmlPengajuan[month]  = jmlPengajuanPerJP;
-    //     }
-    //   }
-
-    //   month += 1;
-    // }
-
     console.log(jmlPengajuanKelas);
 
     if (jmlPengajuanKelas) {

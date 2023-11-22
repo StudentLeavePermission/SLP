@@ -152,19 +152,15 @@ exports.getClassScheduleWithTwoParams = async (req, res) => {
 
 exports.getClassScheduleFormatted = async (req, res) => {
   try {
-    console.log('///////////////////////////////////////////////////////// masukkkkkk');
     const IDProdi = req.params.IDProdi;
 
     let prodi = '';
-    console.log('//////////////////////////////////////////////ini id', IDProdi);
 
     //mengubah id prodi menjadi prodinya
     if (IDProdi === '1'){
       prodi = 'D3';
     } else if (IDProdi === '2'){
-      console.log('//////////////////////////////////////////////ini id', IDProdi);
       prodi = 'D4';
-      console.log('//////////////////////////////////////////////ini id', prodi);
     }
 
     //mengambil data kelas dengan prodi yang sama

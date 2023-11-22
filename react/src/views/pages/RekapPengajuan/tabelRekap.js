@@ -71,15 +71,19 @@ function TabelRekap() {
     const nimA = String(a.NIM);
     const nimB = String(b.NIM);
 
-    if (sortBy === 'NIM') {
-      return order * nimA.localeCompare(nimB);
-    } else if (sortBy === 'Nama') {
-      return order * a.Nama.localeCompare(b.Nama);
-    } else if (sortBy === 'Jumlah_Izin') {
+    if (a.Nama !== null && b.Nama !== null) {
+      if (sortBy === 'NIM') {
+        return order * nimA.localeCompare(nimB);
+      } else if (sortBy === 'Nama') {
+        return order * a.Nama.localeCompare(b.Nama);
+      }
+
+     else if (sortBy === 'Jumlah_Izin') {
       return order * (a.TotalIzin - b.TotalIzin);
     } else if (sortBy === 'Jumlah_Sakit') {
       return order * (a.TotalSakit - b.TotalSakit);
     }
+  }
   });
 
   // JSX for the header section
