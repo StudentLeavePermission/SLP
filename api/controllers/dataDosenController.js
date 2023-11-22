@@ -235,6 +235,49 @@ exports.getDosenClass = async (req, res) => {
   }
 };
 
+//edit pada getDosenClass
+exports.editDosenClass = async (req, res) => {
+  try {
+    const { id } = req.params; // Ambil ID dari parameter URL
+    const newData = req.body; // Data yang akan digunakan untuk mengganti data yang ada
+    const whereClause = { id }; // Kriteria untuk menentukan data yang akan diedit
+
+    const [updatedRowCountDosen] = await Data_Dosen.patch(newData, whereClause);
+
+    if (updatedRowCountDosen === 0) {
+      return res.status(404).json({ msg: 'Data Dosen not found' });
+    }
+
+    // Jika ada perubahan pada Nama_Kelas, lakukan update pada Data_Kelas
+    if (newData.Nama_Kelas) {
+      // Temukan ID_Kelas berdasarkan ID_Dosen_Wali
+      const existingKelas = await Data_Kelas.get({
+        where: { ID_Dosen_Wali: id },
+      });
+
+      if (!existingKelas) {
+        return res.status(404).json({ msg: 'Data Kelas not found' });
+      }
+
+      // Update Nama_Kelas pada Data_Kelas
+      const [updatedRowCountKelas] = await Data_Kelas.patch(
+        { Nama_Kelas: newData.Nama_Kelas },
+        { id: existingKelas.id }
+      );
+
+      if (updatedRowCountKelas === 0) {
+        return res.status(500).json({ msg: 'Failed to update Data Kelas' });
+      }
+    }
+
+    res.status(200).json({ msg: 'Data Dosen and Kelas updated' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 
 exports.createDataDosenFormatted = async (req, res) => {
   try {
