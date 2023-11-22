@@ -27,4 +27,6 @@ router.get('/count/dosen', dataDosenController.getJmlDosen);
 
 router.get('/getdosenclass/:id', dataDosenController.getDosenClass);
 
+router.patch('/editdosenclass/:id', dataDosenController.editDosenClass);
+
 module.exports = router;
