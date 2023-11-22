@@ -98,6 +98,8 @@ const RekapPengajuanDetail = React.lazy(() => import('./views/pages/RekapPengaju
 const ProfileMahasiswa = React.lazy(() => import('./views/pages/profile/mahasiswa/profileMahasiswa'))
 const EditProfileMahasiswa = React.lazy(() => import('./views/pages/profile/mahasiswa/editProfile'))
 
+const EditProfileDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/editProfile'))
+
 const wrapComponent = (Component, isProtected, props) => {
   // Return a component that wraps the provided Component
   return () => {
@@ -196,7 +198,8 @@ const routes = [
   { path: '/admin/dashboard', name: 'DashboardAdmin', element: DashboardAdmin },
   { path: '/dosen/dashboard/daftarMahasiswa', name: 'DaftarMahasiswa', element: DaftarMahasiswa },
   { path: '/mahasiswa/profile', name: 'ProfileMahasiswa', element: ProfileMahasiswa },
-  { path: '/mahasiswa/profile/edit', name: 'EditProfileMahasiswa', element: EditProfileMahasiswa }
+  { path: '/mahasiswa/profile/edit', name: 'EditProfileMahasiswa', element: EditProfileMahasiswa },
+  { path: '/dosen/dashboard/edit', name: 'EditProfileDosen', element: EditProfileDosen }
 
   // Untuk route yang di-proteksi, berikut definisinya:
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
