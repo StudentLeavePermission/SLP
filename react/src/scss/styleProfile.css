@@ -249,4 +249,15 @@ h3{
     font-weight: 600;
     line-height: normal;
   }
-    
+  
+  .submitButtonStyleDosen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    margin-left: 35%;
+    margin-top: 5%;
+    background-color: #2662FF;
+    border-radius: 10px;
+    font-size: 1vw;
+  }
