@@ -37,10 +37,23 @@ const editProfile = () => {
   const baseURL = `http://localhost:3000/data-mahasiswa/students/edit/1`;
   const createPost = () => {
     const data = new FormData();
-    data.append("Nama_img", file.name);
-    data.append("Nomor_Telp", NoTelp);
-    data.append("Nomor_Telp_Ortu", NoTelpOrtu);
-    data.append("photo", file);
+
+    // Pengecekan apakah file tidak null sebelum menambahkannya
+    if (file) {
+        data.append("Nama_img", file.name);
+        data.append("photo", file);
+    }
+
+    // Pengecekan apakah NoTelp tidak null sebelum menambahkannya
+    if (NoTelp) {
+        data.append("Nomor_Telp", NoTelp);
+    }
+
+    // Pengecekan apakah NoTelpOrtu tidak null sebelum menambahkannya
+    if (NoTelpOrtu) {
+        data.append("Nomor_Telp_Ortu", NoTelpOrtu);
+    }
+
 
     axios
       .post(baseURL, data)
@@ -171,9 +184,11 @@ const editProfile = () => {
                                 className="image-style"
                               />
                             ) : (
-                              <CImage src={require(`../../../../assets/ProfilPic/${imgSrc}`)} fluid className="image-style" />
-
-
+                              <CImage 
+                                src={require(`../../../../assets/ProfilPic/${imgSrc}`)} 
+                                fluid 
+                                className="image-style"
+                                 />
                             )}
                             <CImage src={pencil} className="pencil-icon-style" />
                           </div>
