@@ -15,14 +15,13 @@ import pencil from "../../../../assets/images/pencil-solid.svg";
 import '../../../../scss/styleProfile.css';
 import { useParams } from 'react-router-dom';
 
-
-
-const editProfile = () => {
-  const [NoTelp, setNoTelp] = useState("");
-  const [NoTelpOrtu, setNoTelpOrtu] = useState("");
+const EditMahasiswa = () => {
+  const [Nama, setNama] = useState("");
+  const [Email, setEmail] = useState("");
   const [file, setFile] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [id, setIdDosen] = useState(sessionStorage.getItem('idDosen'));
+  const [post, setPost] = useState(null);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -36,42 +35,38 @@ const editProfile = () => {
     }
   };
 
-  const baseURL = `http://localhost:3000/data-dosen/editdosenclass/${id}`;
+  React.useEffect(() => {
+    axios.get(`http://localhost:3000/data-dosen/get/${id}`).then((response) => {
+      console.log('nyobacikk', response.data);
+      setPost(response.data);
+    });
+  }, []);
+
+  const baseURL = `http://localhost:3000/data-dosen/editdosen/${id}`;
+
   const createPost = () => {
+    if (!file) {
+      console.error("File belum dipilih");
+      return;
+    }
+
     const data = new FormData();
-    data.append("Nama_img", file.name);
-    data.append("Nomor_Telp", NoTelp);
-    data.append("Nomor_Telp_Ortu", NoTelpOrtu);
+    data.append("Nama_Dosen", Nama);
+    data.append("Email_Dosen", Email);
     data.append("photo", file);
+
+    console.log('masukk');
 
     axios
       .post(baseURL, data)
       .then((response) => {
         setPost(response.data);
+        alert("Data berhasil diupdate!");
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   };
-
-  const [post, setPost] = useState(null);
-
-  React.useEffect(() => {
-    axios.get(`http://localhost:3000/data-mahasiswa/students/1`).then((response) => {
-      setPost(response.data);
-    });
-  }, []);
-
-
-  if (!post) return null;
-
-
-  if (post.data.Foto_Profil != null){
-    var imgSrc = `${post.data.Foto_Profil}`;
-  }
-  else{
-    var imgSrc = `blank.jpeg`
-  }
 
   return (
     <div className="c-app c-default-layout">
@@ -86,81 +81,59 @@ const editProfile = () => {
                       <CCol xs="6" className="my-col-inner">
                         <CRow className="mb-3">
                           <CCol className="ml-0">
-                            <CFormLabel htmlFor="kelas" className="label">
-                              Kelas
+                            <CFormLabel htmlFor="namaDosen" className="label">
+                              Nama
                             </CFormLabel>
                             <CFormInput
                               type="text"
-                              id="kelas"
-                              name="kelas"
-                              defaultValue={post.kelas.Nama_kelas}
-                              disabled
+                              id="namaDosen"
+                              name="namaDosen"
+                              defaultValue={post ? post.data.Nama_Dosen : ""}
+                              onChange={(event) => setNama(event.target.value)}
                             />
                           </CCol>
                           <CCol>
-                            <CFormLabel htmlFor="programStudi" className="label">
-                              Program Studi
+                            <CFormLabel htmlFor="NIP" className="label">
+                              NIP
                             </CFormLabel>
                             <CFormInput
                               type="text"
-                              id="programStudi"
-                              name="programStudi"
-                              defaultValue={post.kelas.prodi}
+                              id="NIP"
+                              name="NIP"
+                              defaultValue={post ? post.data.NIP : ""}
                               disabled
                             />
                           </CCol>
                         </CRow>
-                        <CFormLabel htmlFor="jurusan" className="label">
-                          Jurusan
+                        <CFormLabel htmlFor="kodedosen" className="label">
+                          Kode Dosen
                         </CFormLabel>
                         <CFormInput
                           type="text"
-                          id="jurusan"
-                          name="jurusan"
-                          defaultValue="Teknik Komputer dan Informatika"
+                          id="kodedosen"
+                          name="kodedosen"
+                          defaultValue={post ? post.data.Kode_Dosen : ""}
                           disabled
                         />
-                        <CFormLabel htmlFor="email" className="label">
+                        <CFormLabel htmlFor="initialID" className="label">
+                          ID
+                        </CFormLabel>
+                        <CFormInput
+                          type="text"
+                          id="initialID"
+                          name="initialID"
+                          defaultValue={post ? post.data.InitialID : ""}
+                          disabled
+                        />
+                        <CFormLabel htmlFor="Email" className="label">
                           Email
                         </CFormLabel>
                         <CFormInput
                           type="email"
-                          id="email"
-                          name="email"
-                          defaultValue={post.data.Email}
-                          disabled
-                        />
-                        <CFormLabel htmlFor="noHandphone" className="label">
-                          No Handphone
-                        </CFormLabel>
-                        <CFormInput
-                          type="text"
-                          id="noHandphone"
-                          name="noHandphone"
-                          defaultValue={post.data.Nomor_Telp}
-                          onChange={(event) => setNoTelp(event.target.value)}
-                        />
-                        <br />
-                        <p className="header-text">Data Orang Tua Wali</p>
-                        <CFormLabel htmlFor="namaOrangTuaWali" className="label">
-                          Nama Orang Tua Wali
-                        </CFormLabel>
-                        <CFormInput
-                          type="text"
-                          id="namaOrangTuaWali"
-                          name="namaOrangTuaWali"
-                          defaultValue={post.data.Nomor_Telp_Ortu}
-                          disabled
-                        />
-                        <CFormLabel htmlFor="noHandphoneOrangTuaWali" className="label">
-                          No Handphone Orang Tua Wali
-                        </CFormLabel>
-                        <CFormInput
-                          type="text"
-                          id="noHandphoneOrangTuaWali"
-                          name="noHandphoneOrangTuaWali"
-                          defaultValue={post.data.Nomor_Telp_Ortu}
-                          onChange={(event) => setNoTelpOrtu(event.target.value)}
+                          id="Email"
+                          name="Email"
+                          defaultValue={post ? post.data.Email_Dosen : ""}
+                          onChange={(event) => setEmail(event.target.value)}
                         />
                       </CCol>
                       <CCol xs="6" className="my-col-inner">
@@ -173,11 +146,16 @@ const editProfile = () => {
                                 className="image-style"
                               />
                             ) : (
-                              <CImage src={require(`../../../../assets/ProfilPic/${imgSrc}`)} fluid className="image-style" />
-
-
+                              <CImage
+                                src={require(`../../../../assets/ProfilPic/${post ? post.data.Foto_Profil || "blank.jpeg" : "blank.jpeg"}`)}
+                                fluid
+                                className="image-style"
+                              />
                             )}
-                            <CImage src={pencil} className="pencil-icon-style" />
+                            <CImage
+                              src={pencil}
+                              className="pencil-icon-style"
+                            />
                           </div>
                           <input
                             type="file"
@@ -188,28 +166,10 @@ const editProfile = () => {
                             accept="image/*"
                           />
                         </CCard>
-                        <CFormLabel htmlFor="nama" className="label">
-                          Nama
-                        </CFormLabel>
-                        <CFormInput type="text" id="nama" name="nama" defaultValue={post.data.Nama} disabled />
-                        <CFormLabel htmlFor="nim" className="label">
-                          NIM
-                        </CFormLabel>
-                        <CFormInput type="text" id="nim" name="nim" defaultValue={post.data.NIM} disabled />
-                        <CFormLabel htmlFor="waliDosen" className="label">
-                          Wali Dosen
-                        </CFormLabel>
-                        <CFormInput
-                          type="text"
-                          id="waliDosen"
-                          name="waliDosen"
-                          defaultValue={post.WaliDosen.Nama_Dosen}
-                          disabled
-                        />
                         <CButton
                           component="input"
                           value="Submit"
-                          className="submitButtonStyle"
+                          className="submitButtonStyleDosen"
                           onClick={createPost}
                         />
                       </CCol>
@@ -225,4 +185,4 @@ const editProfile = () => {
   );
 };
 
-export default editProfile;
+export default EditMahasiswa;
