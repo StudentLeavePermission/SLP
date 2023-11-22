@@ -8,6 +8,7 @@ const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const Data_Kelas = new mainModel("Data_Kelas");
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 const Data_Dosen = new mainModel("Data_Dosen");
+const Data_Mata_Kuliah = new mainModel("Data_Mata_Kuliah");
 const { Op } = require('sequelize');
 const hbs = require('nodemailer-express-handlebars')
 
@@ -17,7 +18,7 @@ const hbs = require('nodemailer-express-handlebars')
 
 // import { render } from '@react-email/render';
 // import { EmailContent } from '../../react/src/componentSLP/EmailContent';
-function sendEmailDosenPengampu(namaDosen, nama, nim, jenis, keterangan,  emailDosen) {
+function sendEmailDosenPengampu(namaDosen, nama, nim, jenis, kelas, tanggal, matkul, emailDosen) {
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -39,13 +40,16 @@ function sendEmailDosenPengampu(namaDosen, nama, nim, jenis, keterangan,  emailD
   const mailOptions = {
     from: 'intljax6@gmail.com', // sender address
     template: "emailDosenPengampu", // the name of the template file, i.e., email.handlebars
-    to: emailDosen, //mahasiswa.Email,
+    to: 'nisrinawafaz@gmail.com',//emailDosen,     
+    subject: `Pemberitahuan ${jenis} a.n ${nama} ${kelas}`,
     context: {
       nama : namaDosen,
       namaMahasiswa: nama,
       nim: nim,
+      kelas : kelas,
       jenis: jenis,
-      keterangan: keterangan,
+      tanggal : tanggal,
+      matkul : matkul,
     },
   };
 
@@ -247,11 +251,24 @@ exports.editLeaveRequest = async (req, res) => {
       where: { id: data_pengajuan.ID_Jadwal_Kelas },
     });
 
+    const dataMatkul = await Data_Mata_Kuliah.get({ 
+      where: { id: jadwal.ID_Matkul },
+    });
+
+
     const dosenPengampu = await Data_Dosen.get({
       where: {
         id: jadwal.ID_Dosen,
       }
     });
+
+    const currentYear = new Date().getFullYear();
+    let angka_kelas;
+    if (new Date().getMonth() >= 7) {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran + 1;
+    } else {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran;
+    }
 
     if (updatedRowCount === 0) {
       return res.status(404).json({ msg: 'LeaveRequest not found' });
@@ -259,7 +276,8 @@ exports.editLeaveRequest = async (req, res) => {
 
     if (data_pengajuan.Status_Pengajuan == 'Accepted') {
       console.log('email', dosenPengampu.Email_Dosen)
-      sendEmailDosenPengampu(dosenPengampu.Nama_Dosen, mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin,data_pengajuan.Keterangan, dosenPengampu.Email_Dosen)
+      const namaKelas = `${angka_kelas}${kelas.Nama_Kelas}`
+      sendEmailDosenPengampu(dosenPengampu.Nama_Dosen, mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin, namaKelas,data_pengajuan.Tanggal_Izin, dataMatkul.Nama_Mata_Kuliah, dosenPengampu.Email_Dosen)
     }
     res.status(200).json({ msg: 'LeaveRequest updated' });
   } catch (error) {
