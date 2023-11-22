@@ -34,6 +34,12 @@ router.get('/leave/request/:jenis/:IDProdi', dataPengajuanController.getCountOfL
 
 router.get('/leave/request/:IDProdi', dataPengajuanController.getCountOfLeaveRequestsTable);
 
+router.get('/leave/mahasiswa/:id', dataPengajuanController.getCountOfLeaveRequestsMahasiswa);
+
+router.get('/historyLeave/mahasiswa/:id', dataPengajuanController.getHistoryOfLeaveRequestsMahasiswa);
+
+router.get('/onProgressLeave/mahasiswa/:id', dataPengajuanController.getOnProgressOfLeaveRequestsMahasiswa);
+
 router.post('/', uploadFile.single('File_Pengajuan'), dataPengajuanController.createLeaveRequest);
 
 router.delete('/delete/:id', dataPengajuanController.deleteLeaveRequest);
