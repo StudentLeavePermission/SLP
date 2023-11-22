@@ -30,36 +30,9 @@ const HistoryPengajuanMahasiswa = () => {
 
     const getAllLeaveRequests = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/data-pengajuan/mahasiswa/${id}`);
+            const response = await axios.get(`http://localhost:3000/data-pengajuan/historyLeave/mahasiswa/${id}`);
             console.log('pengajuan', response.data);
-            let dataPengajuan = response.data.data;
-            dataPengajuan = dataPengajuan.filter(item =>
-                item.Status_Pengajuan !== 'Delivered'
-            );
-            console.log('data pengajuan', dataPengajuan);
-            const jadwal = response.data.jadwal;
-            while (dataPengajuan.length > 0) {
-                let idMhs = dataPengajuan[0].ID_Mahasiswa;
-                let Tanggal_Izin = dataPengajuan[0].Tanggal_Pengajuan;
-                let jenis = dataPengajuan[0].Jenis_Izin;
-                let keterangan = dataPengajuan[0].Keterangan;
-                let id = dataPengajuan[0].id;
-                let status = dataPengajuan[0].Status_Pengajuan;
-                const formattedData = {
-                    ID : id,
-                    Jenis: jenis,
-                    Keterangan: keterangan,
-                    Tanggal: Tanggal_Izin,
-                    Status: status,
-                    JamPelajaran: getJumlahJamIzin(dataPengajuan, jadwal, Tanggal_Izin, jenis, keterangan) + " " + "Jam"
-                };
-                console.log('format', formattedData);
-                setDaftarPengajuan(prevData => [...prevData, formattedData]);
-                dataPengajuan = dataPengajuan.filter(item =>
-                    item.Tanggal_Pengajuan !== Tanggal_Izin.toString() || item.Jenis_Izin !== jenis|| item.Keterangan !== keterangan
-                );
-                console.log('dataPengajuan baru ', dataPengajuan);
-            }
+            setDaftarPengajuan(response.data.data)
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -218,12 +191,11 @@ const HistoryPengajuanMahasiswa = () => {
                                             <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
                                             <td className="cell rata table-font">{item.Jenis}</td>
                                             <td className="cell rata table-font">{item.Tanggal}</td>
-                                            <td className="cell rata table-font">{item.JamPelajaran}</td>
+                                            <td className="cell rata table-font">{item.JamPelajaran} Jam</td>
                                             <td className="cell rata table-font">{item.Status}</td>
-                                            <td>
-                                                <CButton href={`/#/mahasiswa/Pengajuan/detail/${item.ID}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                                            <td><CButton href={`/#/mahasiswa/Pengajuan/detail/${item.ID}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
                                                     <CIcon icon={cilInfo} />
-                                                </CButton>
+                                    </CButton>
                                             </td>
                                         </tr>
                                     ))}

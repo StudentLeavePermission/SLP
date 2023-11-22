@@ -1312,6 +1312,386 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
   }
 };
 
+exports.getCountOfLeaveRequestsMahasiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let namaBulan = [];
+
+    const currentMonth = new Date().getMonth();
+
+    const jenisSurat = ['Sakit', 'Izin'];
+
+    let jmlPengajuanSakit = 0;
+    let jmlPengajuanIzin = 0;
+    let jmlPengajuanMahasiswa;
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear();
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    for (let j = 0; j < 2; j++) {
+      let month = 0;
+
+      if (currentMonth > 6) {
+        month = 7;
+      } else {
+        namaBulan =
+          month = 1;
+      }
+      //Cek bulan untuk memisahkan semester
+      while (month <= 12 && month >= 1) {
+        // Tanggal awal bulan
+        let startDate = new Date(currentYear, month, 1);
+
+        // Tanggal akhir bulan
+        let endDate = new Date(currentYear, month, 31);
+
+        const dataPengajuan = await Data_Pengajuan.getAll({
+          where: {
+            ID_Mahasiswa: id,
+            Tanggal_Izin: {
+              [Op.and]: [
+                { [Op.gte]: startDate },
+                { [Op.lte]: endDate }
+              ]
+            },
+            Status_Pengajuan: 'Accepted',
+            Jenis_Izin: jenisSurat[j]
+          }
+        });
+
+        const jadwal = await Jadwal_Kelas.getAll({
+          where: {
+            id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas)
+          },
+        });
+
+        let jmlPengajuanPerJP = 0;
+
+        if (dataPengajuan) {
+          dataPengajuan.forEach((item) => {
+            if (item.Status_Pengajuan === 'Accepted') {
+              const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+              const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+
+              if (jamStart !== "NULL" && jamEnd !== "NULL") {
+                jmlPengajuanPerJP += jamEnd - jamStart + 1;
+              }
+            }
+          });
+
+          if (j == 0) {
+            jmlPengajuanSakit += jmlPengajuanPerJP;
+          } else if (j == 1) {
+            jmlPengajuanIzin += jmlPengajuanPerJP;
+          }
+
+          month += 1;
+        }
+      }
+    }
+
+    jmlPengajuanMahasiswa = {
+      Sakit: jmlPengajuanSakit,
+      Izin: jmlPengajuanIzin,
+    };
+
+    if (jmlPengajuanMahasiswa) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: jmlPengajuanMahasiswa
+      })
+    }
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.getHistoryOfLeaveRequestsMahasiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('ini id mahas', id)
+
+    let namaBulan = [];
+
+    const currentMonth = new Date().getMonth();
+    let PengajuanMahasiswa = [];
+    let Temp = [];
+    let FixPengajuanMahasiswa = []
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear();
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    let month = 0;
+
+    if (currentMonth > 6) {
+      month = 7;
+    } else {
+      namaBulan =
+        month = 1;
+    }
+    //Cek bulan untuk memisahkan semester
+    while (month <= 12 && month >= 1) {
+      // Tanggal awal bulan
+      let startDate = new Date(currentYear, month, 1);
+
+      // Tanggal akhir bulan
+      let endDate = new Date(currentYear, month, 31);
+
+      const dataPengajuan = await Data_Pengajuan.getAll({
+        where: {
+          ID_Mahasiswa: id,
+          Tanggal_Izin: {
+            [Op.and]: [
+              { [Op.gte]: startDate },
+              { [Op.lte]: endDate }
+            ]
+          },
+          Status_Pengajuan: 'Accepted' || 'Decline',
+        }
+      });
+      const jadwal = await Jadwal_Kelas.getAll({
+        where: {
+          id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas)
+        },
+      });
+
+      if (dataPengajuan) {
+        dataPengajuan.forEach((item) => {
+          const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+          const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+          let id = item.id
+          let jenis = item.Jenis_Izin
+          let tanggal = item.Tanggal_Pengajuan
+          let status = item.Status_Pengajuan
+          let keterangan = item.Keterangan
+          let jam = jamEnd - jamStart + 1
+          PengajuanMahasiswa.push({
+            Id :id,
+            Jenis: jenis,
+            Tanggal: tanggal,
+            JamPelajaran: jam,
+            Status: status,
+            Keterangan: keterangan
+          })
+        });
+        month += 1;
+      }
+      while (PengajuanMahasiswa.length > 0) {
+      let ID = PengajuanMahasiswa[0].Id
+      let jenis= PengajuanMahasiswa[0].Jenis
+      let tanggal= PengajuanMahasiswa[0].Tanggal
+      let status= PengajuanMahasiswa[0].Status
+      let keterangan = PengajuanMahasiswa[0].Keterangan
+      Temp = PengajuanMahasiswa.filter(item =>
+        item.Tanggal.toString()  === tanggal.toString() && item.Jenis === jenis && item.Keterangan.toLowerCase() === keterangan.toLowerCase()
+      );
+      let jumlahJP = 0;
+      Temp.forEach(item => {
+        jumlahJP += item.JamPelajaran
+      });
+      FixPengajuanMahasiswa.push({
+        ID :  ID,
+        Jenis:jenis,
+        Tanggal: tanggal,
+        JamPelajaran: jumlahJP,
+        Status: status,
+        Keterangan : keterangan
+      })
+
+      PengajuanMahasiswa = PengajuanMahasiswa.filter(item =>
+        item.Tanggal.toString() !== tanggal.toString() || item.Jenis !== jenis || item.Keterangan.toLowerCase() !== keterangan.toLowerCase()
+      );
+      console.log('banyak data', PengajuanMahasiswa.length)
+    }
+    }
+
+    if (FixPengajuanMahasiswa) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: FixPengajuanMahasiswa
+      })
+    }
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.getOnProgressOfLeaveRequestsMahasiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('ini id mahas', id)
+
+    let namaBulan = [];
+
+    const currentMonth = new Date().getMonth();
+    let PengajuanMahasiswa = [];
+    let Temp = [];
+    let FixPengajuanMahasiswa = []
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear();
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    let month = 0;
+
+    if (currentMonth > 6) {
+      month = 7;
+    } else {
+      namaBulan =
+        month = 1;
+    }
+    //Cek bulan untuk memisahkan semester
+    while (month <= 12 && month >= 1) {
+      // Tanggal awal bulan
+      let startDate = new Date(currentYear, month, 1);
+
+      // Tanggal akhir bulan
+      let endDate = new Date(currentYear, month, 31);
+
+      const dataPengajuan = await Data_Pengajuan.getAll({
+        where: {
+          ID_Mahasiswa: id,
+          Tanggal_Izin: {
+            [Op.and]: [
+              { [Op.gte]: startDate },
+              { [Op.lte]: endDate }
+            ]
+          },
+          Status_Pengajuan: 'Delivered',
+        }
+      });
+      const jadwal = await Jadwal_Kelas.getAll({
+        where: {
+          id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas)
+        },
+      });
+
+      if (dataPengajuan) {
+        dataPengajuan.forEach((item) => {
+          const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+          const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+          let id = item.id
+          let jenis = item.Jenis_Izin
+          let tanggal = item.Tanggal_Pengajuan
+          let status = item.Status_Pengajuan
+          let keterangan = item.Keterangan
+          let jam = jamEnd - jamStart + 1
+          PengajuanMahasiswa.push({
+            Id :id,
+            Jenis: jenis,
+            Tanggal: tanggal,
+            JamPelajaran: jam,
+            Status: status,
+            Keterangan: keterangan
+          })
+        });
+        month += 1;
+      }
+      while (PengajuanMahasiswa.length > 0) {
+      let ID = PengajuanMahasiswa[0].Id
+      let jenis= PengajuanMahasiswa[0].Jenis
+      let tanggal= PengajuanMahasiswa[0].Tanggal
+      let status= PengajuanMahasiswa[0].Status
+      let keterangan = PengajuanMahasiswa[0].Keterangan
+      Temp = PengajuanMahasiswa.filter(item =>
+        item.Tanggal.toString()  === tanggal.toString() && item.Jenis === jenis && item.Keterangan.toLowerCase() === keterangan.toLowerCase()
+      );
+      let jumlahJP = 0;
+      Temp.forEach(item => {
+        jumlahJP += item.JamPelajaran
+      });
+      FixPengajuanMahasiswa.push({
+        ID :  ID,
+        Jenis:jenis,
+        Tanggal: tanggal,
+        JamPelajaran: jumlahJP,
+        Status: status,
+        Keterangan : keterangan
+      })
+
+      PengajuanMahasiswa = PengajuanMahasiswa.filter(item =>
+        item.Tanggal.toString() !== tanggal.toString() || item.Jenis !== jenis || item.Keterangan.toLowerCase() !== keterangan.toLowerCase()
+      );
+    }
+    }
+
+    if (FixPengajuanMahasiswa) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: FixPengajuanMahasiswa
+      })
+    }
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 exports.getRekapLeaveRequest = async (req, res) => {
   try {
     const dataPengajuan = await Data_Pengajuan.getAll();
