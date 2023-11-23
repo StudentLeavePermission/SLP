@@ -38,7 +38,7 @@ const EditMahasiswa = () => {
   const baseURL = `http://localhost:3000/data-mahasiswa/students/edit/${id}`;
   const createPost = () => {
     const data = new FormData();
-    data.append("Nama_img", file.name);
+
     data.append("Nomor_Telp", NoTelp);
     data.append("Nomor_Telp_Ortu", NoTelpOrtu);
     data.append("photo", file);

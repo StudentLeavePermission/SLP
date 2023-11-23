@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './tabelMahasiswa.css'; // Import your CSS file
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
-import { CButton } from '@coreui/react';
+import { CButton, CFormInput } from '@coreui/react';
 import axios from "axios";
+import FormData from 'form-data';
 import Modal from 'react-modal';
 const customStyles = {
   content: {
@@ -13,11 +14,15 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
+    zIndex: 9999, // Adjust this value as needed
+  },
+  overlay: {
+    zIndex: 9998, // Adjust this value as needed
   },
 };
 function TabelCRUD() {
 
-  
+
   const [idAdmin, setIdAdmin] = useState(sessionStorage.getItem('idAdmin'));
 
   let subtitle;
@@ -42,10 +47,48 @@ function TabelCRUD() {
   const [searchText, setSearchText] = useState('');
   const [sortBy, setSortBy] = useState('Nama');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     getAllDataDosen();
   }, []);
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedFile) {
+      console.error('Please select a file.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('xlsx', selectedFile);
+
+    try {
+      // Kirim formData dengan file ke endpoint yang sesuai
+
+      axios.post('http://localhost:3000/data-mahasiswa/import', formData)
+      .then((response) => {
+        console.log('File uploaded successfully:', response.data);
+        closeModal(); // Tutup modal setelah upload berhasil
+      })
+      .catch((error) => {
+        console.error('Error uploading file:', error);
+      });
+
+      console.log('File uploaded successfully:', response.data);
+      closeModal(); // Tutup modal setelah upload berhasil
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
 
   const getAllDataDosen = async () => {
     try {
@@ -156,23 +199,27 @@ function TabelCRUD() {
             Import
           </CButton>
           <Modal
-        isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
-        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-        <button onClick={closeModal}>close</button>
-        <div>I am a modal</div>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form>
-      </Modal>
+  isOpen={modalIsOpen}
+  onAfterOpen={afterOpenModal}
+  onRequestClose={closeModal}
+  style={customStyles}
+  contentLabel="Example Modal"
+>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Import Data</h2>
+    <button onClick={closeModal} style={{ cursor: 'pointer', border: 'none', background: 'none', fontSize: '1.5rem' }}>×</button>
+  </div>
+  <div>
+    <form encType="multipart/form-data" method="post">
+      <label htmlFor="fileInput">Pilih file:</label>
+      <CFormInput type="file" id="fileInput" name="file" onChange={handleFileUpload} />
+      <br></br>
+      <CButton style={{width:'50%', backgroundColor: '#3C9A62'}}>Format</CButton>
+      <br></br><br></br>
+      <CButton type="submit" style={{width:'100%'}} onClick={handleSubmit}>Upload</CButton>
+    </form>
+  </div>
+</Modal>
           <div className="search-input-container">
             <input
               type="text"
