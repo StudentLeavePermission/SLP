@@ -8,6 +8,7 @@ const Jadwal_Kelas = new mainModel("Jadwal_Kelas");
 const Data_Kelas = new mainModel("Data_Kelas");
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 const Data_Dosen = new mainModel("Data_Dosen");
+const Data_Mata_Kuliah = new mainModel("Data_Mata_Kuliah");
 const { Op } = require('sequelize');
 const hbs = require('nodemailer-express-handlebars')
 
@@ -17,7 +18,7 @@ const hbs = require('nodemailer-express-handlebars')
 
 // import { render } from '@react-email/render';
 // import { EmailContent } from '../../react/src/componentSLP/EmailContent';
-function sendEmailDosenPengampu(namaDosen, nama, nim, jenis, keterangan,  emailDosen) {
+function sendEmailDosenPengampu(namaDosen, nama, nim, jenis, kelas, tanggal, matkul, emailDosen) {
   const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -39,13 +40,16 @@ function sendEmailDosenPengampu(namaDosen, nama, nim, jenis, keterangan,  emailD
   const mailOptions = {
     from: 'intljax6@gmail.com', // sender address
     template: "emailDosenPengampu", // the name of the template file, i.e., email.handlebars
-    to: emailDosen, //mahasiswa.Email,
+    to: 'nisrinawafaz@gmail.com',//emailDosen,     
+    subject: `Pemberitahuan ${jenis} a.n ${nama} ${kelas}`,
     context: {
       nama : namaDosen,
       namaMahasiswa: nama,
       nim: nim,
+      kelas : kelas,
       jenis: jenis,
-      keterangan: keterangan,
+      tanggal : tanggal,
+      matkul : matkul,
     },
   };
 
@@ -247,11 +251,24 @@ exports.editLeaveRequest = async (req, res) => {
       where: { id: data_pengajuan.ID_Jadwal_Kelas },
     });
 
+    const dataMatkul = await Data_Mata_Kuliah.get({ 
+      where: { id: jadwal.ID_Matkul },
+    });
+
+
     const dosenPengampu = await Data_Dosen.get({
       where: {
         id: jadwal.ID_Dosen,
       }
     });
+
+    const currentYear = new Date().getFullYear();
+    let angka_kelas;
+    if (new Date().getMonth() >= 7) {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran + 1;
+    } else {
+      angka_kelas = currentYear - kelas.Tahun_Ajaran;
+    }
 
     if (updatedRowCount === 0) {
       return res.status(404).json({ msg: 'LeaveRequest not found' });
@@ -259,7 +276,8 @@ exports.editLeaveRequest = async (req, res) => {
 
     if (data_pengajuan.Status_Pengajuan == 'Accepted') {
       console.log('email', dosenPengampu.Email_Dosen)
-      sendEmailDosenPengampu(dosenPengampu.Nama_Dosen, mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin,data_pengajuan.Keterangan, dosenPengampu.Email_Dosen)
+      const namaKelas = `${angka_kelas}${kelas.Nama_Kelas}`
+      sendEmailDosenPengampu(dosenPengampu.Nama_Dosen, mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin, namaKelas,data_pengajuan.Tanggal_Izin, dataMatkul.Nama_Mata_Kuliah, dosenPengampu.Email_Dosen)
     }
     res.status(200).json({ msg: 'LeaveRequest updated' });
   } catch (error) {
@@ -1303,6 +1321,386 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
       res.send({
         message: "Leave Requests found successfully",
         data: jmlPengajuanKelas
+      })
+    }
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.getCountOfLeaveRequestsMahasiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let namaBulan = [];
+
+    const currentMonth = new Date().getMonth();
+
+    const jenisSurat = ['Sakit', 'Izin'];
+
+    let jmlPengajuanSakit = 0;
+    let jmlPengajuanIzin = 0;
+    let jmlPengajuanMahasiswa;
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear();
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    for (let j = 0; j < 2; j++) {
+      let month = 0;
+
+      if (currentMonth > 6) {
+        month = 7;
+      } else {
+        namaBulan =
+          month = 1;
+      }
+      //Cek bulan untuk memisahkan semester
+      while (month <= 12 && month >= 1) {
+        // Tanggal awal bulan
+        let startDate = new Date(currentYear, month, 1);
+
+        // Tanggal akhir bulan
+        let endDate = new Date(currentYear, month, 31);
+
+        const dataPengajuan = await Data_Pengajuan.getAll({
+          where: {
+            ID_Mahasiswa: id,
+            Tanggal_Izin: {
+              [Op.and]: [
+                { [Op.gte]: startDate },
+                { [Op.lte]: endDate }
+              ]
+            },
+            Status_Pengajuan: 'Accepted',
+            Jenis_Izin: jenisSurat[j]
+          }
+        });
+
+        const jadwal = await Jadwal_Kelas.getAll({
+          where: {
+            id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas)
+          },
+        });
+
+        let jmlPengajuanPerJP = 0;
+
+        if (dataPengajuan) {
+          dataPengajuan.forEach((item) => {
+            if (item.Status_Pengajuan === 'Accepted') {
+              const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+              const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+
+              if (jamStart !== "NULL" && jamEnd !== "NULL") {
+                jmlPengajuanPerJP += jamEnd - jamStart + 1;
+              }
+            }
+          });
+
+          if (j == 0) {
+            jmlPengajuanSakit += jmlPengajuanPerJP;
+          } else if (j == 1) {
+            jmlPengajuanIzin += jmlPengajuanPerJP;
+          }
+
+          month += 1;
+        }
+      }
+    }
+
+    jmlPengajuanMahasiswa = {
+      Sakit: jmlPengajuanSakit,
+      Izin: jmlPengajuanIzin,
+    };
+
+    if (jmlPengajuanMahasiswa) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: jmlPengajuanMahasiswa
+      })
+    }
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.getHistoryOfLeaveRequestsMahasiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('ini id mahas', id)
+
+    let namaBulan = [];
+
+    const currentMonth = new Date().getMonth();
+    let PengajuanMahasiswa = [];
+    let Temp = [];
+    let FixPengajuanMahasiswa = []
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear();
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    let month = 0;
+
+    if (currentMonth > 6) {
+      month = 7;
+    } else {
+      namaBulan =
+        month = 1;
+    }
+    //Cek bulan untuk memisahkan semester
+    while (month <= 12 && month >= 1) {
+      // Tanggal awal bulan
+      let startDate = new Date(currentYear, month, 1);
+
+      // Tanggal akhir bulan
+      let endDate = new Date(currentYear, month, 31);
+
+      const dataPengajuan = await Data_Pengajuan.getAll({
+        where: {
+          ID_Mahasiswa: id,
+          Tanggal_Izin: {
+            [Op.and]: [
+              { [Op.gte]: startDate },
+              { [Op.lte]: endDate }
+            ]
+          },
+          Status_Pengajuan: 'Accepted' || 'Decline',
+        }
+      });
+      const jadwal = await Jadwal_Kelas.getAll({
+        where: {
+          id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas)
+        },
+      });
+
+      if (dataPengajuan) {
+        dataPengajuan.forEach((item) => {
+          const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+          const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+          let id = item.id
+          let jenis = item.Jenis_Izin
+          let tanggal = item.Tanggal_Pengajuan
+          let status = item.Status_Pengajuan
+          let keterangan = item.Keterangan
+          let jam = jamEnd - jamStart + 1
+          PengajuanMahasiswa.push({
+            Id :id,
+            Jenis: jenis,
+            Tanggal: tanggal,
+            JamPelajaran: jam,
+            Status: status,
+            Keterangan: keterangan
+          })
+        });
+        month += 1;
+      }
+      while (PengajuanMahasiswa.length > 0) {
+      let ID = PengajuanMahasiswa[0].Id
+      let jenis= PengajuanMahasiswa[0].Jenis
+      let tanggal= PengajuanMahasiswa[0].Tanggal
+      let status= PengajuanMahasiswa[0].Status
+      let keterangan = PengajuanMahasiswa[0].Keterangan
+      Temp = PengajuanMahasiswa.filter(item =>
+        item.Tanggal.toString()  === tanggal.toString() && item.Jenis === jenis && item.Keterangan.toLowerCase() === keterangan.toLowerCase()
+      );
+      let jumlahJP = 0;
+      Temp.forEach(item => {
+        jumlahJP += item.JamPelajaran
+      });
+      FixPengajuanMahasiswa.push({
+        ID :  ID,
+        Jenis:jenis,
+        Tanggal: tanggal,
+        JamPelajaran: jumlahJP,
+        Status: status,
+        Keterangan : keterangan
+      })
+
+      PengajuanMahasiswa = PengajuanMahasiswa.filter(item =>
+        item.Tanggal.toString() !== tanggal.toString() || item.Jenis !== jenis || item.Keterangan.toLowerCase() !== keterangan.toLowerCase()
+      );
+      console.log('banyak data', PengajuanMahasiswa.length)
+    }
+    }
+
+    if (FixPengajuanMahasiswa) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: FixPengajuanMahasiswa
+      })
+    }
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.getOnProgressOfLeaveRequestsMahasiswa = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log('ini id mahas', id)
+
+    let namaBulan = [];
+
+    const currentMonth = new Date().getMonth();
+    let PengajuanMahasiswa = [];
+    let Temp = [];
+    let FixPengajuanMahasiswa = []
+
+    // Mendapatkan tahun sekarang
+    const currentYear = new Date().getFullYear();
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_Start berdasarkan id_jadwal
+    function getJamStart(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_Start;
+      } else {
+        return "NULL";
+      }
+    }
+
+    // Fungsi untuk mendapatkan ID_Jam_Pelajaran_End berdasarkan id_jadwal
+    function getJamEnd(dataJadwal, id_jadwal) {
+      const jadwal = dataJadwal.find((item) => item.id === id_jadwal);
+      if (jadwal) {
+        return jadwal.ID_Jam_Pelajaran_End;
+      } else {
+        return "NULL";
+      }
+    }
+
+    let month = 0;
+
+    if (currentMonth > 6) {
+      month = 7;
+    } else {
+      namaBulan =
+        month = 1;
+    }
+    //Cek bulan untuk memisahkan semester
+    while (month <= 12 && month >= 1) {
+      // Tanggal awal bulan
+      let startDate = new Date(currentYear, month, 1);
+
+      // Tanggal akhir bulan
+      let endDate = new Date(currentYear, month, 31);
+
+      const dataPengajuan = await Data_Pengajuan.getAll({
+        where: {
+          ID_Mahasiswa: id,
+          Tanggal_Izin: {
+            [Op.and]: [
+              { [Op.gte]: startDate },
+              { [Op.lte]: endDate }
+            ]
+          },
+          Status_Pengajuan: 'Delivered',
+        }
+      });
+      const jadwal = await Jadwal_Kelas.getAll({
+        where: {
+          id: dataPengajuan.map((pengajuan) => pengajuan.ID_Jadwal_Kelas)
+        },
+      });
+
+      if (dataPengajuan) {
+        dataPengajuan.forEach((item) => {
+          const jamStart = getJamStart(jadwal, item.ID_Jadwal_Kelas);
+          const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
+          let id = item.id
+          let jenis = item.Jenis_Izin
+          let tanggal = item.Tanggal_Pengajuan
+          let status = item.Status_Pengajuan
+          let keterangan = item.Keterangan
+          let jam = jamEnd - jamStart + 1
+          PengajuanMahasiswa.push({
+            Id :id,
+            Jenis: jenis,
+            Tanggal: tanggal,
+            JamPelajaran: jam,
+            Status: status,
+            Keterangan: keterangan
+          })
+        });
+        month += 1;
+      }
+      while (PengajuanMahasiswa.length > 0) {
+      let ID = PengajuanMahasiswa[0].Id
+      let jenis= PengajuanMahasiswa[0].Jenis
+      let tanggal= PengajuanMahasiswa[0].Tanggal
+      let status= PengajuanMahasiswa[0].Status
+      let keterangan = PengajuanMahasiswa[0].Keterangan
+      Temp = PengajuanMahasiswa.filter(item =>
+        item.Tanggal.toString()  === tanggal.toString() && item.Jenis === jenis && item.Keterangan.toLowerCase() === keterangan.toLowerCase()
+      );
+      let jumlahJP = 0;
+      Temp.forEach(item => {
+        jumlahJP += item.JamPelajaran
+      });
+      FixPengajuanMahasiswa.push({
+        ID :  ID,
+        Jenis:jenis,
+        Tanggal: tanggal,
+        JamPelajaran: jumlahJP,
+        Status: status,
+        Keterangan : keterangan
+      })
+
+      PengajuanMahasiswa = PengajuanMahasiswa.filter(item =>
+        item.Tanggal.toString() !== tanggal.toString() || item.Jenis !== jenis || item.Keterangan.toLowerCase() !== keterangan.toLowerCase()
+      );
+    }
+    }
+
+    if (FixPengajuanMahasiswa) {
+      res.send({
+        message: "Leave Requests found successfully",
+        data: FixPengajuanMahasiswa
       })
     }
   } catch (error) {

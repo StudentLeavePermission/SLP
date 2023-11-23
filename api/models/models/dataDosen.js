@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     NIP: DataTypes.STRING,
     Kode_Dosen: DataTypes.CHAR(6),
     InitialID: DataTypes.CHAR(2),
-    Email_Dosen: DataTypes.STRING
+    Email_Dosen: DataTypes.STRING,
+    Foto_Profil: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Data_Dosen',

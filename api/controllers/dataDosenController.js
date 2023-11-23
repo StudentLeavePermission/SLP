@@ -8,6 +8,7 @@ const Data_Dosen_Wali = new mainModel("Data_Dosen_Wali");
 const Data_Mahasiswa = new mainModel("Data_Mahasiswa");
 const XLSX = require('xlsx');
 
+
 // Mengambil semua data dosen
 exports.getAllDataDosen = async (req, res) => {
   try {
@@ -63,6 +64,32 @@ exports.deleteDataDosen = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.editDosen = async (req, res) => {
+  try {
+      const { id } = req.params; 
+      const dosen = await Data_Dosen.get({
+          where: { id: id },
+      });
+
+      if (!dosen) {
+          return res.status(404).json({ error: 'Dosen tidak ditemukan' });
+      }
+
+      // Menangani data lainnya
+      const { Nama_Dosen, Email_Dosen } = req.body;
+      const filename = req.body.filename;
+      dosen.Foto_Profil = filename;
+      dosen.Nama_Dosen = Nama_Dosen;
+      dosen.Email_Dosen = Email_Dosen;
+
+      await dosen.save();
+
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -234,6 +261,49 @@ exports.getDosenClass = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+//edit pada getDosenClass
+exports.editDosenClass = async (req, res) => {
+  try {
+    const { id } = req.params; // Ambil ID dari parameter URL
+    const newData = req.body; // Data yang akan digunakan untuk mengganti data yang ada
+    const whereClause = { id }; // Kriteria untuk menentukan data yang akan diedit
+
+    const [updatedRowCountDosen] = await Data_Dosen.patch(newData, whereClause);
+
+    if (updatedRowCountDosen === 0) {
+      return res.status(404).json({ msg: 'Data Dosen not found' });
+    }
+
+    // Jika ada perubahan pada Nama_Kelas, lakukan update pada Data_Kelas
+    if (newData.Nama_Kelas) {
+      // Temukan ID_Kelas berdasarkan ID_Dosen_Wali
+      const existingKelas = await Data_Kelas.get({
+        where: { ID_Dosen_Wali: id },
+      });
+
+      if (!existingKelas) {
+        return res.status(404).json({ msg: 'Data Kelas not found' });
+      }
+
+      // Update Nama_Kelas pada Data_Kelas
+      const [updatedRowCountKelas] = await Data_Kelas.patch(
+        { Nama_Kelas: newData.Nama_Kelas },
+        { id: existingKelas.id }
+      );
+
+      if (updatedRowCountKelas === 0) {
+        return res.status(500).json({ msg: 'Failed to update Data Kelas' });
+      }
+    }
+
+    res.status(200).json({ msg: 'Data Dosen and Kelas updated' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 
 exports.createDataDosenFormatted = async (req, res) => {

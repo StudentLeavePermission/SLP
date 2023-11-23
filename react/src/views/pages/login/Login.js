@@ -46,7 +46,7 @@ const Login = () => {
   // Fungsi untuk memeriksa apakah input adalah NIM dengan panjang maksimal 10 digit
   const isNIM = (username) => {
     // NIM adalah angka dengan panjang maksimal 10 digit
-    const nimPattern = /^[0-9]{1,10}$/; 
+    const nimPattern = /^[0-9]{1,10}$/;
 
     return nimPattern.test(username);
   };
@@ -94,7 +94,7 @@ const Login = () => {
     }
 
     setFormErrors(errors);
-    
+
     return errors;
   };
 
@@ -114,7 +114,7 @@ const Login = () => {
               Email_Dosen: username,
               Password: password,
             })
-            .then(async () => { 
+            .then(async () => {
               //mengambil token
               const token = Cookies.get('jwt');
 
@@ -157,7 +157,7 @@ const Login = () => {
         } else if (username === 'adminD4' && password === 'adminD4') {
           // Jika username adalah 'admin', set role ke 'admin'
           setRole('admin');
-          
+
           //set idAdmin
           idAdmin = 2;
           setSearchParams({ idAdmin });
@@ -171,7 +171,7 @@ const Login = () => {
               NIM: username,
               Password: password,
             })
-            .then(async () => { 
+            .then(async () => {
               // ambil token
               const token = Cookies.get('jwt');
 
@@ -265,7 +265,7 @@ const Login = () => {
         <CRow style={{ paddingRight: '20px', paddingTop: '10px' }}>
           <CButton
             className="button-forgot"
-            onClick={() => navigate('#')}
+            onClick={() => navigate('/forgot-password')}
           >
             Forgot password?
           </CButton>
