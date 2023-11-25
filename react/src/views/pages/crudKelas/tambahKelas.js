@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Select from 'react-select';
 import {
   CForm,
   CFormLabel,
@@ -12,7 +13,6 @@ import {
 function TambahDataKelas() {
   const [formData, setFormData] = useState({
     Nama_Kelas: '',
-    Program_Studi: '',
     Tahun_Ajaran: new Date().getFullYear(),
   });
 
@@ -20,36 +20,66 @@ function TambahDataKelas() {
   const [formErrors, setFormErrors] = useState({});
   const navigate = useNavigate();
   const [done, setDone] = useState(false);
+  const [id, setId] = useState(sessionStorage.getItem('idAdmin'));
+  const [prodi, setProdi] = useState('');
+  const [dataKelas, setDataKelas] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(null);
 
-  const handleChange = (name, value) => {
-    setFormData({
-      ...formData,
-      [name]: value.toUpperCase(),
-    });
+  const getAllDataKelas = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/data-kelas/getallprodi/${id}`);
+      setDataKelas(response.data.data);
+      console.log("daftar kelasnya:", response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
+  const handleChange = (name, selectedOption) => {
+    if (name === 'Tahun_Ajaran') {
+      setFormData({
+        ...formData,
+        [name]: selectedOption ? selectedOption.value : '', // handle null or undefined
+      });
+    } else if (name === 'Nama_Kelas' && selectedOption && typeof selectedOption.label === 'string') {
+      const formattedNamaKelas = selectedOption.label.toUpperCase();
+      setFormData({
+        ...formData,
+        Nama_Kelas: formattedNamaKelas,
+      });
+      setSelectedValue(selectedOption);
+    } else {
+      setFormData({
+        ...formData,
+        [name]: selectedOption ? selectedOption.label : '', // handle null or undefined
+      });
+    }
+  
     setFormErrors({
       ...formErrors,
       [name]: '',
     });
-  };
+  };  
 
   useEffect(() => {
-    const currentYear = new Date().getFullYear();
-    setFormData({
-      ...formData,
-      Tahun_Ajaran: currentYear,
-    });
-  }, []);
+    if (id) {
+      if (id === '1') {
+        setProdi('D3');
+        console.log("ini prodinya ya:", prodi);
+      } else if (id === '2') {
+        setProdi('D4');
+      }
+    }
+    getAllDataKelas();
+  }, [id]);
 
-  const kelasOptions = [ 
-    'A',
-    'B',
-    'C',
-  ];
+  useEffect(() => {
+  }, [prodi]);
 
-  const prodiOptions = [ 
-    'D3',
-    'D4',
+  const kelasOptions = [
+    { label: 'A', value: 'A' },
+    { label: 'B', value: 'B' },
+    { label: 'C', value: 'C' },
   ];
 
   const getCurrentYear = () => {
@@ -63,20 +93,23 @@ function TambahDataKelas() {
   }, [done, navigate]);
 
   const validateForm = () => {
-    const errors = {};
-    if (formData.Nama_Kelas.length !== 1) {
-      errors.Nama_Kelas = 'Nama kelas harus terdiri dari satu karakter.';
-    }
-    if (!formData.Program_Studi) {
-      errors.Program_Studi = 'Program Studi harus terdiri dari dua karakter.';
-    }
-    if (!formData.Tahun_Ajaran) {
-      errors.Tahun_Ajaran = 'Tahun Masuk harus diisi.';
-    }
+  const errors = {};
+  
+  // Check for duplicates in existing data
+  const duplicateClass = dataKelas.find(
+    (kelas) =>
+      kelas.Nama_Kelas === (selectedValue ? selectedValue.label : '') + prodi &&
+      kelas.Tahun_Ajaran === formData.Tahun_Ajaran
+  );
 
-    setFormErrors(errors);
-    return errors;
-  };
+  if (duplicateClass) {
+    errors.Nama_Kelas = 'Kelas dengan nama dan tahun ajaran yang sama sudah ada.';
+  }
+
+  setFormErrors(errors);
+  return errors;
+};
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -87,8 +120,9 @@ function TambahDataKelas() {
     if (Object.keys(errors).length === 0) {
       try {
         // Menggabungkan Nama Kelas dan Program Studi tanpa spasi di antaranya
-        const Nama_Kelas = formData.Nama_Kelas + formData.Program_Studi;
-
+        const Nama_Kelas = formData.Nama_Kelas + prodi;
+        console.log("kelas yang dipilih: ", Nama_Kelas);
+        console.log("tahun yang dipilih: ", formData.Tahun_Ajaran);
         // Kemudian mengirim Nama_Kelas yang telah digabungkan
         await axios.post('http://localhost:3000/data-kelas/create', {
           Nama_Kelas: Nama_Kelas,
@@ -97,7 +131,7 @@ function TambahDataKelas() {
 
         // Handle successful submission
         setDone(true);
-        setFormData({ Nama_Kelas: '', Program_Studi: '', Tahun_Ajaran: '' }); // Clear the form
+        setFormData({ Nama_Kelas: '', Program_Studi: '', Tahun_Ajaran: '' });
       } catch (error) {
         console.error('Error:', error);
         alert('Terjadi kesalahan saat menambahkan data. Error: ' + error.message);
@@ -118,36 +152,11 @@ function TambahDataKelas() {
         <CCol className="box-1">
           <div>
             <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
-            <select
-              className="input"
+            <Select
               id="Nama_Kelas"
-              value={formData.Nama_Kelas}
-              onChange={(e) => handleChange('Nama_Kelas', e.target.value)}
-            >
-              <option value="">Pilih Nama Kelas</option>
-              {kelasOptions.map((kelas, index) => (
-                <option key={index} value={kelas}>
-                  {kelas}
-                </option>
-              ))}
-            </select>
-            {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
-          </div>
-          <div>
-            <CFormLabel htmlFor="Program_Studi">Program Studi</CFormLabel>
-            <select
-              className="input"
-              id="Program_Studi"
-              value={formData.Program_Studi}
-              onChange={(e) => handleChange('Program_Studi', e.target.value)}
-              >
-              <option value="">Pilih Program Studi</option>
-              {prodiOptions.map((prodi, index) => (
-                <option key={index} value={prodi}>
-                  {prodi}
-                </option>
-              ))}
-            </select>
+              options={kelasOptions}
+              onChange={(selectedOption) => handleChange('Nama_Kelas', selectedOption)}
+            />
             {formErrors.Nama_Kelas && <div className="text-danger">{formErrors.Nama_Kelas}</div>}
           </div>
           <div>
@@ -157,9 +166,9 @@ function TambahDataKelas() {
               type="number"
               id="Tahun_Ajaran"
               value={formData.Tahun_Ajaran}
-              onChange={(e) => handleChange('Tahun_Ajaran', e.target.value)}
+              onChange={(e) => handleChange('Tahun_Ajaran', { value: e.target.value, label: e.target.value })}
               min={2019}
-              max={getCurrentYear()} // Set max to the current year
+              max={getCurrentYear()}
             />
             {formErrors.Tahun_Ajaran && <div className="text-danger">{formErrors.Tahun_Ajaran}</div>}
           </div>

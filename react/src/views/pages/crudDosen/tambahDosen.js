@@ -31,6 +31,8 @@ function TambahDataDosen() {
   const [dataKelas, setDataKelas] = useState([]);
   const [done, setDone] = useState();
   const [selectedKelas, setSelectedKelas] = useState(null);
+  const [id, setId] = useState(sessionStorage.getItem('idAdmin'));
+  const [prodi, setProdi] = useState('');
 
 
   // Fungsi untuk menghasilkan password otomatis
@@ -51,6 +53,25 @@ function TambahDataDosen() {
 
     return password;
   }
+
+  useEffect(() => {
+    if (id){
+      if (id === '1'){
+        setProdi('D3');
+      } else if (id === '2'){
+        setProdi('D4');
+      }
+    }
+    // console.log(prodi);
+  }, []);
+
+  useEffect(() => {
+    console.log('ini id', id);
+  }, [id]);
+  
+  const pilihanData = {
+    kelas: getNamaKelas(),
+  };
 
   const handleChange = (name, value) => {
     setFormData({
@@ -117,8 +138,9 @@ function TambahDataDosen() {
 
   const getAllDataKelas = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/data-kelas/getallformat');
+      const response = await axios.get(`http://localhost:3000/data-kelas/getallformat/${id}`);
       setDataKelas(response.data.data);
+      console.log("daftar kelas:", response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -200,7 +222,7 @@ function TambahDataDosen() {
             const dosenData = dosenResponse.data;
             
             // Update Data Kelas
-            const kelas = await axios.get('http://localhost:3000/data-kelas/getallformat');
+            const kelas = await axios.get(`http://localhost:3000/data-kelas/getallformat/${id}`);
             const kelasData = kelas.data.data;
             console.log("Data kelas:", kelasData);
             // console.log("cobain:", kelasData[9].Nama_Kelas);
@@ -259,10 +281,6 @@ function TambahDataDosen() {
     } else {
       alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
     }
-  };
-  
-  const pilihanData = {
-    kelas: getNamaKelas(),
   };
 
   return (

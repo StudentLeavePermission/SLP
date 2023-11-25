@@ -43,6 +43,54 @@ exports.getOneDataKelas = async (req, res) => {
   }
 };
 
+exports.getAllProdi = async (req, res) => {
+  try {
+    console.log('///////////////////////////////////////////////////////// masukkkkkk');
+    const IDProdi = req.params.IDProdi;
+
+    let prodi = '';
+    console.log('//////////////////////////////////////////////ini id', IDProdi);
+
+    // mengubah id prodi menjadi prodinya
+    if (IDProdi === '1') {
+      prodi = 'D3';
+    } else if (IDProdi === '2') {
+      console.log('//////////////////////////////////////////////ini id', IDProdi);
+      prodi = 'D4';
+      console.log('//////////////////////////////////////////////ini id', prodi);
+    }
+
+    // mengambil data kelas dengan prodi yang sama
+    const classes = await Data_Kelas.getAllWhere({
+      where: {
+        Nama_Kelas: {
+          [Op.like]: `%${prodi}`
+        }
+      }
+    });
+
+    // Ubah format setiap kelas
+    const formattedClasses = classes.map((kelas) => ({
+      id: kelas.id,
+      Nama_Kelas: kelas.Nama_Kelas,
+      Tahun_Ajaran: kelas.Tahun_Ajaran,
+      ID_Dosen_Wali: kelas.ID_Dosen_Wali,
+      createdAt: kelas.createdAt,
+      updatedAt: kelas.updatedAt
+    }));
+
+    res.send({
+      message: "Classes sent successfully",
+      data: formattedClasses
+    });
+    console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (all) " + "\x1b[0m" + "done");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 //Insert
 // Create Data Kelas
 exports.createDataKelas = async (req, res) => {
@@ -126,6 +174,7 @@ exports.getAllClassFormated = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 exports.getOneClassFormated = async (req, res) => {
   try {
     const { id } = req.params; // Get ID from URL parameters
