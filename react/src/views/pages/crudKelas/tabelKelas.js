@@ -133,18 +133,30 @@ function TabelCRUD({}) {
   };
 
   const hapusData = async (id) => {
-    const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
-
-    if (confirmation) {
-      try {
+    try {
+      // Check if id_wali_dosen is not null before allowing deletion
+      const response = await axios.get(`http://localhost:3000/data-kelas/get/${id}`);
+      const data = response.data.data;
+  
+      if (data.ID_Dosen_Wali !== null) {
+        // If id_wali_dosen is not null, show alert and return
+        window.alert('Data cannot be deleted because id_wali_dosen is not null.');
+        return;
+      }
+  
+      // Confirm deletion
+      const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
+  
+      if (confirmation) {
+        // Perform deletion
         await axios.delete(`http://localhost:3000/data-kelas/delete/${id}`);
         const newData = dataKelas.filter((item) => item.id !== id);
         setDataKelas(newData);
-      } catch (error) {
-        console.error('Error deleting data:', error);
       }
+    } catch (error) {
+      console.error('Error deleting data:', error);
     }
-  };
+  };  
 
   const headerSection = (
     <div className="font-title table-font">

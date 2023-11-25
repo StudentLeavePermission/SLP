@@ -144,11 +144,17 @@ function EditKelas() {
   const updateDataKelas = async (event) => {
     event.preventDefault();
     setIsFormSubmitted(true);
-
+  
     const errors = validateForm();
-
+  
     if (Object.keys(errors).length === 0) {
       try {
+        // Periksa apakah id_dosen_wali tidak null
+        if (currentKelas && currentKelas.id_dosen_wali !== null) {
+          alert('Data tidak dapat diedit karena id_dosen_wali tidak null.');
+          return;
+        }
+  
         const Nama_Kelas = formData.Nama_Kelas + prodi;
         console.log("kelas yang dipilih: ", Nama_Kelas);
         console.log("tahun yang dipilih: ", formData.Tahun_Ajaran);
@@ -156,7 +162,7 @@ function EditKelas() {
           Nama_Kelas: Nama_Kelas,
           Tahun_Ajaran: formData.Tahun_Ajaran,
         });
-
+  
         setDone(true);
         setFormData({ Nama_Kelas: '', Tahun_Ajaran: '' });
       } catch (error) {
@@ -167,6 +173,7 @@ function EditKelas() {
       alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
     }
   };
+  
 
   return (
     <CForm onSubmit={updateDataKelas} style={{ padding: '20px' }}>
