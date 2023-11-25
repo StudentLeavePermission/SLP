@@ -10,6 +10,7 @@ import {
   CRow,
 } from '@coreui/react';
 import './crudKelas.css';
+import { NULL } from 'sass';
 
 function EditKelas() {
   const { key } = useParams();
@@ -26,6 +27,8 @@ function EditKelas() {
   const [prodi, setProdi] = useState('');
   const [dataKelas, setDataKelas] = useState([]);
   const [selectedValue, setSelectedValue] = useState(null);
+  const [ID_Dosen_Wali, setIdDosen] = useState(null);
+
 
   const getAllDataKelas = async () => {
     try {
@@ -85,8 +88,10 @@ function EditKelas() {
         const kelasData = response.data.dataKelas;
         let kelas = '';
         let prodi = '';
+        
         if (kelasData) {
           const nama_kelas = kelasData.Nama_Kelas;
+          const id_dosen = kelasData.ID_Dosen_Wali;
           const karakterArray = nama_kelas.split('');
           if (karakterArray.length >= 4) {
             kelas = karakterArray.slice(1, 2).join('');
@@ -94,6 +99,7 @@ function EditKelas() {
             console.log("kelas : ", kelas);
             console.log("prodi : ", prodi);
             setProdi(prodi);
+            setIdDosen(id_dosen)
             setFormData({
               Nama_Kelas: kelas,
               Tahun_Ajaran: kelasData.Tahun_Ajaran,
@@ -145,35 +151,33 @@ function EditKelas() {
     event.preventDefault();
     setIsFormSubmitted(true);
   
-    const errors = validateForm();
+    if (ID_Dosen_Wali === null) {
+      const errors = validateForm();
   
-    if (Object.keys(errors).length === 0) {
-      try {
-        // Periksa apakah id_dosen_wali tidak null
-        if (currentKelas && currentKelas.id_dosen_wali !== null) {
-          alert('Data tidak dapat diedit karena id_dosen_wali tidak null.');
-          return;
+      if (Object.keys(errors).length === 0) {
+        try {
+          const Nama_Kelas = formData.Nama_Kelas + prodi;
+          console.log("kelas yang dipilih: ", Nama_Kelas);
+          console.log("tahun yang dipilih: ", formData.Tahun_Ajaran);
+  
+          await axios.patch(`http://localhost:3000/data-kelas/update/${key}`, {
+            Nama_Kelas: Nama_Kelas,
+            Tahun_Ajaran: formData.Tahun_Ajaran,
+          });
+  
+          setDone(true);
+          setFormData({ Nama_Kelas: '', Tahun_Ajaran: '' });
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Terjadi kesalahan saat memperbarui data. Error: ' + error.message);
         }
-  
-        const Nama_Kelas = formData.Nama_Kelas + prodi;
-        console.log("kelas yang dipilih: ", Nama_Kelas);
-        console.log("tahun yang dipilih: ", formData.Tahun_Ajaran);
-        await axios.patch(`http://localhost:3000/data-kelas/update/${key}`, {
-          Nama_Kelas: Nama_Kelas,
-          Tahun_Ajaran: formData.Tahun_Ajaran,
-        });
-  
-        setDone(true);
-        setFormData({ Nama_Kelas: '', Tahun_Ajaran: '' });
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat memperbarui data. Error: ' + error.message);
+      } else {
+        alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
       }
     } else {
-      alert('Ada kesalahan dalam pengisian formulir. Harap periksa lagi.');
+      alert('Data tidak dapat diperbarui karena ID_Dosen_Wali tidak null.');
     }
-  };
-  
+  };  
 
   return (
     <CForm onSubmit={updateDataKelas} style={{ padding: '20px' }}>
