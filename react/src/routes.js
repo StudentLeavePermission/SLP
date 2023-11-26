@@ -2,8 +2,6 @@ import React from 'react'
 import { ProtectedRoute } from './componentSLP'
 import Cookies from 'js-cookie'
 
-const authToken = Cookies.get('jwt');
-
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
@@ -100,14 +98,16 @@ const EditProfileMahasiswa = React.lazy(() => import('./views/pages/profile/maha
 
 const EditProfileDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/editProfile'))
 
-const wrapComponent = (Component, isProtected, props) => {
+const wrapComponent = (Component, isProtected) => {
   // Return a component that wraps the provided Component
   return () => {
+    // const authToken = Cookies.get('jwt');
+    // console.log('authToken:', authToken);
+
     if (isProtected) {
       // Render the ProtectedRoute component if it's a protected route
-      console.log('Props: ', props)
       return (
-        <ProtectedRoute {...props}>
+        <ProtectedRoute>
           <Component />
         </ProtectedRoute>
       );
@@ -164,42 +164,41 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
-  { path: '/mahasiswa/formPengajuan', name: 'formPengajuan', element: FormPengajuan },
-  { path: '/admin/dataDosen', name: 'TabelDosen', element: CrudDosen },
-  { path: '/admin/detailDosen/:key', name: 'DetailDosen', element: DetailDosen },
-  { path: '/admin/tambahDosen', name: 'TambahDosen', element: TambahDosen },
-  { path: '/admin/TabelImport', name: 'TabelImport', element: TabelImport },
-  // { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: TabelEkspor },
-  // { path: '/admin/ImporTabel', name: 'ImporTabel', element: ImporTabel },
-  // { path: '/admin/EksporTabel', name: 'EksporTabel', element: EksporTabel },
-  { path: '/admin/rekap', name: 'RekapPengajuan', element: RekapPengajuan },
-  { path: '/admin/rekap/detail/:id', name: 'RekapPengajuanDetail', element: RekapPengajuanDetail },
-  { path: '/admin/editDosen/:key', name: 'EditDosen', element: EditDosen },
-  { path: '/admin/dataJadwal', name: 'TabelJadwal', element: CrudJadwal },
-  { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: TambahJadwal},
-  { path: '/admin/editJadwal/:key', name: 'EditJadwal', element: EditJadwal},
-  { path: '/admin/detailJadwal/:key', name: 'DetailJadwal', element: DetailJadwal},
-  { path: '/admin/dataMahasiswa/', name: 'TabelMahasiswa', element: TabelMahasiswa},
-  { path: '/admin/mahasiswa/edit/:id', name: 'EditMahasiswa', element: EditMahasiswa},
-  { path: '/admin/mahasiswa/detail/:id', name: 'DetailMahasiswa', element: DetailMahasiswa},
-  { path: '/admin/mahasiswa/tambah', name: 'TambahMahasiswa', element: TambahMahasiswa},
-  { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: VerifyPengajuan },
-  { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: TabelPengajuan },
-  { path: '/dosen/dashboard', name: 'DashboardDosen', element: DashboardDosen },
-  { path: '/mahasiswa/dashboard', name: 'DashboardMahasiswa', element: DashboardMahasiswa },
-  { path: '/mahasiswa/historyPengajuan', name: 'HistoryPengajuanMahasiswa', element: HistoryPengajuanMahasiswa },
-  { path: '/mahasiswa/Pengajuan/detail/:key', name: 'DetailPengajuanMahasiswa', element: DetailPengajuanMahasiswa },
-  { path: '/mahasiswa/Pengajuan', name: 'TabelPengajuanMahasiswa', element: TabelPengajuanMahasiswa },
-  { path: '/mahasiswa/Pengajuan/edit/:key', name: 'UpdatePengajuanMahasiswa', element: UpdatePengajuanMahasiswa },
-  { path: '/admin/dataKelas', name: 'CrudKelas', element: CrudKelas },
-  { path: '/admin/tambahKelas', name: 'TambahKelas', element: TambahKelas},
-  { path: '/admin/editKelas/:key', name: 'EditKelas', element: EditKelas},
-  { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: DetailKelas},
-  { path: '/admin/dashboard', name: 'DashboardAdmin', element: DashboardAdmin },
-  { path: '/dosen/dashboard/daftarMahasiswa', name: 'DaftarMahasiswa', element: DaftarMahasiswa },
-  { path: '/mahasiswa/profile', name: 'ProfileMahasiswa', element: ProfileMahasiswa },
-  { path: '/mahasiswa/profile/edit', name: 'EditProfileMahasiswa', element: EditProfileMahasiswa },
-  { path: '/dosen/dashboard/edit', name: 'EditProfileDosen', element: EditProfileDosen }
+  { path: '/mahasiswa/formPengajuan', name: 'formPengajuan', element: wrapComponent(FormPengajuan, true) },
+  { path: '/admin/dataDosen', name: 'TabelDosen', element: wrapComponent(CrudDosen, true) },
+  { path: '/admin/detailDosen/:key', name: 'DetailDosen', element: wrapComponent(DetailDosen, true) },
+  { path: '/admin/tambahDosen', name: 'TambahDosen', element: wrapComponent(TambahDosen, true) },
+  { path: '/admin/TabelImport', name: 'TabelImport', element: wrapComponent(TabelImport, true) },
+  // { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: wrapComponent(TabelEkspor, true) },
+  // { path: '/admin/ImporTabel', name: 'ImporTabel', element: wrapComponent(ImporTabel, true) },
+  // { path: '/admin/EksporTabel', name: 'EksporTabel', element: wrapComponent(EksporTabel, true) },
+  { path: '/admin/rekap', name: 'RekapPengajuan', element: wrapComponent(RekapPengajuan, true) },
+  { path: '/admin/rekap/detail/:id', name: 'RekapPengajuanDetail', element: wrapComponent(RekapPengajuanDetail, true) },
+  { path: '/admin/editDosen/:key', name: 'EditDosen', element: wrapComponent(EditDosen, true) },
+  { path: '/admin/dataJadwal', name: 'TabelJadwal', element: wrapComponent(CrudJadwal, true) },
+  { path: '/admin/tambahJadwal', name: 'TambahJadwal', element: wrapComponent(TambahJadwal, true) },
+  { path: '/admin/editJadwal/:key', name: 'EditJadwal', element: wrapComponent(EditJadwal, true) },
+  { path: '/admin/detailJadwal/:key', name: 'DetailJadwal', element: wrapComponent(DetailJadwal, true) },
+  { path: '/admin/dataMahasiswa/', name: 'TabelMahasiswa', element: wrapComponent(TabelMahasiswa, true) },
+  { path: '/admin/mahasiswa/edit/:id', name: 'EditMahasiswa', element: wrapComponent(EditMahasiswa, true) },
+  { path: '/admin/mahasiswa/detail/:id', name: 'DetailMahasiswa', element: wrapComponent(DetailMahasiswa, true) },
+  { path: '/admin/mahasiswa/tambah', name: 'TambahMahasiswa', element: wrapComponent(TambahMahasiswa, true) },
+  { path: '/dosen/verifyPengajuan/:key', name: 'VerifyPengajuan', element: wrapComponent(VerifyPengajuan, true) },
+  { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true) },
+  { path: '/dosen/dashboard', name: 'DashboardDosen', element: wrapComponent(DashboardDosen, true) },
+  { path: '/mahasiswa/dashboard', name: 'DashboardMahasiswa', element: wrapComponent(DashboardMahasiswa, true) },
+  { path: '/mahasiswa/historyPengajuan', name: 'HistoryPengajuanMahasiswa', element: wrapComponent(HistoryPengajuanMahasiswa, true) },
+  { path: '/mahasiswa/Pengajuan/detail/:key', name: 'DetailPengajuanMahasiswa', element: wrapComponent(DetailPengajuanMahasiswa, true) },
+  { path: '/mahasiswa/Pengajuan', name: 'TabelPengajuanMahasiswa', element: wrapComponent(TabelPengajuanMahasiswa, true) },
+  { path: '/mahasiswa/Pengajuan/edit/:key', name: 'UpdatePengajuanMahasiswa', element: wrapComponent(UpdatePengajuanMahasiswa, true) },
+  { path: '/admin/dataKelas', name: 'CrudKelas', element: wrapComponent(CrudKelas, true) },
+  { path: '/admin/tambahKelas', name: 'TambahKelas', element: wrapComponent(TambahKelas, true) },
+  { path: '/admin/editKelas/:key', name: 'EditKelas', element: wrapComponent(EditKelas, true) },
+  { path: '/admin/detailKelas/:key', name: 'DetailKelas', element: wrapComponent(DetailKelas, true) },
+  { path: '/admin/dashboard', name: 'DashboardAdmin', element: wrapComponent(DashboardAdmin, true) },
+  { path: '/dosen/dashboard/daftarMahasiswa', name: 'DaftarMahasiswa', element: wrapComponent(DaftarMahasiswa, true) },
+  { path: '/mahasiswa/profile', name: 'ProfileMahasiswa', element: wrapComponent(ProfileMahasiswa, true) },
+  { path: '/mahasiswa/profile/edit', name: 'EditProfileMahasiswa', element: wrapComponent(EditProfileMahasiswa, true) }
 
   // Untuk route yang di-proteksi, berikut definisinya:
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },
