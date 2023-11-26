@@ -24,8 +24,12 @@ import CIcon from '@coreui/icons-react'
 import { useParams, useNavigate } from 'react-router-dom';
 import avatar8 from './../../assets/images/avatars/8.jpg';
 import Cookies from 'js-cookie';
+import {useLocation} from "react-router-dom";
 
 const AppHeaderDropdown = () => {
+  const location = useLocation();
+  const pathArray = location.pathname.split('/');
+  const role= pathArray[1]; 
   const navigate = useNavigate();
   const Logout = () => {
     // Perform any necessary logout logic (clear tokens, etc.)
@@ -84,7 +88,7 @@ const AppHeaderDropdown = () => {
                   </CDropdownItem>
                   <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader> */
         }
-        <CDropdownItem href="#" >
+        <CDropdownItem href={`#/${role}/profile`} >
 
           <CIcon icon={cilUser}
             className="me-2" />
