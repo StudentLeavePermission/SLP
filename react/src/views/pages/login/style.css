@@ -1,16 +1,4 @@
-.fixed-bar {
-    position: fixed;
-    width: 100%;
-    z-index: 500;
-    background-color: #F2F6FF;
-    text-align: right;
-}
 
-.fixed-bar-col {
-    margin-right: 10%;
-    margin-top: 30px;
-    color: #324567;
-}
 
 .page {
     height: 100vh;

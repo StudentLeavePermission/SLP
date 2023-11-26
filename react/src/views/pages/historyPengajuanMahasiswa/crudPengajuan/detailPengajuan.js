@@ -73,16 +73,17 @@ const DetailPengajuanMahasiswa = () => {
             setNama(response.data.mahasiswa[0].Data_Mahasiswa.Nama)
             setNIM(response.data.mahasiswa[0].Data_Mahasiswa.NIM)
             let date = new Date(response.data.data.Tanggal_Pengajuan);
-                console.log('tanggalnllllll:', date);
-                const formattedData = {
-                    date: date,
-                    hari : getDayName(date),
-                    tanggal : date.getDate(),
-                    bulan : date.toLocaleString('id-ID', { month: 'long' }),
-                    tahun : date.getFullYear()};
+            console.log('tanggalnllllll:', date);
+            const formattedData = {
+                date: date,
+                hari: getDayName(date),
+                tanggal: date.getDate(),
+                bulan: date.toLocaleString('id-ID', { month: 'long' }),
+                tahun: date.getFullYear()
+            };
             setTanggalPengajuan(formattedData.date)
             setTanggalPengajuanFormatted(formattedData)
-            console.log('hariii',getDayName(formattedData.date))
+            console.log('hariii', getDayName(formattedData.date))
             getAllLeaveRequests(response.data.mahasiswa[0].Data_Mahasiswa.id, response.data.data.Jenis_Izin, response.data.data.Tanggal_Pengajuan, response.data.data.Keterangan, response.data.jadwal)
             console.log('coba', selectedjadwalcoba)
         } catch (error) {
@@ -454,68 +455,44 @@ const DetailPengajuanMahasiswa = () => {
     }
     return (
         <>
-            <div className='container'>
-                <div className='grid-container'>
-                    <div>
-                        Nama :
-                    </div>
-                    <div>
-                        {Nama}
-                    </div>
-                </div>
-                <div className='grid-container'>
-                    <div>
-                        NIM :
-                    </div>
-                    <div>
-                        {NIM}
-                    </div>
-                </div>
-                <div className='grid-container'>
-                    <div>
-                        Tanggal Pengajuan :
-                    </div>
-                    <div>
-                        {`${TanggalPengajuanFormatted.hari}, ${TanggalPengajuanFormatted.tanggal} ${TanggalPengajuanFormatted.bulan} ${TanggalPengajuanFormatted.tahun}`}
-                    </div>
-                </div>
-                <div className='grid-container'>
-                    <div>
-                        Tanggal Izin :
-                    </div>
-                    <div>
-                        {selectedDates?.map((date, index) => (
-                            <div key={index}>
-                                {`${getDayName(date.date)}, ${date.date.getDate()} ${date.date.toLocaleString('id-ID', { month: 'long' })} ${date.date.getFullYear()}`}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className='grid-container'>
-                    <div>
-                        Status :
-                    </div>
-                    <div>
-                        {statusPengajuan}
+            <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
+                <div className="details">
+                    <div className="label-data">
+                        <div className="item">
+                            <div className="label">Nama</div>
+                            <div className="value">: {Nama}</div>
+                        </div>
+                        <div className="item">
+                            <div className="label">NIM</div>
+                            <div className="value">: {NIM}</div>
+                        </div>
+                        <div className="item">
+                            <div className="label">Tanggal Mengajukan</div>
+                            <div className="value">: {`${TanggalPengajuanFormatted.hari}, ${TanggalPengajuanFormatted.tanggal} ${TanggalPengajuanFormatted.bulan} ${TanggalPengajuanFormatted.tahun}`}</div>
+                        </div>
+                        <div className="item">
+                            <div className="label">Tanggal Izin</div>
+                            {selectedDates?.map((date, index) => (
+                                <div key={index} className="value"> : 
+                                    {`${getDayName(date.date)}, ${date.date.getDate()} ${date.date.toLocaleString('id-ID', { month: 'long' })} ${date.date.getFullYear()}`}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="item">
+                            <div className="label">Status Pengajuan</div>
+                            <div className="value">: {statusPengajuan}</div>
+                        </div>
+                        <div className="item">
+                            <div className="label">Ketarangan / Alasan</div>
+                            <div className="value">: {keterangan}</div>
+                        </div>
+                        <div className="item">
+                            <div className="label">Jumlah Jam Pelajaran</div>
+                            <div className="value">: {jumlahJP} Jam Pelajaran</div>
+                        </div>
                     </div>
                 </div>
-                <div className='grid-container'>
-                    <div>
-                        Alasan :
-                    </div>
-                    <div>
-                        {keterangan}
-                    </div>
-                </div>
-                <div className='grid-container'>
-                    <div>
-                        Jumlah Pelajaran :
-                    </div>
-                    <div>
-                        {jumlahJP} Jam Pelajaran
-                    </div>
-                </div>
-            </div>
+            </CCol>
         </>
     );
 };
