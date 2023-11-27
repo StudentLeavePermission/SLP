@@ -201,9 +201,6 @@ const getStudentId = async(req, res) => {
 
 const createMhs = async (req, res) => {
     try {
-
-
-
       const dataMahasiswa = req.body;
 
       dataMahasiswa.updatedAt = new Date(); // tambahkan baris ini
@@ -291,9 +288,6 @@ const editStudent = async(req, res) => {
             return res.status(404).json({ error: 'Mahasiswa tidak ditemukan' });
         }
 
-
-
-
         // Menangani data lainnya
         const { Nomor_Telp, Nomor_Telp_Ortu } = req.body;
         const filename = req.body.filename;
@@ -303,12 +297,18 @@ const editStudent = async(req, res) => {
 
         await student.save();
 
+        res.send({
+            message: "Change data successfully",
+            data: student
+        });
 
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+
 
 
 
@@ -622,5 +622,6 @@ module.exports = {
     RekapIzinDetail,
     getJmlMahasiswaProdi,
     ForgotPassword,
-    createMhs
+    createMhs,
+    ubahPasswordStudent
 }
