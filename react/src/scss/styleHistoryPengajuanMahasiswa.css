@@ -74,8 +74,15 @@
 
 /* CSS untuk header tabel */
 .tabel th {
+  position: relative;
   background-color: #f2f2f2;
+  -webkit-user-select: none;
+  user-select: none;
   color: #333;
+}
+
+.tabel th:nth-child(4) { /* Target the fourth column (Jenis) */
+  width: 8%; /* Adjust the width as needed */
 }
 
 /* CSS untuk tombol aksi */
@@ -477,9 +484,16 @@ h2 {
   /* Warna ikon */
 }
 
+.tabel th:hover .sort-icon {
+  opacity: 1; /* Show the sort icon when the header is active (clicked) */
+}
+
 .sort-icon {
-  float: right;
+  position: absolute;
+  right: 5px;
   margin-left: 15px;
+  opacity: 0; /* Hide the sort icon by default */
+  transition: opacity 0.2s ease; /* Add a smooth transition effect */
   /* Adjust the margin as needed */
 }
 
