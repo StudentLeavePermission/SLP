@@ -27,6 +27,8 @@ router.post('/create', dataMahasiswaController.createMhs);
 
 router.post('/students/edit/:id', uploadImg.single('photo'), dataMahasiswaController.editStudent);
 
+router.post('/students/gantiPassword/:id', dataMahasiswaController.ubahPasswordStudent);
+
 router.post('/register', dataMahasiswaController.registerStudent);
 
 router.post('/login', dataMahasiswaController.loginStudent);
