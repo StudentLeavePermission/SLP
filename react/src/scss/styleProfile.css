@@ -59,6 +59,24 @@
     text-align: left;
 }
 
+.label-ubah-password {
+  float: left; 
+  width: 50%; 
+  text-align: left;
+}
+
+.form-ubah-password{
+  background-color: transparent;
+  border-color: transparent;
+  border: none; /* Menghapus border yang sudah ada */
+}
+
+.form-ubah-password input {
+  border-bottom: 1px solid #000; /* Warna dan ketebalan garis dapat disesuaikan */
+  background-color: transparent; /* Menetapkan latar belakang input menjadi transparan */
+  outline: none; /* Menghilangkan garis fokus saat di-klik */
+}
+
 .value {
     float: right;
     width: 60%; 
@@ -120,6 +138,15 @@ h3{
         background-color: #5A719D !important;
     }
 
+    .button-ubah-password{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 90%;
+      height: 10px;
+      margin: 0 auto;
+      background-color: #5A719D !important;
+    } 
     
     .button-edit-profile:hover {
         background-color:  #002A88;
@@ -168,6 +195,16 @@ h3{
   .header-text{
     font-weight: bold;
     opacity:0.5
+  }
+  
+  
+  .header-text-password{
+    margin-bottom: 50px;
+    font-weight: bold;
+    font-size: xx-large;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .submitButtonStyle{
