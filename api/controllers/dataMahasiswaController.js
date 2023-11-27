@@ -309,6 +309,62 @@ const editStudent = async(req, res) => {
 };
 
 
+const ubahPasswordStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const student = await Data_Mahasiswa.get({
+            where: { id: id },
+        });
+
+        if (!student) {
+            return res.status(404).json({ error: 'Mahasiswa tidak ditemukan' });
+        } else {
+            console.log('password lama: ' + student.Password);
+
+            // Mengambil data dari req body
+            const { passwordLama, passwordBaru } = req.body;
+
+            
+            console.log('password lama 2: ' + passwordLama);
+            
+            if (passwordLama && passwordBaru) {
+                // pengecekkan password lama apakah sesuai dengan yang di database
+                const isPasswordCorrect = await bcrypt.compare(passwordLama, student.Password);
+        
+                if (isPasswordCorrect) {
+                    // Password lama benar, update password baru
+                    student.Password = await bcrypt.hash(passwordBaru, 10);
+
+                    console.log('password baru: ' + student.Password);
+
+                    await student.save();
+
+                    res.send({
+                        message: "Change password successfully",
+                        data: student.Password
+                    });
+
+                    console.log('selesai');
+                } else {
+                    console.log('passwod salah');
+                    return res.status(401).json({ error: 'Password incorrect' });
+                }
+            } else {
+                return res.status(401).json({ error: 'Password tidak terparsing' });
+            }
+            
+    
+        }
+
+        
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 
 
 
