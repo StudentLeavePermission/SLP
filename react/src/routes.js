@@ -95,6 +95,7 @@ const RekapPengajuanDetail = React.lazy(() => import('./views/pages/RekapPengaju
 //Profile
 const ProfileMahasiswa = React.lazy(() => import('./views/pages/profile/mahasiswa/profileMahasiswa'))
 const EditProfileMahasiswa = React.lazy(() => import('./views/pages/profile/mahasiswa/editProfile'))
+const UbahPasswordMahasiswa = React.lazy(() => import('./views/pages/profile/mahasiswa/ubahPassword'))
 
 const EditProfileDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/editProfile'))
 
@@ -198,7 +199,8 @@ const routes = [
   { path: '/admin/dashboard', name: 'DashboardAdmin', element: wrapComponent(DashboardAdmin, false) },
   { path: '/dosen/dashboard/daftarMahasiswa', name: 'DaftarMahasiswa', element: wrapComponent(DaftarMahasiswa, false) },
   { path: '/mahasiswa/profile', name: 'ProfileMahasiswa', element: wrapComponent(ProfileMahasiswa, false) },
-  { path: '/mahasiswa/profile/edit', name: 'EditProfileMahasiswa', element: wrapComponent(EditProfileMahasiswa, false) }
+  { path: '/mahasiswa/profile/edit', name: 'EditProfileMahasiswa', element: wrapComponent(EditProfileMahasiswa, false) },
+  { path: '/mahasiswa/profile/edit/ubahPassword', name: 'UbahPasswordMahasiswa', element: UbahPasswordMahasiswa }
 
   // Untuk route yang di-proteksi, berikut definisinya:
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, false, {token: authToken}) },
