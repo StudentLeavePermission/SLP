@@ -13,11 +13,12 @@ import {
 } from "@coreui/react";
 import pencil from "../../../../assets/images/pencil-solid.svg";
 import '../../../../scss/styleProfile.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 
 
 const editProfile = () => {
+  const navigate = useNavigate();
   const [NoTelp, setNoTelp] = useState("");
   const [NoTelpOrtu, setNoTelpOrtu] = useState("");
   const [file, setFile] = useState(null);
@@ -35,7 +36,7 @@ const editProfile = () => {
     }
   };
   const baseURL = `http://localhost:3000/data-mahasiswa/students/edit/1`;
-  const createPost = () => {
+  const createPost = async () => {
     const data = new FormData();
 
     // Pengecekan apakah file tidak null sebelum menambahkannya
@@ -54,15 +55,27 @@ const editProfile = () => {
         data.append("Nomor_Telp_Ortu", NoTelpOrtu);
     }
 
+    try {
+      await axios.post(baseURL, data);
+  
+      alert("Data berhasil diubah! ");
 
-    axios
-      .post(baseURL, data)
-      .then((response) => {
-        setPost(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      navigate('/mahasiswa/profile');
+    
+    } catch (error) {
+      console.error('Error:', error);
+      alert("Error: " + error);
+    }
+
+    // axios
+    //   .post(baseURL, data)
+    //   .then((response) => {
+    //     setPost(response.data);
+    //     alert('Data berhasil diubah!');
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //   });
   };
 
   const [post, setPost] = useState(null);
@@ -95,6 +108,7 @@ const editProfile = () => {
                   <CCol className="my-col">
                     <CRow>
                       <CCol xs="6" className="my-col-inner">
+                        <p className="header-text">Data Pribadi</p>
                         <CRow className="mb-3">
                           <CCol className="ml-0">
                             <CFormLabel htmlFor="kelas" className="label">
@@ -200,8 +214,35 @@ const editProfile = () => {
                             onChange={handleImageChange}
                             accept="image/*"
                           />
+                          
                         </CCard>
-                        <CFormLabel htmlFor="nama" className="label">
+                        <CCard
+                          style={{ 
+                            backgroundColor: 'transparent',
+                            borderColor: 'transparent',
+                          }}
+                        >
+                          <CButton
+                            className="button-ubah-password"
+                            onClick={() => navigate('/mahasiswa/profile/edit/ubahPassword')}
+                            style={{ 
+                              backgroundColor: '#5A719D', 
+                              borderColor: '#5A719D',
+                              marginTop: '14px',
+                              width: '30%',
+                              marginLeft: '35%',
+                              // marginBottom: '10px',
+                              // height: '20px',
+                            }}
+                          >
+                            <span> Ubah Password </span>
+                          </CButton>
+                        </CCard>
+                        <CFormLabel 
+                          htmlFor="nama" 
+                          className="label" 
+                          style={{ marginTop: '20px' }}
+                        >
                           Nama
                         </CFormLabel>
                         <CFormInput type="text" id="nama" name="nama" defaultValue={post.data.Nama} disabled />
@@ -224,6 +265,7 @@ const editProfile = () => {
                           value="Submit"
                           className="submitButtonStyle"
                           onClick={createPost}
+                          style={{ backgroundColor: '#5A719D' }}
                         />
                       </CCol>
                     </CRow>
