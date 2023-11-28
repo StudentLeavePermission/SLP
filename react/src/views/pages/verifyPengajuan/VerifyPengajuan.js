@@ -82,7 +82,7 @@ const CustomCheckboxTable = () => {
 
   const [formErrors, setFormErrors] = useState({});
   const { key } = useParams();
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData(key);
@@ -247,9 +247,9 @@ const CustomCheckboxTable = () => {
       if (response.status === 200) {
         console.log('Data berhasil diubah di database:', response.data);
         alert("Berhasil mengubah data! " + formData.Status_Pengajuan + "Alasan Ditolak: " + formData.Alasan_Penolakan);
+        navigate('/dosen/tabelPengajuan');
         await axios.get(`http://localhost:3000/data-pengajuan/emailVerify/${key}`);
         setValidated(true)
-        nav('../tabelPengajuan');
       } else {
         console.error('Gagal mengubah data di database');
         alert('Gagal mengubah data di database');
@@ -454,7 +454,7 @@ const CustomCheckboxTable = () => {
           Setujui
         </CButton>
         <>
-          <CButton color="danger" onClick={() => setVisible(!visible)}>Tolak</CButton>
+          <CButton color="danger" onClick={() => {setVisible(!visible); handleChange('Status_Pengajuan', 'Rejected')}}>Tolak</CButton>
           <CModal
             backdrop="static"
             visible={visible}
@@ -482,13 +482,17 @@ const CustomCheckboxTable = () => {
               </div>
             </CModalBody>
             <CModalFooter>
-              <CButton color="secondary" onClick={() => setVisible(false)}>
+              <CButton color="secondary" onClick={() => {setVisible(false); handleChange('Status_Pengajuan', 'Delivered')}}>
                 Batalkan
               </CButton>
               <CButton color="danger" onClick={() => {
+                console.log(formData.Status_Pengajuan)
+                console.log(formData.Keterangan_Penolakan)
                 handleChange('Status_Pengajuan', 'Rejected') // THE STATUS DID NOT CHANGE AT ALL
                 setStatusPengajuan('Rejected')
                 handleChange('Alasan_Penolakan', keteranganPenolakan)
+                console.log(formData.Keterangan_Penolakan)
+                console.log(formData.Status_Pengajuan)
                 setVisible(false)
                 setRejectConfirmVisible(true)
                 console.log("Status = "+formData.Status_Pengajuan+", Alasan = "+formData.Alasan_Penolakan)
@@ -516,8 +520,12 @@ const CustomCheckboxTable = () => {
             </CModalBody>
             <CModalFooter>
               <CButton color="secondary" onClick={() => {
+                console.log(formData.Status_Pengajuan)
+                console.log(formData.Keterangan_Penolakan)
                 handleChange('Status_Pengajuan', 'Delivered');
                 handleChange('Alasan_Penolakan', '');
+                console.log(formData.Status_Pengajuan)
+                console.log(formData.Keterangan_Penolakan)
                 setVisible(true)
                 setRejectConfirmVisible(false)
               }}>
@@ -525,8 +533,10 @@ const CustomCheckboxTable = () => {
               </CButton>
               <CButton color="danger" onClick={(e) => {
                 console.log(formData.Status_Pengajuan)
+                console.log(formData.Keterangan_Penolakan)
                 handleSubmit(e);
                 console.log(formData.Status_Pengajuan)
+                console.log(formData.Keterangan_Penolakan)
               }}>Ya, tolak pengajuan</CButton>
             </CModalFooter>
           </CModal>
