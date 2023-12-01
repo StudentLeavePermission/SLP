@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../../../scss/styleCrud.css';
+import '../../../../scss/style.css';
 import { CCard, CCardBody, CCol, CCardHeader, CRow, CButton } from '@coreui/react'
 import {CChartLine} from '@coreui/react-chartjs'
 import axios from "axios"

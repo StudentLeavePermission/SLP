@@ -12,7 +12,7 @@ import {
   CImage,
 } from "@coreui/react";
 import pencil from "../../../../assets/images/pencil-solid.svg";
-import '../../../../scss/styleProfile.css';
+import '../../../../scss/style.css';
 import { useParams } from 'react-router-dom';
 
 const EditMahasiswa = () => {

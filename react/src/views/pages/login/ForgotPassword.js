@@ -14,7 +14,7 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import '../../../scss/_variables.scss'
-import './style.css'
+import '../../../scss/style.css'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import Cookies from 'js-cookie'

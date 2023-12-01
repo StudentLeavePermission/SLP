@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CCol, CRow, CButton } from '@coreui/react';
 import axios from 'axios';
-import '../../../../scss/styleProfile.css';
+import '../../../../scss/style.css';
 
 const ProfileDosen = () => {
   const [dataDosen, setDosen] = useState({});
@@ -35,7 +35,7 @@ const ProfileDosen = () => {
   }
 
   return (
-    <div className="container-detail">
+    <div className="container">
       <CRow>
         <CCol xs={12} sm={6} md={4} lg={3} className="img-container">
           <img

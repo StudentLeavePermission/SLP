@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '../../../../src/scss/styleHistoryPengajuanMahasiswa.css';
+import '../../../scss/style.css';
 import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CIcon from '@coreui/icons-react';

@@ -10,6 +10,7 @@ import {
   CCol,
   CRow,
 } from '@coreui/react';
+import '../../../scss/style.css';
 
 function TambahDataDosen() {
   const [formData, setFormData] = useState({

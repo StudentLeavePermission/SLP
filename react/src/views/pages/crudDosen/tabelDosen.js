@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './tabelDosen.css'; // Import your CSS file
+import '../../../scss/style.css';
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton } from '@coreui/react';
@@ -156,7 +156,7 @@ function TabelCRUD() {
       <div className="container">
       {headerSection}
         <div className="containerTabel box-blue"></div>
-        <div className="table-box">
+        <div className="table-box-dosen">
         <CButton href={`/#/admin/tambahDosen/`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
