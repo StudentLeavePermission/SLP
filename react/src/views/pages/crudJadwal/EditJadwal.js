@@ -13,7 +13,7 @@ import {
   CButton,
   CImage,
 } from '@coreui/react';
-import './style.css';
+import '../../../scss/style.css';
 
 const EditJadwal = () => {
   const [formData, setFormData] = useState({

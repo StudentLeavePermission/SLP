@@ -479,7 +479,7 @@ const UpdatePengajuanMahasiswa = () => {
                                         <CFormFeedback invalid>Mohon pilih jenis surat</CFormFeedback>
                                     </CCol>
                                     <CCol md={7}>
-                                        <table className="table table-bordered custom-table">
+                                        <table className="table-bordered custom-table">
                                             <thead>
                                                 {selectedDates.length < 2 && (
                                                     <>

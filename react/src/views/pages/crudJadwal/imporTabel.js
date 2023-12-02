@@ -4,7 +4,7 @@ import * as XLSX from 'xlsx';
 import { CButton, CRow, CCol } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import Modal from 'react-modal';
-import './TabelCRUD.css';
+import '../../../scss/style.css';
 import { cilX } from '@coreui/icons';
 import { FaAlignRight } from 'react-icons/fa';
 

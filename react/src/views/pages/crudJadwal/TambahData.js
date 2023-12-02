@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-import './TabelCRUD.css';
+import '../../../scss/style.css';
 import axios from 'axios';
 
 const TambahData = () => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { CCol, CRow } from '@coreui/react';
-import './Detail.css';
+import '../../../scss/style.css';
 
 
 const DetailJadwal = () => {

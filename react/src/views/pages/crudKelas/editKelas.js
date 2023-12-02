@@ -9,7 +9,7 @@ import {
   CCol,
   CRow,
 } from '@coreui/react';
-import './crudKelas.css';
+import '../../../scss/style.css';
 import { NULL } from 'sass';
 
 function EditKelas() {
@@ -181,13 +181,13 @@ function EditKelas() {
 
   return (
     <CForm onSubmit={updateDataKelas} style={{ padding: '20px' }}>
-      <div className="header-form">
+      <div className="">
         <div>
           <h2>Perbarui Data Kelas</h2>
         </div>
       </div>
       <CRow>
-        <CCol className="box-1">
+        <CCol className="">
           <div>
             <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
             <Select

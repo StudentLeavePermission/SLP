@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './tabelMahasiswa.css'; // Import your CSS file
+import '../../../scss/style.css';
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton, CFormInput } from '@coreui/react';
@@ -75,13 +75,13 @@ function TabelCRUD() {
       // Kirim formData dengan file ke endpoint yang sesuai
 
       axios.post('http://localhost:3000/data-mahasiswa/import', formData)
-      .then((response) => {
-        console.log('File uploaded successfully:', response.data);
-        closeModal(); // Tutup modal setelah upload berhasil
-      })
-      .catch((error) => {
-        console.error('Error uploading file:', error);
-      });
+        .then((response) => {
+          console.log('File uploaded successfully:', response.data);
+          closeModal(); // Tutup modal setelah upload berhasil
+        })
+        .catch((error) => {
+          console.error('Error uploading file:', error);
+        });
 
       console.log('File uploaded successfully:', response.data);
       closeModal(); // Tutup modal setelah upload berhasil
@@ -185,11 +185,15 @@ function TabelCRUD() {
 
   return (
     <>
-      <div className="container">
-      {headerSection}
-        <div className="containerTabel box-blue"></div>
-        <div className="table-box">
-          <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
+    <div>
+    {headerSection}
+          <div className="containerTabel">
+            <div className="containerTabel box-blue">
+
+            </div>
+            <div className="containerTabel table-box">
+            <div className="top-table">
+            <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
           <CButton onClick={ExportData} className="btn-tambah table-font">
@@ -199,27 +203,27 @@ function TabelCRUD() {
             Import
           </CButton>
           <Modal
-  isOpen={modalIsOpen}
-  onAfterOpen={afterOpenModal}
-  onRequestClose={closeModal}
-  style={customStyles}
-  contentLabel="Example Modal"
->
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-    <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Import Data</h2>
-    <button onClick={closeModal} style={{ cursor: 'pointer', border: 'none', background: 'none', fontSize: '1.5rem' }}>×</button>
-  </div>
-  <div>
-    <form encType="multipart/form-data" method="post">
-      <label htmlFor="fileInput">Pilih file:</label>
-      <CFormInput type="file" id="fileInput" name="file" onChange={handleFileUpload} />
-      <br></br>
-      <CButton style={{width:'50%', backgroundColor: '#3C9A62'}}>Format</CButton>
-      <br></br><br></br>
-      <CButton type="submit" style={{width:'100%'}} onClick={handleSubmit}>Upload</CButton>
-    </form>
-  </div>
-</Modal>
+            isOpen={modalIsOpen}
+            onAfterOpen={afterOpenModal}
+            onRequestClose={closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Import Data</h2>
+              <button onClick={closeModal} style={{ cursor: 'pointer', border: 'none', background: 'none', fontSize: '1.5rem' }}>×</button>
+            </div>
+            <div>
+              <form encType="multipart/form-data" method="post">
+                <label htmlFor="fileInput">Pilih file:</label>
+                <CFormInput type="file" id="fileInput" name="file" onChange={handleFileUpload} />
+                <br></br>
+                <CButton style={{ width: '50%', backgroundColor: '#3C9A62' }}>Format</CButton>
+                <br></br><br></br>
+                <CButton type="submit" style={{ width: '100%' }} onClick={handleSubmit}>Upload</CButton>
+              </form>
+            </div>
+          </Modal>
           <div className="search-input-container">
             <input
               type="text"
@@ -229,6 +233,7 @@ function TabelCRUD() {
               className="search-input"
             />
             <CIcon icon={cilSearch} className="search-icon" />
+          </div>
           </div>
           <table className="tabel">
             <thead>
@@ -285,39 +290,41 @@ function TabelCRUD() {
               ))}
             </tbody>
           </table>
-          <div className="pagination">
-            <button
-              className="btn-pagination"
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-            >
-              {'<'}
-            </button>
-            {Array.from({ length: pageNumbers }, (_, i) => {
-              const pageNumber = i + 1;
-              const isActive = pageNumber === currentPage;
-
-              return (
+              <div className="pagination">
                 <button
-                  key={i}
-                  className={`btn-pagination ${isActive ? 'active' : ''}`}
-                  onClick={() => setCurrentPage(pageNumber)}
+                  className="btn-pagination"
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
                 >
-                  {pageNumber}
+                  {'<'}
                 </button>
-              );
-            })}
+                {Array.from({ length: pageNumbers }, (_, i) => {
+                  const pageNumber = i + 1;
+                  const isActive = pageNumber === currentPage;
 
-            <button
-              className="btn-pagination"
-              onClick={handleNextPage}
-              disabled={currentPage === pageNumbers}
-            >
-              {'>'}
-            </button>
+                  return (
+                    <button
+                      key={i}
+                      className={`btn-pagination ${isActive ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+
+                <button
+                  className="btn-pagination"
+                  onClick={handleNextPage}
+                  disabled={currentPage === pageNumbers}
+                >
+                  {'>'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      
     </>
   );
 }

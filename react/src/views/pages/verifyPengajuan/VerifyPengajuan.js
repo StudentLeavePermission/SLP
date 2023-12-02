@@ -322,7 +322,7 @@ const CustomCheckboxTable = () => {
         </CFormLabel>
         {dayName && (
           <>
-            <table className="table table-bordered custom-table">
+            <table className="table-bordered custom-table">
               <thead>
                 <tr>
                   <th>

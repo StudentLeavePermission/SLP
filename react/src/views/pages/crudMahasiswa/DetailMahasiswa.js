@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { CCol, CRow } from '@coreui/react';
-import './Detail.css';
+import '../../../scss/style.css';
 import axios from "axios";
 
 
