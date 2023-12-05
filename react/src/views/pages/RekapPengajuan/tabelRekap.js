@@ -165,7 +165,7 @@ function TabelRekap() {
             </div>
             <div className="containerTabel table-box">
               <div className="d-flex justify-content-between">
-                
+
                 <CButton onClick={exportToExcel} className="btn-eksport table-font">
                   Ekspor
                 </CButton>
@@ -232,13 +232,21 @@ function TabelRekap() {
                   <td className="cell rata table-font">{item.Nama}</td>
                   <td className="cell rata table-font">{item.TotalIzin}</td>
                   <td className="cell rata table-font">{item.TotalSakit}</td>
-
-
                   <td className="cell aksi">
-                    <CButton href={`/#/admin/rekap/detail/${item.ID_Mahasiswa}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
-                      <CIcon icon={cilInfo} />
-                    </CButton>
-                  </td>
+                  {((item.TotalIzin + item.TotalSakit)==0) ? (
+      // JSX ketika kondisi true
+      <CButton href={`/#/admin/rekap/detail/${item.ID_Mahasiswa}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }} disabled>
+      <CIcon icon={cilInfo} />
+    </CButton>
+    ) : (
+      <CButton href={`/#/admin/rekap/detail/${item.ID_Mahasiswa}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+      <CIcon icon={cilInfo} />
+    </CButton>
+    )}
+     </td>
+
+
+
                 </tr>
               ))}
             </tbody>
