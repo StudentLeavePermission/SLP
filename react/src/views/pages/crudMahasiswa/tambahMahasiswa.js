@@ -13,7 +13,7 @@ import {
   CRow,
 } from '@coreui/react';
 import img from '../../../assets/images/profile.jpg';
-import './style.css';
+import '../../../scss/style.css';
 import axios from 'axios';
 
 import pencil from "../../../assets/images/pencil-solid.svg";

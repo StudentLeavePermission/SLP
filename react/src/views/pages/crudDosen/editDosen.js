@@ -10,6 +10,7 @@ import {
   CRow,
 } from '@coreui/react';
 import { useParams, useNavigate } from 'react-router-dom';
+import '../../../scss/style.css';
 
 const EditDataDosen = () => {
   const [formData, setFormData] = useState({

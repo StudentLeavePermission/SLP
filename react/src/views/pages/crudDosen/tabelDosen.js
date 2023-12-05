@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './tabelDosen.css'; // Import your CSS file
+import '../../../scss/style.css';
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton } from '@coreui/react';
@@ -153,11 +153,15 @@ function TabelCRUD() {
 
   return (
     <>
-      <div className="container">
-      {headerSection}
-        <div className="containerTabel box-blue"></div>
-        <div className="table-box">
-        <CButton href={`/#/admin/tambahDosen/`} className="btn-tambah table-font">
+    <div>
+    {headerSection}
+          <div className="containerTabel">
+            <div className="containerTabel box-blue">
+
+            </div>
+            <div className="containerTabel table-box">
+            <div className="top-table">
+            <CButton href={`/#/admin/tambahDosen/`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
           <CButton href={`/#/admin/TabelImport/`} className="btn-imporEkspor table-font">
@@ -175,6 +179,7 @@ function TabelCRUD() {
               className="search-input"
             />
             <CIcon icon={cilSearch} className="search-icon" />
+          </div>
           </div>
           <table className="tabel">
             <thead>
@@ -238,39 +243,40 @@ function TabelCRUD() {
               ))}
             </tbody>
           </table>
-          <div className="pagination">
-            <button
-              className="btn-pagination"
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-            >
-              {'<'}
-            </button>
-            {Array.from({ length: pageNumbers }, (_, i) => {
-              const pageNumber = i + 1;
-              const isActive = pageNumber === currentPage;
-
-              return (
+              <div className="pagination">
                 <button
-                  key={i}
-                  className={`btn-pagination ${isActive ? 'active' : ''}`}
-                  onClick={() => setCurrentPage(pageNumber)}
+                  className="btn-pagination"
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
                 >
-                  {pageNumber}
+                  {'<'}
                 </button>
-              );
-            })}
+                {Array.from({ length: pageNumbers }, (_, i) => {
+                  const pageNumber = i + 1;
+                  const isActive = pageNumber === currentPage;
 
-            <button
-              className="btn-pagination"
-              onClick={handleNextPage}
-              disabled={currentPage === pageNumbers}
-            >
-              {'>'}
-            </button>
+                  return (
+                    <button
+                      key={i}
+                      className={`btn-pagination ${isActive ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+
+                <button
+                  className="btn-pagination"
+                  onClick={handleNextPage}
+                  disabled={currentPage === pageNumbers}
+                >
+                  {'>'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
     </>
   );
 }

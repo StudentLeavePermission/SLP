@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './tabelMahasiswa.css'; // Import your CSS file
+import '../../../scss/style.css'; // Import your CSS file
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton } from '@coreui/react';
@@ -78,12 +78,12 @@ function TabelRekap() {
         return order * a.Nama.localeCompare(b.Nama);
       }
 
-     else if (sortBy === 'Jumlah_Izin') {
-      return order * (a.TotalIzin - b.TotalIzin);
-    } else if (sortBy === 'Jumlah_Sakit') {
-      return order * (a.TotalSakit - b.TotalSakit);
+      else if (sortBy === 'Jumlah_Izin') {
+        return order * (a.TotalIzin - b.TotalIzin);
+      } else if (sortBy === 'Jumlah_Sakit') {
+        return order * (a.TotalSakit - b.TotalSakit);
+      }
     }
-  }
   });
 
   // JSX for the header section
@@ -156,27 +156,32 @@ function TabelRekap() {
 
   return (
     <>
-      <div className="container">
+      <div className='container'>
       {headerSection}
-        <div className="containerTabel box-blue"></div>
-        <div className="table-box">
+        <div>
+          <div className="containerTabel">
+            <div className="containerTabel box-blue">
 
-          <CButton onClick={exportToExcel} className="btn-eksport table-font">
-            Ekspor
-          </CButton>
+            </div>
+            <div className="containerTabel table-box">
+              <div className="d-flex justify-content-between">
+                
+                <CButton onClick={exportToExcel} className="btn-eksport table-font">
+                  Ekspor
+                </CButton>
+                <div className="search-input-container">
+                  <input
+                    type="text"
+                    placeholder="Cari..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    className="search-input"
+                  />
+                  <CIcon icon={cilSearch} className="search-icon" />
+                </div>
+              </div>
 
-
-          <div className="search-input-container">
-            <input
-              type="text"
-              placeholder="Cari..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="search-input"
-            />
-            <CIcon icon={cilSearch} className="search-icon" />
-          </div>
-          <table className="tabel">
+              <table className="tabel">
             <thead>
               <tr>
                 <th className="header-cell rata table-font">Nomor</th>
@@ -238,8 +243,9 @@ function TabelRekap() {
               ))}
             </tbody>
           </table>
-          <div className="pagination">
-            <button
+
+              <div className="pagination">
+              <button
               className="btn-pagination"
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
@@ -268,6 +274,8 @@ function TabelRekap() {
             >
               {'>'}
             </button>
+          </div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CCol, CRow } from '@coreui/react';
 import { useParams } from 'react-router-dom';
-import '../../../scss/styleProfile.css';
+import '../../../../scss/style.css';
 
 const ProfileAdmin = () => {
   const { key } = useParams(); 

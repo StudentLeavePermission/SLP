@@ -7,10 +7,9 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilPhone, cilEnvelopeOpen } from '@coreui/icons';
-import '../../../scss/_variables.scss';
-import './LandingPage.css';
-import Lingkaran from './image/lingkaran.png';
-import Student from './image/student.png';
+import '../../../scss/style.css';
+import Lingkaran from '../../../assets/images/lingkaran.png';
+import Student from '../../../assets/images/student.png';
 import { FaBars, FaTimes } from 'react-icons/fa'; 
 import AOS from 'aos';
 import 'aos/dist/aos.css';

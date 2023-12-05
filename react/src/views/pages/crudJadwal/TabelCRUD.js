@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import 'datatables.net-dt/css/jquery.dataTables.css'; // Import DataTables CSS
 import $ from 'jquery'; 
 import 'datatables.net'; 
-import './TabelCRUD.css';
+import '../../../scss/style.css';
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
 import { CButton, CCol, CRow } from '@coreui/react';
@@ -305,11 +305,14 @@ function TabelCRUD({}) {
   // JSX untuk bagian isian tabel
   return (
     <>
-    <div className="container">
-        {headerSection}
-        <div className="containerTabel box-blue"></div>
-        <div className="table-box">
-          <div className="top-table">
+    <div>
+    {headerSection}
+          <div className="containerTabel">
+            <div className="containerTabel box-blue">
+
+            </div>
+            <div className="containerTabel table-box">
+            <div className="top-table">
             <CButton href={`/#/admin/tambahJadwal`} className="btn-tambah table-font">
               + Tambah Data
             </CButton>                     
@@ -390,40 +393,41 @@ function TabelCRUD({}) {
           ))}
             </tbody>
           </table>
-          <div className="pagination">
-            <button
-              className="btn-pagination"
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-            >
-              {'<'}
-            </button>
-            {Array.from({ length: pageNumbers }, (_, i) => {
-              const pageNumber = i + 1;
-              const isActive = pageNumber === currentPage;
-
-              return (
+              <div className="pagination">
                 <button
-                  key={i}
-                  className={`btn-pagination ${isActive ? 'active' : ''}`}
-                  onClick={() => setCurrentPage(pageNumber)}
+                  className="btn-pagination"
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
                 >
-                  {pageNumber}
+                  {'<'}
                 </button>
-              );
-            })}
+                {Array.from({ length: pageNumbers }, (_, i) => {
+                  const pageNumber = i + 1;
+                  const isActive = pageNumber === currentPage;
 
-            <button
-              className="btn-pagination"
-              onClick={handleNextPage}
-              disabled={currentPage === pageNumbers}
-            >
-              {'>'}
-            </button>
+                  return (
+                    <button
+                      key={i}
+                      className={`btn-pagination ${isActive ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+
+                <button
+                  className="btn-pagination"
+                  onClick={handleNextPage}
+                  disabled={currentPage === pageNumbers}
+                >
+                  {'>'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        
-    </div>
+    
     </>
   );
 }

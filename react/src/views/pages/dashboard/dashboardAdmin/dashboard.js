@@ -22,7 +22,7 @@ import {
   cilPeople
 } from '@coreui/icons';
 import axios from 'axios';
-import '../../../../scss/styleCrud.css';
+import '../../../../scss/style.css';
 
 const DashboardTU = () => {
     const [jmlPengajuanIzin, setJmlPengajuanIzin] = useState([]);

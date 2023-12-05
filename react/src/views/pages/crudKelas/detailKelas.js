@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CCol, CRow, CButton } from '@coreui/react';
-import './crudKelas.css';
+import '../../../scss/style.css';
 import axios from 'axios';
 
 const DetailKelas = () => {

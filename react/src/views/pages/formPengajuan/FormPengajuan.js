@@ -14,7 +14,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { DocsExample } from 'src/components'
-import '../../../scss/styleFormPengajuan.css'
+import '../../../scss/style.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import axios from "axios"
@@ -463,19 +463,12 @@ const CustomCheckboxTable = () => {
         {/* <CFormLabel htmlFor="validationCustom04" className="table-font margin-jadwal">
           Pilih Jadwal Absen:
         </CFormLabel> */}
-        <table className="table table-bordered custom-table">
+        <table className="custom-table table-bordered">
           <thead>
-            {selectedDates.length < 2 && (
+            {selectedDates.length > -1 && (
               <>
                 <tr>
-                  <th>
-                    {/* <CFormCheck
-                  type="checkbox"
-                  id="selectAllCheckbox"
-                  checked={selectAll}
-                  onChange={() => handleSelectAllChange(selectedDate)}
-                /> */}
-                  </th>
+                  <th><span></span></th>
                   <th>Jam Pelajaran</th>
                   <th>Nama Mata Kuliah</th>
                 </tr>

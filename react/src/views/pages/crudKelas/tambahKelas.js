@@ -9,7 +9,7 @@ import {
   CCol,
   CRow,
 } from '@coreui/react';
-
+import '../../../scss/style.css';
 function TambahDataKelas() {
   const [formData, setFormData] = useState({
     Nama_Kelas: '',
@@ -143,13 +143,13 @@ function TambahDataKelas() {
 
   return (
     <CForm onSubmit={handleSubmit} style={{ padding: '20px' }}>
-      <div className="header-form">
+      <div className="">
         <div>
           <h2>Tambah Data Kelas</h2>
         </div>
       </div>
       <CRow>
-        <CCol className="box-1">
+        <CCol className="">
           <div>
             <CFormLabel htmlFor="Nama_Kelas">Nama Kelas</CFormLabel>
             <Select

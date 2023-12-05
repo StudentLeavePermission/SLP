@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import '../../../scss/styleHistoryPengajuanMahasiswa.css';
-import axios from "axios"
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useEffect, useRef } from 'react';
+import 'datatables.net-dt/css/jquery.dataTables.css'; // Import DataTables CSS
+import $ from 'jquery';
+import 'datatables.net';
+import '../../../scss/style.css';
 import CIcon from '@coreui/icons-react';
 import { CButton } from '@coreui/react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } from '@coreui/icons';
