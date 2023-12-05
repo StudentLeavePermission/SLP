@@ -196,12 +196,13 @@ function TabelCRUD() {
             <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
             + Tambah Data
           </CButton>
-          <CButton onClick={ExportData} className="btn-tambah table-font">
-            Export
+          <CButton onClick={openModal} className="btn-imporEkspor table-font">
+            Impor
           </CButton>
-          <CButton onClick={openModal} className="btn-tambah table-font">
-            Import
+          <CButton onClick={ExportData} className="btn-imporEkspor table-font">
+            Ekspor
           </CButton>
+
           <Modal
             isOpen={modalIsOpen}
             onAfterOpen={afterOpenModal}
@@ -324,7 +325,7 @@ function TabelCRUD() {
             </div>
           </div>
         </div>
-      
+
     </>
   );
 }
