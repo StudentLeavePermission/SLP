@@ -116,8 +116,8 @@ const Login = () => {
             })
             .then(async () => {
               //mengambil token
-              const token = Cookies.get('jwt');
-
+              const token = Cookies.get('access_token');
+              console.log('Token after login: ', token)
               if (token !== 'undefined') {
                 // Ambil data dosen berdasarkan email
                 try {
@@ -173,8 +173,8 @@ const Login = () => {
             })
             .then(async () => {
               // ambil token
-              const token = Cookies.get('jwt');
-
+              const token = Cookies.get('access_token');
+              console.log('Token after login: ', token)
               if (token !== 'undefined') {
                 // Ambil data mahasiswa berdasarkan NIM
                 try {
