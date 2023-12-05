@@ -90,24 +90,35 @@ const CustomCheckboxTable = () => {
 
   const fetchData = async (key) => {
     try {
+      // First, fetch data from Data_Pengajuan table
       const response = await axios.get(`http://localhost:3000/data-pengajuan/${key}`);
       const data = response.data.data; // Ambil data dari response
 
       if (response.status === 200) {
         console.log('Data yang telah diambil dari server:', data);
-        // Atur formData dengan data dari database
-        setFormData({
-          ID_Mahasiswa: data.ID_Mahasiswa,
-          Keterangan: data.Keterangan,
-          Jenis_Izin: data.Jenis_Izin,
-          Tanggal_Pengajuan: data.Tanggal_Pengajuan,
-          Tanggal_Izin: data.Tanggal_Izin,
-          ID_Jadwal_Kelas: data.ID_Jadwal_Kelas,
-          File_Pengajuan: data.File_Pengajuan,
-          Status_Pengajuan: data.Status_Pengajuan,
-          Alasan_Penolakan: data.Alasan_Penolakan
-        });
-        // setSelectedDate(data.Tanggal_Izin);
+
+        // Fetch data from Data_Mahasiswa using ID_Mahasiswa
+        const mahasiswaResponse = await axios.get(`http://localhost:3000/data-mahasiswa/students/${data.ID_Mahasiswa}`);
+        const mahasiswaData = mahasiswaResponse.data.data;
+
+        if (mahasiswaResponse.status === 200) {
+          // Atur formData dengan data dari database
+          setFormData({
+            NIM: mahasiswaData.NIM,
+            Nama: mahasiswaData.Nama,
+            Keterangan: data.Keterangan,
+            Jenis_Izin: data.Jenis_Izin,
+            Tanggal_Pengajuan: data.Tanggal_Pengajuan,
+            Tanggal_Izin: data.Tanggal_Izin,
+            ID_Jadwal_Kelas: data.ID_Jadwal_Kelas,
+            File_Pengajuan: data.File_Pengajuan,
+            Status_Pengajuan: data.Status_Pengajuan,
+            Alasan_Penolakan: data.Alasan_Penolakan
+          });
+          // setSelectedDate(data.Tanggal_Izin);
+        } else {
+          console.error('Gagal mengambil data mahasiswa');
+        }
       } else {
         console.error('Gagal mengambil data pengajuan');
       }
@@ -266,174 +277,18 @@ const CustomCheckboxTable = () => {
       onSubmit={handleSubmit}
     >
       {/* Form elements */}
-      <CCol md={1}></CCol>
-      <CCol md={4}>
-        <CFormLabel htmlFor="validationCustom01" className="table-font">
-          Nama
-        </CFormLabel>
-        <CFormInput type="text" id="validationCustom01" placeholder={formData.ID_Mahasiswa} disabled /> {/* nyambung ke backend */}
-      </CCol>
-      <CCol md={2}></CCol>
-      <CCol md={4}>
-        <CFormLabel htmlFor="validationCustom02" className="table-font">
-          NIM
-        </CFormLabel>
-        <CFormInput type="text" id="validationCustom02" placeholder={formData.ID_Mahasiswa} disabled /> {/* nyambung ke backend */}
-      </CCol>
-      <CCol md={1}></CCol>
-      <CCol md={1}></CCol>
-      <CCol md={1}>
-        <CFormLabel htmlFor="validationCustom06" className="table-font margin-tanggal">
-          Tanggal pengajuan:
-        </CFormLabel>
-      </CCol>
-      <CCol md={5}>
-        <div className="date-picker-container">
-          <div className="input-group">
-            <DatePicker
-              id="validationCustom06"
-              selected={selectedDate}
-              value={formData.Tanggal_Izin} // nyambung ke backend
-              onChange={(date) => handleDateChange(date)}
-              dateFormat="dd/MM/yyyy" // Format tanggal sesuai keinginan Anda
-              disabled
-              className="form-control margin-tanggal1"
-            />
-          </div>
-        </div>
-      </CCol>
-      <CCol md={4}>
-        <CFormLabel htmlFor="validationCustom04" className="table-font">
-          Jenis Surat
-        </CFormLabel>
-        <CFormSelect
-          id="validationCustom04"
-          value={formData.Jenis_Izin}
-          onChange={(event) => setJenisIzin(event.target.value)}
-          disabled
-        >
-          <option value="Izin">Izin</option>
-          <option value="Sakit">Sakit</option>
-        </CFormSelect>
-      </CCol>
-      <CCol md={7}>
-        <CFormLabel htmlFor="validationCustom04" className="table-font margin-jadwal">
+      <CCol xs={8}>
+        <CFormTextarea
+          id="suratContent"
+          value={`Halo, saya ${formData.Nama} dengan NIM ${formData.NIM}, ingin mengajukan izin sebagai berikut:
+          Tanggal Pengajuan: ${formData.Tanggal_Pengajuan}
+          Jenis Surat: ${formData.Jenis_Izin}
           Jadwal Absen yang Dipilih:
-        </CFormLabel>
-        {dayName && (
-          <>
-            <table className="table table-bordered custom-table">
-              <thead>
-                <tr>
-                  <th>
-                    <CFormCheck
-                      type="checkbox"
-                      id="selectAllCheckbox"
-                      checked={selectAll}
-                      onChange={() => handleSelectAllChange(selectedDate)}
-                      disabled
-                    />
-                  </th>
-                  <th>Jam Pelajaran</th>
-                  <th>Nama Mata Kuliah</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <CFormCheck
-                        type="checkbox"
-                        id={item.id}
-                        checked={item.isChecked}
-                        onChange={() => handleCheckboxChange(item.id, selectedDate)}
-                        disabled
-                      />
-                    </td>
-                    <td>{item.jamPelajaran}</td>
-                    <td>{item.namaMataKuliah}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
-        <CCol style={{ marginLeft: '95px', fontStyle: 'italic', color: 'gray' }}>Logging ID_Jadwal_Kelas: {formData.ID_Jadwal_Kelas}</CCol>
-      </CCol>
-      <CCol md={4}>
-        <div className="mb-5">
-          <CFormLabel htmlFor="validationCustom05" className="form-label table-font">
-            Alasan
-          </CFormLabel>
-          <CFormTextarea
-            id="validationTextarea"
-            placeholder="Ada keperluan di luar kota"
-            value={formData.Keterangan} // nyambung ke backend
-            onChange={handleketeranganChange}
-            rows={7}
-            disabled
-          >
-          </CFormTextarea>
-        </div>
-      </CCol>
-      <CCol md={7}>
-        {dayName && selectedDatesExist && (
-          <>
-            <CFormLabel className="tanggal-dipilih form-label table-font">
-              Tanggal yang Dipilih:
-            </CFormLabel>
-            <ul>
-              {selectedDates.map((date, index) => (
-                <div key={index}>
-                  <CButton
-                    color="info"
-                    className="detail-tanggal"
-                    onClick={() => toggleExpandedDate(date.date)}
-                  >{`Detail: ${getDayName(date.date)},
-                  ${date.date.getDate()} ${date.date.toLocaleString('id-ID', { month: 'long' })}
-                  ${date.date.getFullYear()}`}</CButton>
-                  {expandedDates.includes(date.date) && (
-                    <table className="tabel-detail table table-bordered custom-table">
-                      <thead>
-                        <tr>
-                          <th>
-                            <CFormCheck
-                              type="checkbox"
-                              id={`selectAllCheckbox${index}`}
-                              checked={selectAll}
-                              onChange={() => handleSelectAllChange(date.date)}
-                            />
-                          </th>
-                          <th>Jam Pelajaran</th>
-                          <th>Nama Mata Kuliah</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {date.data.map((isChecked, index) => {
-                          const item = tableData[index]
-                          return (
-                            <tr key={item.id}>
-                              <td>
-                                <CFormCheck
-                                  type="checkbox"
-                                  id={item.id}
-                                  checked={isChecked}
-                                  onChange={() => handleCheckboxChange(item.id, date.date)}
-                                />
-                              </td>
-                              <td>{item.jamPelajaran}</td>
-                              <td>{item.namaMataKuliah}</td>
-                            </tr>
-                          )
-                        })}
-                      </tbody>
-                    </table>
-                  )}
-                </div>
-              ))}
-            </ul>
-          </>
-        )}
+          ${tableData.map((item) => ` - ${item.jamPelajaran}, ${item.namaMataKuliah}`).join('\n\t  ')}
+          Alasan: ${formData.Keterangan}`}
+          rows={15}
+          readOnly
+        />
       </CCol>
       <div className="mb-3 custom-input margin-lampiran">
         <CFormLabel htmlFor="validationCustom07" className="table-font">
@@ -454,7 +309,7 @@ const CustomCheckboxTable = () => {
           Setujui
         </CButton>
         <>
-          <CButton color="danger" onClick={() => {setVisible(!visible); handleChange('Status_Pengajuan', 'Rejected')}}>Tolak</CButton>
+          <CButton color="danger" onClick={() => { setVisible(!visible); handleChange('Status_Pengajuan', 'Rejected') }}>Tolak</CButton>
           <CModal
             backdrop="static"
             visible={visible}
@@ -482,7 +337,7 @@ const CustomCheckboxTable = () => {
               </div>
             </CModalBody>
             <CModalFooter>
-              <CButton color="secondary" onClick={() => {setVisible(false); handleChange('Status_Pengajuan', 'Delivered')}}>
+              <CButton color="secondary" onClick={() => { setVisible(false); handleChange('Status_Pengajuan', 'Delivered') }}>
                 Batalkan
               </CButton>
               <CButton color="danger" onClick={() => {
@@ -495,7 +350,7 @@ const CustomCheckboxTable = () => {
                 console.log(formData.Status_Pengajuan)
                 setVisible(false)
                 setRejectConfirmVisible(true)
-                console.log("Status = "+formData.Status_Pengajuan+", Alasan = "+formData.Alasan_Penolakan)
+                console.log("Status = " + formData.Status_Pengajuan + ", Alasan = " + formData.Alasan_Penolakan)
               }}>Tolak pengajuan</CButton>
             </CModalFooter>
           </CModal>
