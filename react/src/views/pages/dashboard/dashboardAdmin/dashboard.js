@@ -96,6 +96,8 @@ const DashboardTU = () => {
       const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/${id}`);
       if (response.data.data){
         setDataTable(response.data.data);
+      } else {
+
       }
     }
 
@@ -272,26 +274,26 @@ const DashboardTU = () => {
                               Jumlah Sakit
                             </div>
                         </th>
-                        <th className="header-cell rata table-font">
+                        {/* <th className="header-cell rata table-font">
                             <div>
                               Aksi
                             </div>
-                        </th>
+                        </th> */}
                         </tr>
                     </thead>
                     <tbody>
                       {dataTable.map((kelas, index) => (
                         <tr key={index}>
-                          <td style={{ width: '50px'}} className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                          <td style={{ width: '100px'}} className="cell rata table-font">{kelas[0].Nama_Kelas}</td>
-                          <td style={{ width: '100px'}} className="cell rata table-font">{kelas[0].Izin}</td>
-                          <td style={{ width: '150px'}} className="cell rata table-font">{kelas[0].Sakit}</td>
-                          <td style={{ width: '100px'}} className="cell rata table-font">
+                          <td className="cell rata table-font col">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                          <td className="cell rata table-font col">{kelas[0].Nama_Kelas}</td>
+                          <td className="cell rata table-font col">{kelas[0].Izin}</td>
+                          <td className="cell rata table-font col">{kelas[0].Sakit}</td>
+                          {/* <td style={{ width: '100px'}} className="cell rata table-font">
                             <CButton
                               style={{ width: '110px', height: '30px', paddingTop: '3px' }}
                               onClick={() => handleDetailClick(index)}
                             >Detail</CButton>
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                     </tbody>
