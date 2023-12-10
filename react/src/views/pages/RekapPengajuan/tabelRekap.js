@@ -19,6 +19,8 @@ const customStyles = {
   },
 };
 function TabelRekap() {
+
+  const [idAdmin, setIdAdmin] = useState(sessionStorage.getItem('idAdmin'));
   let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -48,7 +50,7 @@ function TabelRekap() {
 
   const getRekapPengajuan = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/data-pengajuan/mahasiswa/rekap/pengajuan/');
+      const response = await axios.get(`http://localhost:3000/data-pengajuan/mahasiswa/rekap/pengajuan/${idAdmin}`);
       setData(response.data.data);
     } catch (error) {
       console.error('Error fetching data:', error);
