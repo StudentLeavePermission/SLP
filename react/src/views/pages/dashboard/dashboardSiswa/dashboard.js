@@ -3,6 +3,8 @@ import '../../../../scss/style.css';
 import axios from "axios"
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, cilChartPie } from '@coreui/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBarChart } from '@fortawesome/free-regular-svg-icons'
 
 
 const dashboardMahasiswa = () => {
@@ -182,8 +184,8 @@ const dashboardMahasiswa = () => {
                   <div className="text-information text-blue">Jumlah Izin</div>
                   <div className="text-information">{Izin} Jam Pelajaran</div>
                 </div>
-                <div>
-                  <CIcon size={'3xl'} icon={cilChartPie} />
+                <div className='s-icon'>
+                  <FontAwesomeIcon icon={faBarChart} />
                 </div>
               </div>
             </div>
@@ -197,8 +199,8 @@ const dashboardMahasiswa = () => {
                   <div className="text-information text-blue">Jumlah sakit</div>
                   <div className="text-information">{Sakit} Jam Pelajaran</div>
                 </div>
-                <div>
-                  <CIcon size={'3xl'} icon={cilChartPie} />
+                <div className='s-icon'>
+                  <FontAwesomeIcon icon={faBarChart} />
                 </div>
               </div>
             </div>
@@ -213,38 +215,43 @@ const dashboardMahasiswa = () => {
 
             </div>
             <div className="containerTabel table-box">
-              <table className="tabel">
-                <thead>
-                  <tr>
-                    <th className="header-cell rata table-font">Nomor</th>
-                    <th className="header-cell rata table-font">
-                      <div>
-                        Mata Kuliah
-                      </div>
-                    </th>
-                    <th className="header-cell rata table-font">
-                      <div>
-                        Waktu
-                      </div>
-                    </th>
-                    <th className="header-cell rata table-font">
-                      <div>
-                        Dosen
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentData.map((item, index) => (
-                    <tr key={index}>
-                      <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                      <td className="cell rata table-font">{item.Mata_Kuliah}</td>
-                      <td className="cell rata table-font">{item.Jam}</td>
-                      <td className="cell rata table-font">{item.Nama_Dosen}</td>
+            {currentData.length > 0 ? (
+                  <table className="tabel">
+                  <thead>
+                    <tr>
+                      <th className="header-cell rata table-font">Nomor</th>
+                      <th className="header-cell rata table-font">
+                        <div>
+                          Mata Kuliah
+                        </div>
+                      </th>
+                      <th className="header-cell rata table-font">
+                        <div>
+                          Waktu
+                        </div>
+                      </th>
+                      <th className="header-cell rata table-font">
+                        <div>
+                          Dosen
+                        </div>
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {currentData.map((item, index) => (
+                      <tr key={index}>
+                        <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                        <td className="cell rata table-font">{item.Mata_Kuliah}</td>
+                        <td className="cell rata table-font">{item.Jam}</td>
+                        <td className="cell rata table-font">{item.Nama_Dosen}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                ) : (
+                  <div className="no-data-message">Tidak ada Jadwal Kuliah Pada Hari ini</div>
+                )}
+              
               <div className="pagination">
                 <button
                   className="btn-pagination"

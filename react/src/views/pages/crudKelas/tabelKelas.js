@@ -8,7 +8,7 @@ import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom } 
 import { CButton } from '@coreui/react';
 import axios from 'axios';
 
-function TabelCRUD({}) {
+function TabelCRUD({ }) {
   const tableRef = useRef(null);
   const [dataKelas, setDataKelas] = useState([]);
   const [sortBy, setSortBy] = useState('Kelas');
@@ -137,16 +137,16 @@ function TabelCRUD({}) {
       // Check if id_wali_dosen is not null before allowing deletion
       const response = await axios.get(`http://localhost:3000/data-kelas/get/${id}`);
       const data = response.data.data;
-  
+
       if (data.ID_Dosen_Wali !== null) {
         // If id_wali_dosen is not null, show alert and return
         window.alert('Data cannot be deleted because id_wali_dosen is not null.');
         return;
       }
-  
+
       // Confirm deletion
       const confirmation = window.confirm('Anda yakin ingin menghapus data ini?');
-  
+
       if (confirmation) {
         // Perform deletion
         await axios.delete(`http://localhost:3000/data-kelas/delete/${id}`);
@@ -156,7 +156,7 @@ function TabelCRUD({}) {
     } catch (error) {
       console.error('Error deleting data:', error);
     }
-  };  
+  };
 
   const headerSection = (
     <div className="font-title table-font">
@@ -168,113 +168,115 @@ function TabelCRUD({}) {
 
   return (
     <>
-    <div>
-    {headerSection}
-          <div className="containerTabel">
-            <div className="containerTabel box-blue">
+      <div>
+        {headerSection}
+        <div className="containerTabel">
+          <div className="containerTabel box-blue">
 
-            </div>
-            <div className="containerTabel table-box">
-            <div className="top-table">
-            <CButton href={`/#/admin/tambahKelas`} className="btn-tambah table-font">
-              + Tambah Data
-            </CButton>
-            <div className="search-input-container">
-              <input
-                type="text"
-                placeholder="Cari..."
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className="search-input"
-              />
-              <CIcon icon={cilSearch} className="search-icon" />
-            </div>
           </div>
-          <table className="tabel">
-            <thead>
-              <tr>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Kelas')}>
-                    Kelas
-                    <span className="sort-icon">
-                      {sortBy === 'Kelas' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Program Studi')}>
-                    Program Studi
-                    <span className="sort-icon">
-                      {sortBy === 'Program Studi' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Tahun Ajaran')}>
-                    Tahun Masuk
-                    <span className="sort-icon">
-                      {sortBy === 'Tahun Ajaran' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-                <th className="header-cell rata table-font">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentData.map((item, index) => (
-                <tr key={index}>
-                  <td className="cell rata table-font">{item.kelas}</td>
-                  <td className="cell rata table-font">{item.prodi}</td>
-                  <td className="cell rata table-font">{item.Tahun_Ajaran}</td>
-                  <td className="cell aksi">
-                    <CButton href={`/#/admin/detailKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
-                      <CIcon icon={cilInfo} />
-                    </CButton>
-                    <CButton href={`/#/admin/editKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
-                      <CIcon icon={cilPencil} />
-                    </CButton>
-                    <CButton onClick={() => hapusData(item.id)} style={{ backgroundColor: 'transparent', color: 'black' }}>
-                      <CIcon icon={cilTrash} />
-                    </CButton>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-              <div className="pagination">
-                <button
-                  className="btn-pagination"
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                >
-                  {'<'}
-                </button>
-                {Array.from({ length: pageNumbers }, (_, i) => {
-                  const pageNumber = i + 1;
-                  const isActive = pageNumber === currentPage;
-
-                  return (
-                    <button
-                      key={i}
-                      className={`btn-pagination ${isActive ? 'active' : ''}`}
-                      onClick={() => setCurrentPage(pageNumber)}
-                    >
-                      {pageNumber}
-                    </button>
-                  );
-                })}
-
-                <button
-                  className="btn-pagination"
-                  onClick={handleNextPage}
-                  disabled={currentPage === pageNumbers}
-                >
-                  {'>'}
-                </button>
+          <div className="containerTabel table-box">
+            <div>
+              <div className="top-content">
+                <CButton href={`/#/admin/tambahKelas`} className="btn-tambah table-font">
+                  + Tambah Data
+                </CButton>
+                <div className="search-input-container">
+                  <input
+                    type="text"
+                    placeholder="Cari..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    className="search-input"
+                  />
+                  <CIcon icon={cilSearch} className="search-icon" />
+                </div>
               </div>
+              <table className="tabel">
+                <thead>
+                  <tr>
+                    <th className="header-cell rata table-font">
+                      <div onClick={() => handleSort('Kelas')}>
+                        Kelas
+                        <span className="sort-icon">
+                          {sortBy === 'Kelas' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                        </span>
+                      </div>
+                    </th>
+                    <th className="header-cell rata table-font">
+                      <div onClick={() => handleSort('Program Studi')}>
+                        Program Studi
+                        <span className="sort-icon">
+                          {sortBy === 'Program Studi' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                        </span>
+                      </div>
+                    </th>
+                    <th className="header-cell rata table-font">
+                      <div onClick={() => handleSort('Tahun Ajaran')}>
+                        Tahun Masuk
+                        <span className="sort-icon">
+                          {sortBy === 'Tahun Ajaran' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                        </span>
+                      </div>
+                    </th>
+                    <th className="header-cell rata table-font">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentData.map((item, index) => (
+                    <tr key={index}>
+                      <td className="cell rata table-font">{item.kelas}</td>
+                      <td className="cell rata table-font">{item.prodi}</td>
+                      <td className="cell rata table-font">{item.Tahun_Ajaran}</td>
+                      <td className="cell aksi">
+                        <CButton href={`/#/admin/detailKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                          <CIcon icon={cilInfo} />
+                        </CButton>
+                        <CButton href={`/#/admin/editKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
+                          <CIcon icon={cilPencil} />
+                        </CButton>
+                        <CButton onClick={() => hapusData(item.id)} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                          <CIcon icon={cilTrash} />
+                        </CButton>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="pagination">
+              <button
+                className="btn-pagination"
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+              >
+                {'<'}
+              </button>
+              {Array.from({ length: pageNumbers }, (_, i) => {
+                const pageNumber = i + 1;
+                const isActive = pageNumber === currentPage;
+
+                return (
+                  <button
+                    key={i}
+                    className={`btn-pagination ${isActive ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              <button
+                className="btn-pagination"
+                onClick={handleNextPage}
+                disabled={currentPage === pageNumbers}
+              >
+                {'>'}
+              </button>
             </div>
           </div>
         </div>
+      </div>
     </>
   );
 }

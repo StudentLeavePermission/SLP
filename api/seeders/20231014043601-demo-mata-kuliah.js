@@ -63,7 +63,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      Nama_Mata_Kuliah: 'Bahasa Jerman',
+      Nama_Mata_Kuliah: 'Aljabar Linear',
       createdAt: new Date(),
       updatedAt: new Date()
     }]);
