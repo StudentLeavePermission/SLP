@@ -6,8 +6,10 @@ const ProtectedRoute = ({ children }) => {
   const authTokenDosen = sessionStorage.getItem('logintokendosen');
   const authTokenMhs = sessionStorage.getItem('logintokenmhs');
 
+  const idAdmin = sessionStorage.getItem('idAdmin');
+
   // Check which token is available
-  const authToken = authTokenDosen || authTokenMhs;
+  const authToken = authTokenDosen || authTokenMhs || idAdmin;
 
   if (!authToken) {
     console.log('Token (failed): ' + authToken);
