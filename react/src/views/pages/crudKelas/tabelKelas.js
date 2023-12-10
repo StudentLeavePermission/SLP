@@ -176,20 +176,103 @@ function TabelCRUD({ }) {
           </div>
           <div className="containerTabel table-box">
             <div>
-            <div className="top-content">
-              <CButton href={`/#/admin/tambahKelas/`} className="btn-tambah table-font">
-                + Tambah Data
-              </CButton>
-              <div className="search-input-container">
-                <input
-                  type="text"
-                  placeholder="Cari..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  className="search-input"
-                />
-                <CIcon icon={cilSearch} className="search-icon" />
+              <div className="top-content">
+                <CButton href={`/#/admin/tambahKelas`} className="btn-tambah table-font">
+                  + Tambah Data
+                </CButton>
+                <div className="search-input-container">
+                  <input
+                    type="text"
+                    placeholder="Cari..."
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    className="search-input"
+                  />
+                  <CIcon icon={cilSearch} className="search-icon" />
+                </div>
               </div>
+              <table className="tabel">
+                <thead>
+                  <tr>
+                    <th className="header-cell rata table-font">
+                      <div onClick={() => handleSort('Kelas')}>
+                        Kelas
+                        <span className="sort-icon">
+                          {sortBy === 'Kelas' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                        </span>
+                      </div>
+                    </th>
+                    <th className="header-cell rata table-font">
+                      <div onClick={() => handleSort('Program Studi')}>
+                        Program Studi
+                        <span className="sort-icon">
+                          {sortBy === 'Program Studi' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                        </span>
+                      </div>
+                    </th>
+                    <th className="header-cell rata table-font">
+                      <div onClick={() => handleSort('Tahun Ajaran')}>
+                        Tahun Masuk
+                        <span className="sort-icon">
+                          {sortBy === 'Tahun Ajaran' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                        </span>
+                      </div>
+                    </th>
+                    <th className="header-cell rata table-font">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentData.map((item, index) => (
+                    <tr key={index}>
+                      <td className="cell rata table-font">{item.kelas}</td>
+                      <td className="cell rata table-font">{item.prodi}</td>
+                      <td className="cell rata table-font">{item.Tahun_Ajaran}</td>
+                      <td className="cell aksi">
+                        <CButton href={`/#/admin/detailKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                          <CIcon icon={cilInfo} />
+                        </CButton>
+                        <CButton href={`/#/admin/editKelas/${item.id}`} style={{ backgroundColor: 'transparent', color: 'black' }} >
+                          <CIcon icon={cilPencil} />
+                        </CButton>
+                        <CButton onClick={() => hapusData(item.id)} style={{ backgroundColor: 'transparent', color: 'black' }}>
+                          <CIcon icon={cilTrash} />
+                        </CButton>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="pagination">
+              <button
+                className="btn-pagination"
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+              >
+                {'<'}
+              </button>
+              {Array.from({ length: pageNumbers }, (_, i) => {
+                const pageNumber = i + 1;
+                const isActive = pageNumber === currentPage;
+
+                return (
+                  <button
+                    key={i}
+                    className={`btn-pagination ${isActive ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              <button
+                className="btn-pagination"
+                onClick={handleNextPage}
+                disabled={currentPage === pageNumbers}
+              >
+                {'>'}
+              </button>
             </div>
             <table className="tabel">
               <thead>
@@ -282,7 +365,6 @@ function TabelCRUD({ }) {
           </div>
         </div>
       </div>
-
     </>
   );
 }
