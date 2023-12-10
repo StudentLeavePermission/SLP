@@ -14,29 +14,42 @@ module.exports = {
      * }], {});
     */
     await queryInterface.bulkInsert('Data_Dosen_Wali', [{
-      Password: await bcrypt.hash('Agam Gemblong', 10),
-      ID_Dosen: 1,
+      Password: await bcrypt.hash('12345678', 10),
+      ID_Dosen: 7,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Password: await bcrypt.hash('Fauza Ngiknguk', 10),
-      ID_Dosen: 2,
+      Password: await bcrypt.hash('12345678', 10),
+      ID_Dosen: 17,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Password: await bcrypt.hash('Difa Batujajar', 10),
-      ID_Dosen: 3,
+      Password: await bcrypt.hash('12345678', 10),
+      ID_Dosen: 18,
       createdAt: new Date(),
       updatedAt: new Date()
     },
     {
-      Password: await bcrypt.hash('Nisrina Gak Mau Tau', 10),
-      ID_Dosen: 4,
+      Password: await bcrypt.hash('12345678', 10),
+      ID_Dosen: 21,
       createdAt: new Date(),
       updatedAt: new Date()
-    }])
+    },
+    {
+      Password: await bcrypt.hash('12345678', 10),
+      ID_Dosen: 27,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      Password: await bcrypt.hash('12345678', 10),
+      ID_Dosen: 28,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ])
   },
 
   async down (queryInterface, Sequelize) {
