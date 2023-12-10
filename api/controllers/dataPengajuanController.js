@@ -201,7 +201,7 @@ exports.createLeaveRequest = async (req, res) => {
     // Define your email message
     const mailOptions = {
       from: 'intljax6@gmail.com',
-      to: 'jaxsix06@gmail.com',
+      to: 'nisrinawafaz@gmail.com',
       subject: 'New Request',
       // emailHTML,
       text: `<html>Ada pengajuan terbaru!</html>`
