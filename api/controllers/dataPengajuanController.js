@@ -1742,14 +1742,17 @@ const kelas = await Data_Kelas.getAll({
     }
   }
 });
-
+const idKelasSet = kelas.map(k => k.id_kelas);
      const dataPengajuan = await Data_Pengajuan.getAll();
     const dataMahasiswa = await Data_Mahasiswa.getAll();
     const jadwalKelas = await Jadwal_Kelas.getAll();
 
     const dataPengajuanWithMahasiswaAndJadwal = await Promise.all(dataPengajuan.map(async (pengajuan) => {
       var mahasiswa = dataMahasiswa.find((m) => m.id === pengajuan.ID_Mahasiswa);
-      mahasiswa = dataMahasiswa.find((m) => m.ID_Kelas == 1);
+      mahasiswa = dataMahasiswa.find((m) => idKelasSet.includes(m.id_kelas));    
+      console.log("nininin");
+      console.log(mahasiswa);
+      console.log("nininin");
 
       return {
         ID_Mahasiswa: mahasiswa.id,
@@ -1757,6 +1760,7 @@ const kelas = await Data_Kelas.getAll({
         Nama: mahasiswa.Nama,
       };
     }));
+    
 
     // Hitung totalIzin dan totalSakit di luar loop
     const totalIzin = {};
@@ -1798,7 +1802,7 @@ const kelas = await Data_Kelas.getAll({
 
     // Ambil data mahasiswa yang belum ada di distinctDataPengajuan
     const mhsdata = dataMahasiswa.filter((mahasiswa) => !existingMahasiswaIDs.includes(mahasiswa.id));
-     newMahasiswaData = mhsdata.filter((m) => m.ID_Kelas == 1);
+     newMahasiswaData = mhsdata.filter((m) => idKelasSet.includes(m.id_kelas));
     // Tambahkan data mahasiswa yang belum ada ke distinctDataPengajuan
     newMahasiswaData.forEach((mahasiswa) => {
       distinctDataPengajuan.push({
