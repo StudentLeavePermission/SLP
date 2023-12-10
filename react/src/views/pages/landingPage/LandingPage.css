@@ -72,8 +72,8 @@ header .nav-btn {
   z-index: 3;
   text-align: center;
 }
-.page {
-    height: 100vh;
+.pagepage {
+    min-height: 100vh;
     width: auto;
     display: flex;
     flex-direction: row;
@@ -106,6 +106,7 @@ header .nav-btn {
     align-items: center;
     display: flex;
     z-index: 2;
+    text-align: center;
     flex-direction: column;
     justify-content: center;
 }
@@ -114,19 +115,12 @@ header .nav-btn {
     text-align: justify;
     margin: 5%;
 }
-.contact {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin-left: 20%; 
-}
 .contact-content {
     display: flex;
-    margin: 50px;
     align-items: center;
     text-align: center;
     position: relative;
+    margin-left: 250px;
 }
 .lingkaran {
   width: 50px;
@@ -139,13 +133,12 @@ header .nav-btn {
   align-items: center;
   position: absolute;
   top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 43%;
   z-index: 2;
 }
 .card-contact {
   width: 350px;
-  height: 350px;
+  height: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -155,7 +148,7 @@ header .nav-btn {
   padding: 20px;
   text-align: center;
   font-size: 18px;
-  z-index: 1; /* Mengatur tumpukan (stacking order) */
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
@@ -179,11 +172,15 @@ header .nav-btn {
   }
 
   .landing-image1 {
-    transform: translateY(88%);
+    align-items: center;
+    top: 220px;
+    transform: scale(0.87);
   }
 
   .landing-image2 {
-    transform: translateY(180%);
+    align-items: center;
+    top: 219px;
+    transform: scale(0.97);
   }
 
   header nav {
@@ -221,14 +218,22 @@ header .nav-btn {
   .login {
     margin-left: -25px;
   }
-  .contact {
-    flex-direction: column;
-    display: flex;
-    margin-left: 0;
-    max-width: 10%;
 
-  }
-  .card-contact{ 
+  .pagepage {
     flex-direction: column;
+  }
+
+  .about-us-cont {
+    width: 85%;
+    max-width: 800px;
+    margin-top: 300px;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    height: 100px; 
+}
+  .contact-content {
+    margin-top: 300px;
+    margin-left: 0px;
   }
 }
