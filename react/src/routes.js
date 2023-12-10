@@ -99,6 +99,8 @@ const UbahPasswordMahasiswa = React.lazy(() => import('./views/pages/profile/mah
 
 const EditProfileDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/editProfile'))
 
+const WAQR = React.lazy(() => import('./views/whatsapp/WhatsAppQR'))
+
 const wrapComponent = (Component, isProtected) => {
   // Return a component that wraps the provided Component
   return () => {
@@ -200,7 +202,8 @@ const routes = [
   { path: '/dosen/dashboard/daftarMahasiswa', name: 'DaftarMahasiswa', element: wrapComponent(DaftarMahasiswa, true) },
   { path: '/mahasiswa/profile', name: 'ProfileMahasiswa', element: wrapComponent(ProfileMahasiswa, true) },
   { path: '/mahasiswa/profile/edit', name: 'EditProfileMahasiswa', element: wrapComponent(EditProfileMahasiswa, true) },
-  { path: '/mahasiswa/profile/edit/ubahPassword', name: 'UbahPasswordMahasiswa', element: UbahPasswordMahasiswa }
+  { path: '/mahasiswa/profile/edit/ubahPassword', name: 'UbahPasswordMahasiswa', element: UbahPasswordMahasiswa },
+  { path: '/admin/WhatsAppQR', name: 'WAQR', element: wrapComponent(WAQR, true) },
 
   // Untuk route yang di-proteksi, berikut definisinya:
   // { path: '/dosen/tabelPengajuan', name: 'TabelPengajuan', element: wrapComponent(TabelPengajuan, true, {token: authToken}) },

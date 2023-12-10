@@ -2,65 +2,72 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-    */
-    await queryInterface.bulkInsert('Jadwal_Kelas', [{
-      Hari_Jadwal: 'Senin',
-      ID_Jam_Pelajaran_Start: 1,
-      ID_Jam_Pelajaran_End: 2,
-      ID_Matkul: 1,
-      ID_Dosen: 1,
-      ID_Kelas: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      Hari_Jadwal: 'Selasa',
-      ID_Jam_Pelajaran_Start: 3,
-      ID_Jam_Pelajaran_End: 4,
-      ID_Matkul: 2,
-      ID_Dosen: 2,
-      ID_Kelas: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      Hari_Jadwal: 'Rabu',
-      ID_Jam_Pelajaran_Start: 5,
-      ID_Jam_Pelajaran_End: 6,
-      ID_Matkul: 3,
-      ID_Dosen: 3,
-      ID_Kelas: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      Hari_Jadwal: 'Kamis',
-      ID_Jam_Pelajaran_Start: 7,
-      ID_Jam_Pelajaran_End: 8,
-      ID_Matkul: 4,
-      ID_Dosen: 4,
-      ID_Kelas: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }])
+  async up(queryInterface, Sequelize) {
+    try {
+      // Create a map for a fixed schedule of each day
+      const dayScheduleMap = {
+        Senin: [1, 2, 3, 4, 5],
+        Selasa: [1, 2, 3, 4, 5, 6],
+        Rabu: [4, 5, 8, 9],
+        Kamis: [1, 2, 3, 4, 8, 9],
+        Jumat: [3, 4, 7, 8, 9],
+      };
+
+      // Fetch all available courses, professors, and classes
+      const courses = await queryInterface.sequelize.query(
+        'SELECT id FROM "Data_Mata_Kuliah"'
+      );
+      const professors = await queryInterface.sequelize.query(
+        'SELECT id FROM "Data_Dosen"'
+      );
+      const classes = await queryInterface.sequelize.query(
+        'SELECT id FROM "Data_Kelas"'
+      );
+
+      // Generate schedules for each day and each class
+      const schedules = [];
+      classes[0].forEach((classId) => {
+        Object.keys(dayScheduleMap).forEach((day) => {
+          dayScheduleMap[day].forEach(async (scheduleIndex) => {
+            const randomCourseIndex = Math.floor(
+              Math.random() * courses[0].length
+            );
+            const randomProfessorIndex = Math.floor(
+              Math.random() * professors[0].length
+            );
+
+            const maxTimeSlot = 10; // Maximum available time slot
+            const endSlot =
+              scheduleIndex + 1 > maxTimeSlot
+                ? maxTimeSlot
+                : scheduleIndex + 1;
+
+            const schedule = {
+              Hari_Jadwal: day,
+              ID_Jam_Pelajaran_Start: scheduleIndex,
+              ID_Jam_Pelajaran_End: endSlot,
+              ID_Matkul: courses[0][randomCourseIndex].id,
+              ID_Dosen: professors[0][randomProfessorIndex].id,
+              ID_Kelas: classId.id,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            };
+
+            // console.log(schedule);
+            schedules.push(schedule);
+          });
+        });
+      });
+
+      // Insert generated schedules into the database
+      await queryInterface.bulkInsert('Jadwal_Kelas', schedules);
+    } catch (error) {
+      console.error('Error seeding Jadwal_Kelas:', error);
+    }
   },
 
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-    await queryInterface.bulkDelete('Jadwal_Kelas', null, {})
-  }
+  async down(queryInterface, Sequelize) {
+    // Remove all records from Jadwal_Kelas table
+    await queryInterface.bulkDelete('Jadwal_Kelas', null, {});
+  },
 };

@@ -126,85 +126,89 @@ const TabelPengajuanMahasiswa = () => {
                         </div>
                         <div className="containerTabel table-box">
                             <div>
-                            <div className="top-content">
-                                <div className="table-font">
-                                    <h2>Daftar Pengajuan Mahasiswa</h2>
+                                <div className="top-content">
+                                    <div className="table-font">
+                                        <h2>Daftar Pengajuan Mahasiswa</h2>
+                                    </div>
+                                    <div className="search-input-container">
+                                        <input
+                                            type="text"
+                                            placeholder="Cari..."
+                                            value={searchText}
+                                            onChange={(e) => setSearchText(e.target.value)}
+                                            className="search-input"
+                                        />
+                                        <CIcon icon={cilSearch} className="search-icon" />
+                                    </div>
                                 </div>
-                                <div className="search-input-container">
-                                    <input
-                                        type="text"
-                                        placeholder="Cari..."
-                                        value={searchText}
-                                        onChange={(e) => setSearchText(e.target.value)}
-                                        className="search-input"
-                                    />
-                                    <CIcon icon={cilSearch} className="search-icon" />
-                                </div>
-                            </div>
+                                {currentData.length > 0 ? (
+                                    <table className="tabel">
+                                        <thead>
+                                            <tr>
+                                                <th className="header-cell rata table-font">Nomor</th>
+                                                <th className="header-cell rata table-font">
+                                                    <div onClick={() => handleSort('Jenis')}>
+                                                        Jenis
+                                                        <span className="sort-icon">
+                                                            {sortBy === 'Jenis' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th className="header-cell rata table-font">
+                                                    <div onClick={() => handleSort('Tanggal')}>
+                                                        Tanggal Pengajuan
+                                                        <span className="sort-icon">
+                                                            {sortBy === 'Tanggal' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th className="header-cell rata table-font">
+                                                    <div onClick={() => handleSort('JP')}>
+                                                        Jumlah Jam Pelajaran
+                                                        <span className="sort-icon">
+                                                            {sortBy === 'JP' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th className="header-cell rata table-font">
+                                                    <div onClick={() => handleSort('Status')}>
+                                                        Status Pengajuan
+                                                        <span className="sort-icon">
+                                                            {sortBy === 'Status' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                                <th className="header-cell rata table-font">
+                                                    <div>
+                                                        Aksi
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {currentData.map((item, index) => (
+                                                <tr key={index}>
+                                                    <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                                                    <td className="cell rata table-font">{item.Jenis}</td>
+                                                    <td className="cell rata table-font">{item.Tanggal}</td>
+                                                    <td className="cell rata table-font">{item.JamPelajaran} Jam</td>
+                                                    <td className="cell rata table-font">{item.Status}</td>
+                                                    <td className="cell aksi">
+                                                        <CButton href={`/#/mahasiswa/Pengajuan/detail/${item.ID}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                                                            <CIcon icon={cilInfo} />
+                                                        </CButton>
+                                                        <CButton href={`/#/mahasiswa/Pengajuan/edit/${item.ID}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
+                                                            <CIcon icon={cilPencil} />
+                                                        </CButton>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                ) : (
+                                    <div className="no-data-message">Tidak Ada Data yang Tersedia</div>
+                                )}
 
-                            <table className="tabel">
-                                <thead>
-                                    <tr>
-                                        <th className="header-cell rata table-font">Nomor</th>
-                                        <th className="header-cell rata table-font">
-                                            <div onClick={() => handleSort('Jenis')}>
-                                                Jenis
-                                                <span className="sort-icon">
-                                                    {sortBy === 'Jenis' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                                                </span>
-                                            </div>
-                                        </th>
-                                        <th className="header-cell rata table-font">
-                                            <div onClick={() => handleSort('Tanggal')}>
-                                                Tanggal Pengajuan
-                                                <span className="sort-icon">
-                                                    {sortBy === 'Tanggal' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                                                </span>
-                                            </div>
-                                        </th>
-                                        <th className="header-cell rata table-font">
-                                            <div onClick={() => handleSort('JP')}>
-                                                Jumlah Jam Pelajaran
-                                                <span className="sort-icon">
-                                                    {sortBy === 'JP' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                                                </span>
-                                            </div>
-                                        </th>
-                                        <th className="header-cell rata table-font">
-                                            <div onClick={() => handleSort('Status')}>
-                                                Status Pengajuan
-                                                <span className="sort-icon">
-                                                    {sortBy === 'Status' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                                                </span>
-                                            </div>
-                                        </th>
-                                        <th className="header-cell rata table-font">
-                                            <div>
-                                                Aksi
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {currentData.map((item, index) => (
-                                        <tr key={index}>
-                                            <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                                            <td className="cell rata table-font">{item.Jenis}</td>
-                                            <td className="cell rata table-font">{item.Tanggal}</td>
-                                            <td className="cell rata table-font">{item.JamPelajaran} Jam</td>
-                                            <td className="cell rata table-font">{item.Status}</td>
-                                            <td className="cell aksi">
-                                                <CButton href={`/#/mahasiswa/Pengajuan/detail/${item.ID}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
-                                                    <CIcon icon={cilInfo} />
-                                                </CButton>
-                                                <CButton href={`/#/mahasiswa/Pengajuan/edit/${item.ID}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
-                                                    <CIcon icon={cilPencil} />
-                                                </CButton>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
                             </div>
                             <div className="pagination">
                                 <button

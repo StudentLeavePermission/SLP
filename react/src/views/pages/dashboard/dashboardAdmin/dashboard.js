@@ -96,6 +96,8 @@ const DashboardTU = () => {
       const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/${id}`);
       if (response.data.data){
         setDataTable(response.data.data);
+      } else {
+
       }
     }
 
@@ -142,7 +144,7 @@ const DashboardTU = () => {
     };
 
     return (
-      <div style={{ width: '100%', minWidth: '1200px' }} >
+      <div className='container'>
         <CRow>
           <CCol>
               <div className='box-blue-grafik box-grafik'>
@@ -193,7 +195,7 @@ const DashboardTU = () => {
                           }
                         }
                         labels="months"
-                        style={{ width: '430px' }}
+                        style={{ width: '480px' }}
                       />
                     </CCardBody>
                   </CCard>
@@ -245,7 +247,7 @@ const DashboardTU = () => {
         </CRow>
         <CRow>
           <div>
-            <div className="containerTabel">
+            <div className="containerTabelAdmin">
               <div className="containerTabel box-blue">
               </div>
               <div className="containerTabel table-box">
@@ -272,26 +274,26 @@ const DashboardTU = () => {
                               Jumlah Sakit
                             </div>
                         </th>
-                        <th className="header-cell rata table-font">
+                        {/* <th className="header-cell rata table-font">
                             <div>
                               Aksi
                             </div>
-                        </th>
+                        </th> */}
                         </tr>
                     </thead>
                     <tbody>
                       {dataTable.map((kelas, index) => (
                         <tr key={index}>
-                          <td style={{ width: '50px'}} className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                          <td style={{ width: '100px'}} className="cell rata table-font">{kelas[0].Nama_Kelas}</td>
-                          <td style={{ width: '100px'}} className="cell rata table-font">{kelas[0].Izin}</td>
-                          <td style={{ width: '150px'}} className="cell rata table-font">{kelas[0].Sakit}</td>
-                          <td style={{ width: '100px'}} className="cell rata table-font">
+                          <td className="cell rata table-font col">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                          <td className="cell rata table-font col">{kelas[0].Nama_Kelas}</td>
+                          <td className="cell rata table-font col">{kelas[0].Izin}</td>
+                          <td className="cell rata table-font col">{kelas[0].Sakit}</td>
+                          {/* <td style={{ width: '100px'}} className="cell rata table-font">
                             <CButton
                               style={{ width: '110px', height: '30px', paddingTop: '3px' }}
                               onClick={() => handleDetailClick(index)}
                             >Detail</CButton>
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                     </tbody>

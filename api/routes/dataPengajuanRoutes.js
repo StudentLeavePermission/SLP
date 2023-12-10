@@ -46,4 +46,6 @@ router.delete('/delete/:id', dataPengajuanController.deleteLeaveRequest);
 
 router.get('/mahasiswa/rekap/pengajuan/:IDProdi', dataPengajuanController.getRekapLeaveRequest);
 
+router.get('/whatsapp/qr',dataPengajuanController.WhatsAppQR);
+
 module.exports = router;
