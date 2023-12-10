@@ -142,7 +142,7 @@ const DashboardTU = () => {
     };
 
     return (
-      <div style={{ width: '100%', minWidth: '1200px' }} >
+      <div className='container'>
         <CRow>
           <CCol>
               <div className='box-blue-grafik box-grafik'>
@@ -193,7 +193,7 @@ const DashboardTU = () => {
                           }
                         }
                         labels="months"
-                        style={{ width: '430px' }}
+                        style={{ width: '480px' }}
                       />
                     </CCardBody>
                   </CCard>
@@ -245,7 +245,7 @@ const DashboardTU = () => {
         </CRow>
         <CRow>
           <div>
-            <div className="containerTabel">
+            <div className="containerTabelAdmin">
               <div className="containerTabel box-blue">
               </div>
               <div className="containerTabel table-box">
