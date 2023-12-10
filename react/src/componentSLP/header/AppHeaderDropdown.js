@@ -29,7 +29,7 @@ import {useLocation} from "react-router-dom";
 const AppHeaderDropdown = () => {
   const location = useLocation();
   const pathArray = location.pathname.split('/');
-  const role= pathArray[1]; 
+  const role= pathArray[1];
   const navigate = useNavigate();
   const Logout = () => {
     // Perform any necessary logout logic (clear tokens, etc.)
@@ -37,6 +37,8 @@ const AppHeaderDropdown = () => {
     sessionStorage.removeItem('idMhs');
     sessionStorage.removeItem('idDosen');
     sessionStorage.removeItem('idAdmin');
+    sessionStorage.removeItem('logintokenmhs');
+    sessionStorage.removeItem('logintokendosen')
 
     Cookies.remove('jwt');
 

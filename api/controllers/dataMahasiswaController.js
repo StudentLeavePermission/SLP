@@ -231,7 +231,9 @@ const loginStudent = async(req, res) => {
                 let token = jwt.sign({ id: mhs.id }, 'secretKey', { expiresIn: '1h' });
                 console.log("Mahasiswa: ", JSON.stringify(mhs, null, 2));
                 console.log(token);
-                return res.cookie("access_token", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true }).status(201).json("Login success");
+                // sessionStorage.setItem('logintoken', token)
+                res.send({data: token});
+                return res.cookie("access_token", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true, path: '/' }).status(201).json("Login success");
             } else {
                 return res.status(401).send('Authentication Failed');
             }

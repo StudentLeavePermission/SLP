@@ -114,9 +114,10 @@ const Login = () => {
               Email_Dosen: username,
               Password: password,
             })
-            .then(async () => {
+            .then(async (response) => {
               //mengambil token
-              const token = Cookies.get('access_token');
+              const token = response.data;
+              // const token = document.cookie.split('; ').find((row) => row.startsWith('access_token=')).split('=')[1]
               console.log('Token after login: ', token)
               if (token !== 'undefined') {
                 // Ambil data dosen berdasarkan email
@@ -131,6 +132,7 @@ const Login = () => {
                   setSearchParams({ idDosen });
 
                   sessionStorage.setItem('idDosen', idDosen);
+                  sessionStorage.setItem('logintokendosen', token);
                   setRole('dosen');
                 } catch (error) {
                   console.error('Error fetching data:', error);
@@ -171,9 +173,10 @@ const Login = () => {
               NIM: username,
               Password: password,
             })
-            .then(async () => {
+            .then(async (response) => {
               // ambil token
-              const token = Cookies.get('access_token');
+              const token = response.data;
+              // const token = document.cookie.split('; ').find((row) => row.startsWith('access_token=')).split('=')[1]
               console.log('Token after login: ', token)
               if (token !== 'undefined') {
                 // Ambil data mahasiswa berdasarkan NIM
@@ -186,6 +189,7 @@ const Login = () => {
                   setSearchParams({ idMhs });
 
                   sessionStorage.setItem('idMhs', idMhs)
+                  sessionStorage.setItem('logintokenmhs', token)
                   console.log(idMhs);
                   setRole('mahasiswa');
                 } catch (error) {
