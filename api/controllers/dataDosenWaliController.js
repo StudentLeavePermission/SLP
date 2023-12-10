@@ -65,7 +65,11 @@ exports.loginAdviserLecturer = async(req, res) => {
                 return res.status(401).json({ message: 'Invalid username or password' });
             } else {
                 const token = jwt.sign({ userId: dosenWali.Email_Dosen }, 'secretKey', { expiresIn: '1h' });
-                res.status(200).json({ token });
+                console.log("Dosen Wali: ", JSON.stringify(dosenWali, null, 2));
+                console.log(token);
+                res.send({data: token})
+                // sessionStorage.setItem('logintoken', token)
+                return res.cookie("access_token", token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true, path: '/' }).status(201).json("Login success");
             }
         }
     } catch (error) {

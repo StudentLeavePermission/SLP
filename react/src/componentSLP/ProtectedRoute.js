@@ -1,15 +1,21 @@
-import React, { Suspense } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import { CContainer, CSpinner } from '@coreui/react'
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ token, children }) => {
-  if (!token) {
-    console.log('Token (failed): ' + token);
+const ProtectedRoute = ({ children }) => {
+  // Retrieve tokens from sessionStorage
+  const authTokenDosen = sessionStorage.getItem('logintokendosen');
+  const authTokenMhs = sessionStorage.getItem('logintokenmhs');
+
+  // Check which token is available
+  const authToken = authTokenDosen || authTokenMhs;
+
+  if (!authToken) {
+    console.log('Token (failed): ' + authToken);
     return <Navigate to="/login" replace />;
   }
 
-  console.log("Token (succeed): " + token);
+  console.log('Token (succeed): ' + authToken);
   return children;
 };
 
-export default React.memo(ProtectedRoute)
+export default React.memo(ProtectedRoute);

@@ -11,10 +11,18 @@ const cookieParser = require('cookie-parser');
 const routesIndex = require('./routes');
 const config = require('./config/config.json');
 const host = config.development.host;
+const cors = require('cors');
 
 
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+const corsOptions = {
+    origin: 'http://localhost:3006', // Replace with your frontend origin
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const path = path_main.join(__dirname, "./logapi");
 const fileName = '/access.log';
