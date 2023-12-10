@@ -159,132 +159,133 @@ function TabelRekap() {
   return (
     <>
       <div className='container'>
-      {headerSection}
+        {headerSection}
         <div>
           <div className="containerTabel">
             <div className="containerTabel box-blue">
 
             </div>
             <div className="containerTabel table-box">
-              <div className="d-flex justify-content-between">
+              <div>
+                <div className="top-content">
 
-                <CButton onClick={exportToExcel} className="btn-eksport table-font">
-                  Ekspor
-                </CButton>
-                <div className="search-input-container">
-                  <input
-                    type="text"
-                    placeholder="Cari..."
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    className="search-input"
-                  />
-                  <CIcon icon={cilSearch} className="search-icon" />
+                  <CButton onClick={exportToExcel} className="btn-eksport table-font">
+                    Ekspor
+                  </CButton>
+                  <div className="search-input-container">
+                    <input
+                      type="text"
+                      placeholder="Cari..."
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      className="search-input"
+                    />
+                    <CIcon icon={cilSearch} className="search-icon" />
+                  </div>
                 </div>
-              </div>
 
-              <table className="tabel">
-            <thead>
-              <tr>
-                <th className="header-cell rata table-font">Nomor</th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('NIM')}>
-                    NIM
-                    <span className="sort-icon">
-                      {sortBy === 'NIM' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Nama')}>
-                    Nama Lengkap
-                    <span className="sort-icon">
-                      {sortBy === 'Nama' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
+                <table className="tabel">
+                  <thead>
+                    <tr>
+                      <th className="header-cell rata table-font">Nomor</th>
+                      <th className="header-cell rata table-font">
+                        <div onClick={() => handleSort('NIM')}>
+                          NIM
+                          <span className="sort-icon">
+                            {sortBy === 'NIM' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                          </span>
+                        </div>
+                      </th>
+                      <th className="header-cell rata table-font">
+                        <div onClick={() => handleSort('Nama')}>
+                          Nama Lengkap
+                          <span className="sort-icon">
+                            {sortBy === 'Nama' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                          </span>
+                        </div>
+                      </th>
 
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Jumlah_Izin')}>
-                    Izin
-                    <span className="sort-icon">
-                      {sortBy === 'Jumlah_Izin' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
+                      <th className="header-cell rata table-font">
+                        <div onClick={() => handleSort('Jumlah_Izin')}>
+                          Izin
+                          <span className="sort-icon">
+                            {sortBy === 'Jumlah_Izin' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                          </span>
+                        </div>
+                      </th>
 
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Jumlah_Sakit')}>
-                    Sakit
-                    <span className="sort-icon">
-                      {sortBy === 'Jumlah_Sakit' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-
-
-                <th className="header-cell rata table-font">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentData.map((item, index) => (
-                <tr key={item.id}>
-                  <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                  <td className="cell rata table-font">{item.NIM}</td>
-                  <td className="cell rata table-font">{item.Nama}</td>
-                  <td className="cell rata table-font">{item.TotalIzin}</td>
-                  <td className="cell rata table-font">{item.TotalSakit}</td>
-                  <td className="cell aksi">
-                  {((item.TotalIzin + item.TotalSakit)==0) ? (
-      // JSX ketika kondisi true
-      <CButton href={`/#/admin/rekap/detail/${item.ID_Mahasiswa}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }} disabled>
-      <CIcon icon={cilInfo} />
-    </CButton>
-    ) : (
-      <CButton href={`/#/admin/rekap/detail/${item.ID_Mahasiswa}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
-      <CIcon icon={cilInfo} />
-    </CButton>
-    )}
-     </td>
+                      <th className="header-cell rata table-font">
+                        <div onClick={() => handleSort('Jumlah_Sakit')}>
+                          Sakit
+                          <span className="sort-icon">
+                            {sortBy === 'Jumlah_Sakit' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                          </span>
+                        </div>
+                      </th>
 
 
+                      <th className="header-cell rata table-font">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentData.map((item, index) => (
+                      <tr key={item.id}>
+                        <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                        <td className="cell rata table-font">{item.NIM}</td>
+                        <td className="cell rata table-font">{item.Nama}</td>
+                        <td className="cell rata table-font">{item.TotalIzin}</td>
+                        <td className="cell rata table-font">{item.TotalSakit}</td>
+                        <td className="cell aksi">
+                          {((item.TotalIzin + item.TotalSakit) == 0) ? (
+                            // JSX ketika kondisi true
+                            <CButton href={`/#/admin/rekap/detail/${item.ID_Mahasiswa}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }} disabled>
+                              <CIcon icon={cilInfo} />
+                            </CButton>
+                          ) : (
+                            <CButton href={`/#/admin/rekap/detail/${item.ID_Mahasiswa}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                              <CIcon icon={cilInfo} />
+                            </CButton>
+                          )}
+                        </td>
 
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+
+                      </tr>
+                    ))}
+                  </tbody>
+                </table></div>
 
               <div className="pagination">
-              <button
-              className="btn-pagination"
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-            >
-              {'<'}
-            </button>
-            {Array.from({ length: pageNumbers }, (_, i) => {
-              const pageNumber = i + 1;
-              const isActive = pageNumber === currentPage;
-
-              return (
                 <button
-                  key={i}
-                  className={`btn-pagination ${isActive ? 'active' : ''}`}
-                  onClick={() => setCurrentPage(pageNumber)}
+                  className="btn-pagination"
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
                 >
-                  {pageNumber}
+                  {'<'}
                 </button>
-              );
-            })}
+                {Array.from({ length: pageNumbers }, (_, i) => {
+                  const pageNumber = i + 1;
+                  const isActive = pageNumber === currentPage;
 
-            <button
-              className="btn-pagination"
-              onClick={handleNextPage}
-              disabled={currentPage === pageNumbers}
-            >
-              {'>'}
-            </button>
-          </div>
+                  return (
+                    <button
+                      key={i}
+                      className={`btn-pagination ${isActive ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
+
+                <button
+                  className="btn-pagination"
+                  onClick={handleNextPage}
+                  disabled={currentPage === pageNumbers}
+                >
+                  {'>'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

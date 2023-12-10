@@ -192,7 +192,8 @@ function TabelCRUD() {
 
           </div>
           <div className="containerTabel table-box">
-            <div className="top-table">
+            <div>
+            <div className="top-content">
               <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
                 + Tambah Data
               </CButton>
@@ -291,6 +292,8 @@ function TabelCRUD() {
                 ))}
               </tbody>
             </table>
+            
+            </div>
             <div className="pagination">
               <button
                 className="btn-pagination"
