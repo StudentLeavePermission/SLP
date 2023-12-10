@@ -125,7 +125,8 @@ const TabelPengajuanMahasiswa = () => {
 
                         </div>
                         <div className="containerTabel table-box">
-                            <div className="d-flex justify-content-between">
+                            <div>
+                            <div className="top-content">
                                 <div className="table-font">
                                     <h2>Daftar Pengajuan Mahasiswa</h2>
                                 </div>
@@ -204,7 +205,7 @@ const TabelPengajuanMahasiswa = () => {
                                     ))}
                                 </tbody>
                             </table>
-
+                            </div>
                             <div className="pagination">
                                 <button
                                     className="btn-pagination"

@@ -185,146 +185,146 @@ function TabelCRUD() {
 
   return (
     <>
-    <div>
-    {headerSection}
-          <div className="containerTabel">
-            <div className="containerTabel box-blue">
+      <div>
+        {headerSection}
+        <div className="containerTabel">
+          <div className="containerTabel box-blue">
 
-            </div>
-            <div className="containerTabel table-box">
+          </div>
+          <div className="containerTabel table-box">
             <div className="top-table">
-            <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
-            + Tambah Data
-          </CButton>
-          <CButton onClick={openModal} className="btn-imporEkspor table-font">
-            Impor
-          </CButton>
-          <CButton onClick={ExportData} className="btn-imporEkspor table-font">
-            Ekspor
-          </CButton>
+              <CButton href={`/#/admin/mahasiswa/tambah/`} className="btn-tambah table-font">
+                + Tambah Data
+              </CButton>
+              <CButton onClick={openModal} className="btn-imporEkspor table-font">
+                Impor
+              </CButton>
+              <CButton onClick={ExportData} className="btn-imporEkspor table-font">
+                Ekspor
+              </CButton>
 
-          <Modal
-            isOpen={modalIsOpen}
-            onAfterOpen={afterOpenModal}
-            onRequestClose={closeModal}
-            style={customStyles}
-            contentLabel="Example Modal"
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Import Data</h2>
-              <button onClick={closeModal} style={{ cursor: 'pointer', border: 'none', background: 'none', fontSize: '1.5rem' }}>×</button>
-            </div>
-            <div>
-              <form encType="multipart/form-data" method="post">
-                <label htmlFor="fileInput">Pilih file:</label>
-                <CFormInput type="file" id="fileInput" name="file" onChange={handleFileUpload} />
-                <br></br>
-                <CButton style={{ width: '50%', backgroundColor: '#3C9A62' }}>Format</CButton>
-                <br></br><br></br>
-                <CButton type="submit" style={{ width: '100%' }} onClick={handleSubmit}>Upload</CButton>
-              </form>
-            </div>
-          </Modal>
-          <div className="search-input-container">
-            <input
-              type="text"
-              placeholder="Cari..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="search-input"
-            />
-            <CIcon icon={cilSearch} className="search-icon" />
-          </div>
-          </div>
-          <table className="tabel">
-            <thead>
-              <tr>
-                <th className="header-cell rata table-font">Nomor</th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('NIM')}>
-                    NIM
-                    <span className="sort-icon">
-                      {sortBy === 'NIM' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('Nama')}>
-                    Nama Lengkap
-                    <span className="sort-icon">
-                      {sortBy === 'Nama' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-                <th className="header-cell rata table-font">
-                  <div onClick={() => handleSort('ID_Kelas')}>
-                    Kelas
-                    <span className="sort-icon">
-                      {sortBy === 'ID_Kelas' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
-                    </span>
-                  </div>
-                </th>
-
-                <th className="header-cell rata table-font">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentData.map((item, index) => (
-                <tr key={item.id}>
-                  <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                  <td className="cell rata table-font">{item.NIM}</td>
-                  <td className="cell rata table-font">{item.Nama}</td>
-                  <td className="cell rata table-font">{item.Kelas.Nama_Kelas}</td>
-
-                  <td className="cell aksi">
-                    <CButton href={`/#/admin/mahasiswa/detail/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
-                      <CIcon icon={cilInfo} />
-                    </CButton>
-                    <CButton href={`/#/admin/mahasiswa/edit/${item.id}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
-                      <CIcon icon={cilPencil} />
-                    </CButton>
-                    <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(item.id)}>
-                      <CIcon icon={cilTrash} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-              <div className="pagination">
-                <button
-                  className="btn-pagination"
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                >
-                  {'<'}
-                </button>
-                {Array.from({ length: pageNumbers }, (_, i) => {
-                  const pageNumber = i + 1;
-                  const isActive = pageNumber === currentPage;
-
-                  return (
-                    <button
-                      key={i}
-                      className={`btn-pagination ${isActive ? 'active' : ''}`}
-                      onClick={() => setCurrentPage(pageNumber)}
-                    >
-                      {pageNumber}
-                    </button>
-                  );
-                })}
-
-                <button
-                  className="btn-pagination"
-                  onClick={handleNextPage}
-                  disabled={currentPage === pageNumbers}
-                >
-                  {'>'}
-                </button>
+              <Modal
+                isOpen={modalIsOpen}
+                onAfterOpen={afterOpenModal}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Import Data</h2>
+                  <button onClick={closeModal} style={{ cursor: 'pointer', border: 'none', background: 'none', fontSize: '1.5rem' }}>×</button>
+                </div>
+                <div>
+                  <form encType="multipart/form-data" method="post">
+                    <label htmlFor="fileInput">Pilih file:</label>
+                    <CFormInput type="file" id="fileInput" name="file" onChange={handleFileUpload} />
+                    <br></br>
+                    <CButton style={{ width: '50%', backgroundColor: '#3C9A62' }}>Format</CButton>
+                    <br></br><br></br>
+                    <CButton type="submit" style={{ width: '100%' }} onClick={handleSubmit}>Upload</CButton>
+                  </form>
+                </div>
+              </Modal>
+              <div className="search-input-container">
+                <input
+                  type="text"
+                  placeholder="Cari..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="search-input"
+                />
+                <CIcon icon={cilSearch} className="search-icon" />
               </div>
+            </div>
+            <table className="tabel">
+              <thead>
+                <tr>
+                  <th className="header-cell rata table-font">Nomor</th>
+                  <th className="header-cell rata table-font">
+                    <div onClick={() => handleSort('NIM')}>
+                      NIM
+                      <span className="sort-icon">
+                        {sortBy === 'NIM' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                      </span>
+                    </div>
+                  </th>
+                  <th className="header-cell rata table-font">
+                    <div onClick={() => handleSort('Nama')}>
+                      Nama Lengkap
+                      <span className="sort-icon">
+                        {sortBy === 'Nama' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                      </span>
+                    </div>
+                  </th>
+                  <th className="header-cell rata table-font">
+                    <div onClick={() => handleSort('ID_Kelas')}>
+                      Kelas
+                      <span className="sort-icon">
+                        {sortBy === 'ID_Kelas' && sortOrder === 'asc' ? <CIcon icon={cilArrowTop} /> : <CIcon icon={cilArrowBottom} />}
+                      </span>
+                    </div>
+                  </th>
+
+                  <th className="header-cell rata table-font">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.map((item, index) => (
+                  <tr key={item.id}>
+                    <td className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                    <td className="cell rata table-font">{item.NIM}</td>
+                    <td className="cell rata table-font">{item.Nama}</td>
+                    <td className="cell rata table-font">{item.Kelas.Nama_Kelas}</td>
+
+                    <td className="cell aksi">
+                      <CButton href={`/#/admin/mahasiswa/detail/${item.id}`} className="margin-button" style={{ color: 'black', backgroundColor: 'transparent' }}>
+                        <CIcon icon={cilInfo} />
+                      </CButton>
+                      <CButton href={`/#/admin/mahasiswa/edit/${item.id}`} style={{ color: 'black', backgroundColor: 'transparent' }}>
+                        <CIcon icon={cilPencil} />
+                      </CButton>
+                      <button style={{ backgroundColor: 'transparent' }} onClick={() => hapusData(item.id)}>
+                        <CIcon icon={cilTrash} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="pagination">
+              <button
+                className="btn-pagination"
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+              >
+                {'<'}
+              </button>
+              {Array.from({ length: pageNumbers }, (_, i) => {
+                const pageNumber = i + 1;
+                const isActive = pageNumber === currentPage;
+
+                return (
+                  <button
+                    key={i}
+                    className={`btn-pagination ${isActive ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              <button
+                className="btn-pagination"
+                onClick={handleNextPage}
+                disabled={currentPage === pageNumbers}
+              >
+                {'>'}
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
     </>
   );

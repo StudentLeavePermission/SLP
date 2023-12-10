@@ -1,3 +1,4 @@
+
 @media (max-width: 768px) {
 
   /* Atur lebar tabel agar 100% saat layar kecil */
@@ -114,6 +115,12 @@
     overflow-x: auto;
   }
 
+  .top-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+  }
   header .nav-btn {
     visibility: visible;
     opacity: 1;
@@ -189,12 +196,29 @@
   .card-contact {
     flex-direction: column;
   }
+
+  .s-icon{
+    font-size: 0px;
+  }
+}
+@media (min-width: 1024px) {
+  .top-content {
+    /* Aturan CSS untuk ukuran desktop */
+    display: flex;
+    flex-direction: row; /* atau aturan sesuai kebutuhan */
+    justify-content: space-between;
+    width: auto; /* atau aturan sesuai kebutuhan */
+  }
+
+  .s-icon{
+    font-size: 40px;
+  }
 }
 
 .tabel {
-  margin-top: 20px;
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
 }
 
 .tabel th,
@@ -674,7 +698,6 @@ h2 {
   position: relative;
   text-align: center;
   display: flex;
-  margin-bottom: 10px;
 }
 
 .containerTabelDashboard {
@@ -709,15 +732,18 @@ h2 {
 
 .table-box {
   position: absolute;
-  padding: 20px;
+  padding: 30px;
   margin-left: 15px;
   background: #ffffff;
   box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   z-index: 2;
-  display: grid;
-  align-content: space-between
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
+
+
 
 .table-box-dosen {
   width: 1000px;

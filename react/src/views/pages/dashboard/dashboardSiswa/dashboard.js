@@ -3,6 +3,8 @@ import '../../../../scss/style.css';
 import axios from "axios"
 import CIcon from '@coreui/icons-react';
 import { cilInfo, cilTrash, cilPencil, cilSearch, cilArrowTop, cilArrowBottom, cilChartPie } from '@coreui/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBarChart } from '@fortawesome/free-regular-svg-icons'
 
 
 const dashboardMahasiswa = () => {
@@ -182,8 +184,8 @@ const dashboardMahasiswa = () => {
                   <div className="text-information text-blue">Jumlah Izin</div>
                   <div className="text-information">{Izin} Jam Pelajaran</div>
                 </div>
-                <div>
-                  <CIcon size={'3xl'} icon={cilChartPie} />
+                <div className='s-icon'>
+                  <FontAwesomeIcon icon={faBarChart} />
                 </div>
               </div>
             </div>
@@ -197,8 +199,8 @@ const dashboardMahasiswa = () => {
                   <div className="text-information text-blue">Jumlah sakit</div>
                   <div className="text-information">{Sakit} Jam Pelajaran</div>
                 </div>
-                <div>
-                  <CIcon size={'3xl'} icon={cilChartPie} />
+                <div className='s-icon'>
+                  <FontAwesomeIcon icon={faBarChart} />
                 </div>
               </div>
             </div>
