@@ -1118,7 +1118,7 @@ exports.getCountOfLeaveRequests = async (req, res) => {
             const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
 
             if (jamStart !== "NULL" && jamEnd !== "NULL") {
-              jmlPengajuanPerJP += jamEnd - jamStart;
+              jmlPengajuanPerJP += jamEnd - jamStart  + 1;
             }
           }
         });
@@ -1230,6 +1230,8 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
       });
     }
 
+    let jmlBarisKelas = 0;
+
     for (let i = 0; i < kelas.length; i++) {
       let jmlPengajuanSakit = 0;
       let jmlPengajuanIzin = 0;
@@ -1291,7 +1293,7 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
                 const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
 
                 if (jamStart !== "NULL" && jamEnd !== "NULL") {
-                  jmlPengajuanPerJP += jamEnd - jamStart;
+                  jmlPengajuanPerJP += jamEnd - jamStart  + 1;
                   console.log('////////////////////////////////////////////////////////////////////', j)
                 }
               }
@@ -1308,20 +1310,30 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
         }
       }
 
-      jmlPengajuanKelas[i].push({
-        Nama_Kelas: tingkat + kelas[i].Nama_Kelas[0] + "-" + kelas[i].Nama_Kelas.slice(1),
-        Sakit: jmlPengajuanSakit,
-        Izin: jmlPengajuanIzin,
-      });
+      // pengecekkan agar jika kelas tidak terdapat pengajuan tidak masuk ke list
+      if (jmlPengajuanSakit !== 0 || jmlPengajuanIzin !== 0) {
+        jmlPengajuanKelas[jmlBarisKelas].push({
+          Nama_Kelas: tingkat + kelas[i].Nama_Kelas[0] + "-" + kelas[i].Nama_Kelas.slice(1),
+          Sakit: jmlPengajuanSakit,
+          Izin: jmlPengajuanIzin,
+        });
+
+        jmlBarisKelas += 1;
+      }
     }
 
     console.log(jmlPengajuanKelas);
 
-    if (jmlPengajuanKelas) {
+    if (jmlBarisKelas !== 0) {
       res.send({
         message: "Leave Requests found successfully",
         data: jmlPengajuanKelas
       })
+    } else {
+      res.send({
+        message: "No Leave Requests found",
+        data: []  
+      });
     }
   } catch (error) {
     console.error(error);
