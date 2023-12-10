@@ -1721,46 +1721,51 @@ exports.getOnProgressOfLeaveRequestsMahasiswa = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 exports.getRekapLeaveRequest = async (req, res) => {
   try {
-
     const IDProdi = req.params.IDProdi;
-
     let prodi = '';
 
-    //mengubah id prodi menjadi prodinya
-    if (IDProdi === '1'){
+    if (IDProdi === '1') {
       prodi = 'D3';
-    } else if (IDProdi === '2'){
-      prodi = 'D4';
-    }
-const kelas = await Data_Kelas.getAll({
-  where: {
-    Nama_Kelas: {
-      [Op.like]: `%${prodi}`
+    } else if (IDProdi === '2') {
+      prodi = 'D4';
     }
-  }
-});
-const idKelasSet = kelas.map(k => k.id_kelas);
-     const dataPengajuan = await Data_Pengajuan.getAll();
-    const dataMahasiswa = await Data_Mahasiswa.getAll();
+
+    const kelas = await Data_Kelas.getAll({
+      where: {
+        Nama_Kelas: {
+          [Op.like]: `%${prodi}`
+        }
+      }
+    });
+
+    const idKelasSet = kelas.map(k => k.id_kelas);
+
+    const dataMahasiswa = await Data_Mahasiswa.getAllWhere({
+      where: { ID_Kelas: kelas.map((kls) => kls.id) },
+    });
+
+    const dataPengajuan = await Data_Pengajuan.getAll();
     const jadwalKelas = await Jadwal_Kelas.getAll();
 
     const dataPengajuanWithMahasiswaAndJadwal = await Promise.all(dataPengajuan.map(async (pengajuan) => {
       var mahasiswa = dataMahasiswa.find((m) => m.id === pengajuan.ID_Mahasiswa);
-      mahasiswa = dataMahasiswa.find((m) => idKelasSet.includes(m.id_kelas));    
-      console.log("nininin");
-      console.log(mahasiswa);
-      console.log("nininin");
 
-      return {
-        ID_Mahasiswa: mahasiswa.id,
-        NIM: mahasiswa.NIM,
-        Nama: mahasiswa.Nama,
-      };
+      // Periksa apakah mahasiswa ditemukan
+      if (mahasiswa) {
+        return {
+          ID_Mahasiswa: mahasiswa.id,
+          NIM: mahasiswa.NIM,
+          Nama: mahasiswa.Nama,
+        };
+      } else {
+        return null; // Mahasiswa tidak ditemukan
+      }
     }));
-    
+
+    // Filter data yang null
+    const filteredDataPengajuanWithMahasiswaAndJadwal = dataPengajuanWithMahasiswaAndJadwal.filter((data) => data !== null);
 
     // Hitung totalIzin dan totalSakit di luar loop
     const totalIzin = {};
@@ -1768,10 +1773,10 @@ const idKelasSet = kelas.map(k => k.id_kelas);
 
     dataPengajuan.forEach((pengajuan) => {
       const jadwal = jadwalKelas.find((j) => j.id === pengajuan.ID_Jadwal_Kelas);
-    
+
       if (pengajuan.Jenis_Izin === 'Izin' || pengajuan.Jenis_Izin === 'Sakit') {
         const durasiJamPelajaran = jadwal.ID_Jam_Pelajaran_End - jadwal.ID_Jam_Pelajaran_Start + 1;
-    
+
         if (pengajuan.Jenis_Izin === 'Izin') {
           if (!totalIzin[pengajuan.ID_Mahasiswa]) {
             totalIzin[pengajuan.ID_Mahasiswa] = 0;
@@ -1785,15 +1790,14 @@ const idKelasSet = kelas.map(k => k.id_kelas);
         }
       }
     });
-    
 
     // Tambahkan TotalSakit dan TotalIzin ke setiap entri dalam dataPengajuanWithMahasiswaAndJadwal
-    dataPengajuanWithMahasiswaAndJadwal.forEach((data) => {
+    filteredDataPengajuanWithMahasiswaAndJadwal.forEach((data) => {
       data.TotalSakit = totalSakit[data.ID_Mahasiswa] || 0;
       data.TotalIzin = totalIzin[data.ID_Mahasiswa] || 0;
     });
 
-    const distinctDataPengajuan = dataPengajuanWithMahasiswaAndJadwal.filter((value, index, self) =>
+    const distinctDataPengajuan = filteredDataPengajuanWithMahasiswaAndJadwal.filter((value, index, self) =>
       self.findIndex((entry) => entry.ID_Mahasiswa === value.ID_Mahasiswa) === index
     );
 
@@ -1801,10 +1805,11 @@ const idKelasSet = kelas.map(k => k.id_kelas);
     const existingMahasiswaIDs = distinctDataPengajuan.map((item) => item.ID_Mahasiswa);
 
     // Ambil data mahasiswa yang belum ada di distinctDataPengajuan
-    const mhsdata = dataMahasiswa.filter((mahasiswa) => !existingMahasiswaIDs.includes(mahasiswa.id));
-     newMahasiswaData = mhsdata.filter((m) => idKelasSet.includes(m.id_kelas));
+    const newMahasiswaData = dataMahasiswa.filter((mahasiswa) => !existingMahasiswaIDs.includes(mahasiswa.id));
+    const filteredNewMahasiswaData = newMahasiswaData.filter((m) => idKelasSet.includes(m.ID_Kelas));
+
     // Tambahkan data mahasiswa yang belum ada ke distinctDataPengajuan
-    newMahasiswaData.forEach((mahasiswa) => {
+    filteredNewMahasiswaData.forEach((mahasiswa) => {
       distinctDataPengajuan.push({
         ID_Mahasiswa: mahasiswa.id,
         NIM: mahasiswa.NIM,
@@ -1817,11 +1822,8 @@ const idKelasSet = kelas.map(k => k.id_kelas);
     res.send({
       message: 'Rekap Leave Request sent successfully',
       data: distinctDataPengajuan,
-
     });
 
-    console.log(dataPengajuan);
-    console.log("\x1b[1m" + "[" + basename + "]" + "\x1b[0m" + " Query " + "\x1b[34m" + "GET (one) " + "\x1b[0m" + "done");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
