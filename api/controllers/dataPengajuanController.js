@@ -11,7 +11,9 @@ const Data_Dosen = new mainModel("Data_Dosen");
 const Data_Mata_Kuliah = new mainModel("Data_Mata_Kuliah");
 const { Op } = require('sequelize');
 const hbs = require('nodemailer-express-handlebars')
-
+const { Client } = require('whatsapp-web.js');
+const client = new Client();
+const qrcode = require('qrcode');
 // const React = require('react');
 // const ReactDOMServer = require('react-dom/server');
 // const EmailContent = require('../../react/src/componentSLP/EmailContent');
@@ -1829,3 +1831,42 @@ exports.getRekapLeaveRequest = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.WhatsAppQR = async (req, res) => {
+  
+  let isResponseSent = false;
+
+  client.on('qr', qr => {
+    qrcode.toDataURL(qr, (err, url) => {
+      if (err) {
+        console.error('Error generating QR code:', err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+      
+      // Memastikan tanggapan hanya dikirimkan sekali
+      if (!isResponseSent) {
+        isResponseSent = true;
+        // Simpan base64 sebagai gambar
+        const base64Data = url.replace(/^data:image\/png;base64,/, '');
+        console.log(url);
+        res.json({ url });
+      }
+    });
+  });
+
+  client.on('ready', () => {
+    console.log('Client is ready!');
+  });
+
+  client.on('message', msg => {
+    if (msg.body == '!ping') {
+      msg.reply('pong');
+    }
+  });
+
+  // Hanya menginisialisasi client setelah tanggapan dikirimkan
+  
+    client.initialize();
+  
+}
