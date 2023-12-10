@@ -525,6 +525,16 @@ h2 {
   text-align: start;
 }
 
+.text-information-dashboard-admin {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  text-align: start;
+}
+
+.text-information-dashboard-admin:hover {
+  cursor: pointer; /* Menampilkan kursor pointer saat dihover */
+  color: #0056b3; /* Warna teks berubah saat dihover, sesuaikan dengan warna yang diinginkan */
+}
 
 
 

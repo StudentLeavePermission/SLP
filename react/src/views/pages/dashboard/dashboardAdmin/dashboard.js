@@ -22,6 +22,7 @@ import {
   cilPeople
 } from '@coreui/icons';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../../../../scss/style.css';
 
 const DashboardTU = () => {
@@ -33,6 +34,7 @@ const DashboardTU = () => {
     const [namaBulan, setNamaBulan] = useState([]);
     const [id, setId] = useState(sessionStorage.getItem('idAdmin'));
     const [prodi, setProdi] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
       getDataPengajuanIzin();
@@ -131,6 +133,14 @@ const DashboardTU = () => {
       }
     };
 
+    const handleDosenClick = () => {
+      navigate('/admin/dataDosen');
+    };
+
+    const handleMahasiswaClick = () => {
+      navigate('/admin/dataMahasiswa');
+    };
+
     return (
       <div style={{ width: '100%', minWidth: '1200px' }} >
         <CRow>
@@ -199,7 +209,10 @@ const DashboardTU = () => {
                     <div className="box-text-information">
                           <div className="d-flex justify-content-center flex-column">
                             <div className="text-information-admin text-blue">Jumlah Mahasiswa</div>
-                              <div className="text-information">{jmlMahasiswa} Mahasiswa di Prodi {prodi}</div>
+                              <div className="text-information-dashboard-admin" onClick={handleMahasiswaClick}
+                              >
+                                {jmlMahasiswa} Mahasiswa di Prodi {prodi}
+                              </div>
                           </div>
                           <div>
                               <CIcon size={'5xl'}  icon={cilPeople} />
@@ -216,7 +229,10 @@ const DashboardTU = () => {
                     <div className="box-text-information">
                           <div className="d-flex justify-content-center flex-column">
                             <div className="text-information-admin text-blue">Jumlah Dosen</div>
-                              <div className="text-information">{jmlDosen} Dosen</div>
+                              <div className="text-information-dashboard-admin" onClick={handleDosenClick}
+                              >
+                                {jmlDosen} Dosen
+                                </div>
                           </div>
                           <div>
                               <CIcon size={'5xl'}  icon={cilPeople} />
@@ -266,11 +282,11 @@ const DashboardTU = () => {
                     <tbody>
                       {dataTable.map((kelas, index) => (
                         <tr key={index}>
-                          <td style={{ width: '150px'}} className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                          <td style={{ width: '300px'}} className="cell rata table-font">{kelas[0].Nama_Kelas}</td>
-                          <td style={{ width: '250px'}} className="cell rata table-font">{kelas[0].Izin}</td>
-                          <td style={{ width: '250px'}} className="cell rata table-font">{kelas[0].Sakit}</td>
-                          <td style={{ width: '250px'}} className="cell rata table-font">
+                          <td style={{ width: '50px'}} className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                          <td style={{ width: '100px'}} className="cell rata table-font">{kelas[0].Nama_Kelas}</td>
+                          <td style={{ width: '100px'}} className="cell rata table-font">{kelas[0].Izin}</td>
+                          <td style={{ width: '150px'}} className="cell rata table-font">{kelas[0].Sakit}</td>
+                          <td style={{ width: '100px'}} className="cell rata table-font">
                             <CButton
                               style={{ width: '110px', height: '30px', paddingTop: '3px' }}
                               onClick={() => handleDetailClick(index)}
