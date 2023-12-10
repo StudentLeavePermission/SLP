@@ -1235,7 +1235,6 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
     for (let i = 0; i < kelas.length; i++) {
       let jmlPengajuanSakit = 0;
       let jmlPengajuanIzin = 0;
-      jmlPengajuanKelas[i] = [];
       let angkaKelas = 0;
 
       if (currentMonth > 6) {
@@ -1312,6 +1311,7 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
 
       // pengecekkan agar jika kelas tidak terdapat pengajuan tidak masuk ke list
       if (jmlPengajuanSakit !== 0 || jmlPengajuanIzin !== 0) {
+        jmlPengajuanKelas[i] = [];
         jmlPengajuanKelas[jmlBarisKelas].push({
           Nama_Kelas: tingkat + kelas[i].Nama_Kelas[0] + "-" + kelas[i].Nama_Kelas.slice(1),
           Sakit: jmlPengajuanSakit,
