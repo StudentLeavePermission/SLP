@@ -105,7 +105,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      ID_Mahasiswa: 8,
+      ID_Mahasiswa: 7,
       Keterangan: 'sakit aja',
       Jenis_Izin: 'Sakit',
       ID_Jadwal_Kelas: 1,
@@ -118,7 +118,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      ID_Mahasiswa: 8,
+      ID_Mahasiswa: 7,
       Keterangan: 'sakit terus',
       Jenis_Izin: 'Sakit',
       ID_Jadwal_Kelas: 1,
@@ -131,7 +131,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
-      ID_Mahasiswa: 8,
+      ID_Mahasiswa: 7,
       Keterangan: 'Izin aja',
       Jenis_Izin: 'Izin',
       ID_Jadwal_Kelas: 1,
