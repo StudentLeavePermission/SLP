@@ -1724,13 +1724,32 @@ exports.getOnProgressOfLeaveRequestsMahasiswa = async (req, res) => {
 
 exports.getRekapLeaveRequest = async (req, res) => {
   try {
-    const dataPengajuan = await Data_Pengajuan.getAll();
+
+    const IDProdi = req.params.IDProdi;
+
+    let prodi = '';
+
+    //mengubah id prodi menjadi prodinya
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      prodi = 'D4';
+    }
+const kelas = await Data_Kelas.getAll({
+  where: {
+    Nama_Kelas: {
+      [Op.like]: `%${prodi}`
+    }
+  }
+});
+
+     const dataPengajuan = await Data_Pengajuan.getAll();
     const dataMahasiswa = await Data_Mahasiswa.getAll();
     const jadwalKelas = await Jadwal_Kelas.getAll();
 
     const dataPengajuanWithMahasiswaAndJadwal = await Promise.all(dataPengajuan.map(async (pengajuan) => {
-      const mahasiswa = dataMahasiswa.find((m) => m.id === pengajuan.ID_Mahasiswa);
-      const jadwal = jadwalKelas.find((j) => j.id === pengajuan.ID_Jadwal_Kelas);
+      var mahasiswa = dataMahasiswa.find((m) => m.id === pengajuan.ID_Mahasiswa);
+      mahasiswa = dataMahasiswa.find((m) => m.ID_Kelas == 1);
 
       return {
         ID_Mahasiswa: mahasiswa.id,
@@ -1778,8 +1797,8 @@ exports.getRekapLeaveRequest = async (req, res) => {
     const existingMahasiswaIDs = distinctDataPengajuan.map((item) => item.ID_Mahasiswa);
 
     // Ambil data mahasiswa yang belum ada di distinctDataPengajuan
-    const newMahasiswaData = dataMahasiswa.filter((mahasiswa) => !existingMahasiswaIDs.includes(mahasiswa.id));
-
+    const mhsdata = dataMahasiswa.filter((mahasiswa) => !existingMahasiswaIDs.includes(mahasiswa.id));
+     newMahasiswaData = mhsdata.filter((m) => m.ID_Kelas == 1);
     // Tambahkan data mahasiswa yang belum ada ke distinctDataPengajuan
     newMahasiswaData.forEach((mahasiswa) => {
       distinctDataPengajuan.push({
