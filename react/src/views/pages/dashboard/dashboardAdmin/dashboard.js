@@ -22,6 +22,7 @@ import {
   cilPeople
 } from '@coreui/icons';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../../../../scss/style.css';
 
 const DashboardTU = () => {
@@ -33,6 +34,7 @@ const DashboardTU = () => {
     const [namaBulan, setNamaBulan] = useState([]);
     const [id, setId] = useState(sessionStorage.getItem('idAdmin'));
     const [prodi, setProdi] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
       getDataPengajuanIzin();
@@ -92,7 +94,9 @@ const DashboardTU = () => {
 
     const getDataTable = async () => {
       const response = await axios.get(`http://localhost:3000/data-pengajuan/leave/request/${id}`);
-      setDataTable(response.data.data);
+      if (response.data.data){
+        setDataTable(response.data.data);
+      }
     }
 
     const getJmlMahasiswa = async () => {
@@ -127,6 +131,14 @@ const DashboardTU = () => {
       if (currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
+    };
+
+    const handleDosenClick = () => {
+      navigate('/admin/dataDosen');
+    };
+
+    const handleMahasiswaClick = () => {
+      navigate('/admin/dataMahasiswa');
     };
 
     return (
@@ -197,7 +209,10 @@ const DashboardTU = () => {
                     <div className="box-text-information">
                           <div className="d-flex justify-content-center flex-column">
                             <div className="text-information-admin text-blue">Jumlah Mahasiswa</div>
-                              <div className="text-information">{jmlMahasiswa} Mahasiswa di Prodi {prodi}</div>
+                              <div className="text-information-dashboard-admin" onClick={handleMahasiswaClick}
+                              >
+                                {jmlMahasiswa} Mahasiswa di Prodi {prodi}
+                              </div>
                           </div>
                           <div>
                               <CIcon size={'5xl'}  icon={cilPeople} />
@@ -214,7 +229,10 @@ const DashboardTU = () => {
                     <div className="box-text-information">
                           <div className="d-flex justify-content-center flex-column">
                             <div className="text-information-admin text-blue">Jumlah Dosen</div>
-                              <div className="text-information">{jmlDosen} Dosen</div>
+                              <div className="text-information-dashboard-admin" onClick={handleDosenClick}
+                              >
+                                {jmlDosen} Dosen
+                                </div>
                           </div>
                           <div>
                               <CIcon size={'5xl'}  icon={cilPeople} />
@@ -234,49 +252,53 @@ const DashboardTU = () => {
                 <div className="table-font">
                     <h2>Rekap Pengajuan Mahasiswa Perkelas</h2>
                 </div>
-                <table className="tabel">
-                  <thead>
-                      <tr>
-                      <th className="header-cell rata table-font ukuran-kecil">Nomor</th>
-                      <th className="header-cell rata table-font">
-                          <div>
-                            Kelas
-                          </div>
-                      </th>
-                      <th className="header-cell rata table-font">
-                          <div>
-                            Jumlah Izin
-                          </div>
-                      </th>
-                      <th className="header-cell rata table-font">
-                          <div>
-                            Jumlah Sakit
-                          </div>
-                      </th>
-                      <th className="header-cell rata table-font">
-                          <div>
-                            Aksi
-                          </div>
-                      </th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                    {dataTable.map((kelas, index) => (
-                      <tr key={index}>
-                        <td style={{ width: '150px'}} className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
-                        <td style={{ width: '300px'}} className="cell rata table-font">{kelas[0].Nama_Kelas}</td>
-                        <td style={{ width: '250px'}} className="cell rata table-font">{kelas[0].Izin}</td>
-                        <td style={{ width: '250px'}} className="cell rata table-font">{kelas[0].Sakit}</td>
-                        <td style={{ width: '250px'}} className="cell rata table-font">
-                          <CButton
-                            style={{ width: '110px', height: '30px', paddingTop: '3px' }}
-                            onClick={() => handleDetailClick(index)}
-                          >Detail</CButton>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {dataTable.length > 0 ? (
+                  <table className="tabel">
+                    <thead>
+                        <tr>
+                        <th className="header-cell rata table-font ukuran-kecil">Nomor</th>
+                        <th className="header-cell rata table-font">
+                            <div>
+                              Kelas
+                            </div>
+                        </th>
+                        <th className="header-cell rata table-font">
+                            <div>
+                              Jumlah Izin
+                            </div>
+                        </th>
+                        <th className="header-cell rata table-font">
+                            <div>
+                              Jumlah Sakit
+                            </div>
+                        </th>
+                        <th className="header-cell rata table-font">
+                            <div>
+                              Aksi
+                            </div>
+                        </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {dataTable.map((kelas, index) => (
+                        <tr key={index}>
+                          <td style={{ width: '50px'}} className="cell rata table-font">{index + 1 + (currentPage - 1) * itemsPerPage}</td>
+                          <td style={{ width: '100px'}} className="cell rata table-font">{kelas[0].Nama_Kelas}</td>
+                          <td style={{ width: '100px'}} className="cell rata table-font">{kelas[0].Izin}</td>
+                          <td style={{ width: '150px'}} className="cell rata table-font">{kelas[0].Sakit}</td>
+                          <td style={{ width: '100px'}} className="cell rata table-font">
+                            <CButton
+                              style={{ width: '110px', height: '30px', paddingTop: '3px' }}
+                              onClick={() => handleDetailClick(index)}
+                            >Detail</CButton>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="no-data-message">Tidak ada data yang tersedia</div>
+                )}
                     <div className="pagination">
                     <button
                         className="btn-pagination"

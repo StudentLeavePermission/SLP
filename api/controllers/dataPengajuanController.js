@@ -1118,7 +1118,7 @@ exports.getCountOfLeaveRequests = async (req, res) => {
             const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
 
             if (jamStart !== "NULL" && jamEnd !== "NULL") {
-              jmlPengajuanPerJP += jamEnd - jamStart;
+              jmlPengajuanPerJP += jamEnd - jamStart  + 1;
             }
           }
         });
@@ -1230,6 +1230,8 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
       });
     }
 
+    let jmlBarisKelas = 0;
+
     for (let i = 0; i < kelas.length; i++) {
       let jmlPengajuanSakit = 0;
       let jmlPengajuanIzin = 0;
@@ -1291,7 +1293,7 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
                 const jamEnd = getJamEnd(jadwal, item.ID_Jadwal_Kelas);
 
                 if (jamStart !== "NULL" && jamEnd !== "NULL") {
-                  jmlPengajuanPerJP += jamEnd - jamStart;
+                  jmlPengajuanPerJP += jamEnd - jamStart  + 1;
                   console.log('////////////////////////////////////////////////////////////////////', j)
                 }
               }
@@ -1308,20 +1310,30 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
         }
       }
 
-      jmlPengajuanKelas[i].push({
-        Nama_Kelas: tingkat + kelas[i].Nama_Kelas[0] + "-" + kelas[i].Nama_Kelas.slice(1),
-        Sakit: jmlPengajuanSakit,
-        Izin: jmlPengajuanIzin,
-      });
+      // pengecekkan agar jika kelas tidak terdapat pengajuan tidak masuk ke list
+      if (jmlPengajuanSakit !== 0 || jmlPengajuanIzin !== 0) {
+        jmlPengajuanKelas[jmlBarisKelas].push({
+          Nama_Kelas: tingkat + kelas[i].Nama_Kelas[0] + "-" + kelas[i].Nama_Kelas.slice(1),
+          Sakit: jmlPengajuanSakit,
+          Izin: jmlPengajuanIzin,
+        });
+
+        jmlBarisKelas += 1;
+      }
     }
 
     console.log(jmlPengajuanKelas);
 
-    if (jmlPengajuanKelas) {
+    if (jmlBarisKelas !== 0) {
       res.send({
         message: "Leave Requests found successfully",
         data: jmlPengajuanKelas
       })
+    } else {
+      res.send({
+        message: "No Leave Requests found",
+        data: []  
+      });
     }
   } catch (error) {
     console.error(error);
@@ -1712,13 +1724,35 @@ exports.getOnProgressOfLeaveRequestsMahasiswa = async (req, res) => {
 
 exports.getRekapLeaveRequest = async (req, res) => {
   try {
-    const dataPengajuan = await Data_Pengajuan.getAll();
+
+    const IDProdi = req.params.IDProdi;
+
+    let prodi = '';
+
+    //mengubah id prodi menjadi prodinya
+    if (IDProdi === '1'){
+      prodi = 'D3';
+    } else if (IDProdi === '2'){
+      prodi = 'D4';
+    }
+const kelas = await Data_Kelas.getAll({
+  where: {
+    Nama_Kelas: {
+      [Op.like]: `%${prodi}`
+    }
+  }
+});
+const idKelasSet = kelas.map(k => k.id_kelas);
+     const dataPengajuan = await Data_Pengajuan.getAll();
     const dataMahasiswa = await Data_Mahasiswa.getAll();
     const jadwalKelas = await Jadwal_Kelas.getAll();
 
     const dataPengajuanWithMahasiswaAndJadwal = await Promise.all(dataPengajuan.map(async (pengajuan) => {
-      const mahasiswa = dataMahasiswa.find((m) => m.id === pengajuan.ID_Mahasiswa);
-      const jadwal = jadwalKelas.find((j) => j.id === pengajuan.ID_Jadwal_Kelas);
+      var mahasiswa = dataMahasiswa.find((m) => m.id === pengajuan.ID_Mahasiswa);
+      mahasiswa = dataMahasiswa.find((m) => idKelasSet.includes(m.id_kelas));    
+      console.log("nininin");
+      console.log(mahasiswa);
+      console.log("nininin");
 
       return {
         ID_Mahasiswa: mahasiswa.id,
@@ -1726,6 +1760,7 @@ exports.getRekapLeaveRequest = async (req, res) => {
         Nama: mahasiswa.Nama,
       };
     }));
+    
 
     // Hitung totalIzin dan totalSakit di luar loop
     const totalIzin = {};
@@ -1766,8 +1801,8 @@ exports.getRekapLeaveRequest = async (req, res) => {
     const existingMahasiswaIDs = distinctDataPengajuan.map((item) => item.ID_Mahasiswa);
 
     // Ambil data mahasiswa yang belum ada di distinctDataPengajuan
-    const newMahasiswaData = dataMahasiswa.filter((mahasiswa) => !existingMahasiswaIDs.includes(mahasiswa.id));
-
+    const mhsdata = dataMahasiswa.filter((mahasiswa) => !existingMahasiswaIDs.includes(mahasiswa.id));
+     newMahasiswaData = mhsdata.filter((m) => idKelasSet.includes(m.id_kelas));
     // Tambahkan data mahasiswa yang belum ada ke distinctDataPengajuan
     newMahasiswaData.forEach((mahasiswa) => {
       distinctDataPengajuan.push({
