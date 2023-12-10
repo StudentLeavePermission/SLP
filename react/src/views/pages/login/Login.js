@@ -38,7 +38,7 @@ const Login = () => {
   // Fungsi untuk memeriksa apakah input adalah alamat email dengan pola tertentu
   const isEmail = (username) => {
     // emailnya harus polban
-    const emailPattern = /^[a-zA-Z0-9._-]+@polban.ac.id$/;
+    const emailPattern = /^[a-zA-Z0-9._-]+@jtk.polban.ac.id$/;
 
     return emailPattern.test(username);
   };
