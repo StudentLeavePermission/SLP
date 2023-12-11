@@ -291,6 +291,9 @@ exports.editLeaveRequest = async (req, res) => {
       console.log('email', dosenPengampu.Email_Dosen)
       const namaKelas = `${angka_kelas}${kelas.Nama_Kelas}`
       sendEmailDosenPengampu(dosenPengampu.Nama_Dosen, mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin, namaKelas,data_pengajuan.Tanggal_Izin, dataMatkul.Nama_Mata_Kuliah, dosenPengampu.Email_Dosen)
+
+      sendWhatsAppMessageSiswa(data_pengajuan);
+
     }
     res.status(200).json({ msg: 'LeaveRequest updated' });
   } catch (error) {
@@ -1883,7 +1886,7 @@ exports.WhatsAppQR = async (req, res) => {
 }
 
 const sendWhatsAppMessage = async (recordMahasiswa) => {
-  const phoneNumber = '6288219868501@c.us'; // Gantilah dengan nomor tujuan yang sesuai
+  const phoneNumber = '6289626188265@c.us'; // Gantilah dengan nomor tujuan yang sesuai
 
   const student = await Data_Mahasiswa.get({
     where: { id: recordMahasiswa.ID_Mahasiswa },
@@ -1898,6 +1901,35 @@ const kelas = await Data_Kelas.get({
   kelas : ${kelas.Nama_Kelas}
   Jenis Pengajuan : ${recordMahasiswa.Jenis_Izin}
   Tanggal Pengajuan : ${recordMahasiswa.Tanggal_Pengajuan}`;
+  
+  try {
+    // Kirim pesan
+    const response = await client.sendMessage(phoneNumber, message);
+    console.log('Pesan berhasil dikirim:', response);
+    return response;
+  } catch (error) {
+    console.error('Error saat mengirim pesan:', error);
+    throw error; // Dilempar kembali untuk penanganan kesalahan di tingkat yang lebih tinggi
+  }
+};
+
+
+const sendWhatsAppMessageSiswa = async (recordMahasiswa) => {
+  const phoneNumber = '62881023849115@c.us'; // Gantilah dengan nomor tujuan yang sesuai
+
+  const student = await Data_Mahasiswa.get({
+    where: { id: recordMahasiswa.ID_Mahasiswa },
+});
+
+const kelas = await Data_Kelas.get({
+  where : {id: student.ID_Kelas}
+});
+  const message = ` Pengajuan  dengan  
+  nama pengirim : ${student.Nama}
+  NIM : ${student.NIM}
+  Jenis Pengajuan : ${recordMahasiswa.Jenis_Izin}
+  yang diajukan pada tanggal  ${recordMahasiswa.Tanggal_Pengajuan} telah di verifikasi oleh wali dosen
+`;
   
   try {
     // Kirim pesan
