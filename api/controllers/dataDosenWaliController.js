@@ -191,7 +191,7 @@ exports.createDataDosenWali = async(req, res) => { //sudah bisa menjadi fk di da
         const mailOptions = {
             from: 'intljax6@gmail.com', // sender address
             template: "emailNewAccount", // the name of the template file, i.e., email.handlebars
-            to: dosenWali.Email_Dosen, //mahasiswa.Email,
+            to: 'nisrinawafaz@gmail.com', //dosenWali.Email_Dosen,
             subject: `Halo ${dosenWali.Nama_Dosen}, ini akun baru anda`,
             context: {
                 username: dosenWali.Email_Dosen,
@@ -284,8 +284,7 @@ exports.forgotPassword = async(req, res) => {
         const mailOptions = {
             from: 'intljax6@gmail.com', // sender address
             template: "emailForgotPassword", // the name of the template file, i.e., email.handlebars
-            // to: dosenWali.Email_Dosen, //mahasiswa.Email,
-            to: 'jaxsix06@gmail.com',
+            to: 'nisrinawafaz@gmail.com',//dosenWali.Email_Dosen,
             subject: `Halo ${dosenWali.Nama_Dosen}, ini password baru anda`,
             context: {
                 password: Password,

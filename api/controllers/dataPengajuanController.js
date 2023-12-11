@@ -11,7 +11,9 @@ const Data_Dosen = new mainModel("Data_Dosen");
 const Data_Mata_Kuliah = new mainModel("Data_Mata_Kuliah");
 const { Op } = require('sequelize');
 const hbs = require('nodemailer-express-handlebars')
-
+const { Client } = require('whatsapp-web.js');
+const client = new Client();
+const qrcode = require('qrcode');
 // const React = require('react');
 // const ReactDOMServer = require('react-dom/server');
 // const EmailContent = require('../../react/src/componentSLP/EmailContent');
@@ -199,7 +201,7 @@ exports.createLeaveRequest = async (req, res) => {
     // Define your email message
     const mailOptions = {
       from: 'intljax6@gmail.com',
-      to: 'jaxsix06@gmail.com',
+      to: 'nisrinawafaz@gmail.com',
       subject: 'New Request',
       // emailHTML,
       text: `<html>Ada pengajuan terbaru!</html>`
@@ -213,6 +215,17 @@ exports.createLeaveRequest = async (req, res) => {
         console.log('Email sent: ' + info.response);
       }
     });
+    const mahasiswaRecord = {
+        ID_Mahasiswa: ID_Mahasiswa,
+        Keterangan: Keterangan,
+        Jenis_Izin: Jenis_Izin,
+        ID_Jadwal_Kelas: ID_Jadwal_Kelas,
+        Tanggal_Pengajuan: Tanggal_Pengajuan,
+        Tanggal_Izin: Tanggal_Izin,
+        Status_Pengajuan: Status_Pengajuan,
+        Alasan_Penolakan: '' 
+    };
+    sendWhatsAppMessage(mahasiswaRecord);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -270,7 +283,7 @@ exports.editLeaveRequest = async (req, res) => {
       angka_kelas = currentYear - kelas.Tahun_Ajaran;
     }
 
-    if (updatedRowCount === 0) {
+    if (updatedRowCount === 0) { 
       return res.status(404).json({ msg: 'LeaveRequest not found' });
     }
 
@@ -278,6 +291,9 @@ exports.editLeaveRequest = async (req, res) => {
       console.log('email', dosenPengampu.Email_Dosen)
       const namaKelas = `${angka_kelas}${kelas.Nama_Kelas}`
       sendEmailDosenPengampu(dosenPengampu.Nama_Dosen, mahasiswa.Nama,mahasiswa.NIM,data_pengajuan.Jenis_Izin, namaKelas,data_pengajuan.Tanggal_Izin, dataMatkul.Nama_Mata_Kuliah, dosenPengampu.Email_Dosen)
+
+      sendWhatsAppMessageSiswa(data_pengajuan);
+
     }
     res.status(200).json({ msg: 'LeaveRequest updated' });
   } catch (error) {
@@ -1235,7 +1251,6 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
     for (let i = 0; i < kelas.length; i++) {
       let jmlPengajuanSakit = 0;
       let jmlPengajuanIzin = 0;
-      jmlPengajuanKelas[i] = [];
       let angkaKelas = 0;
 
       if (currentMonth > 6) {
@@ -1312,6 +1327,7 @@ exports.getCountOfLeaveRequestsTable = async (req, res) => {
 
       // pengecekkan agar jika kelas tidak terdapat pengajuan tidak masuk ke list
       if (jmlPengajuanSakit !== 0 || jmlPengajuanIzin !== 0) {
+        jmlPengajuanKelas[i] = [];
         jmlPengajuanKelas[jmlBarisKelas].push({
           Nama_Kelas: tingkat + kelas[i].Nama_Kelas[0] + "-" + kelas[i].Nama_Kelas.slice(1),
           Sakit: jmlPengajuanSakit,
@@ -1829,3 +1845,114 @@ exports.getRekapLeaveRequest = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.WhatsAppQR = async (req, res) => {
+  
+  let isResponseSent = false;
+
+  client.on('qr', qr => {
+    qrcode.toDataURL(qr, (err, url) => {
+      if (err) {
+        console.error('Error generating QR code:', err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+      
+      // Memastikan tanggapan hanya dikirimkan sekali
+      if (!isResponseSent) {
+        isResponseSent = true;
+        // Simpan base64 sebagai gambar
+        const base64Data = url.replace(/^data:image\/png;base64,/, '');
+        console.log(url);
+        res.json({ url });
+      }
+    });
+  });
+
+  client.on('ready', () => {
+    console.log('Client is ready!');
+  });
+
+  client.on('message', msg => {
+    if (msg.body == '!ping') {
+      msg.reply('pong');
+    }
+  });
+
+  // Hanya menginisialisasi client setelah tanggapan dikirimkan
+  
+    client.initialize();
+  
+}
+
+const sendWhatsAppMessage = async (recordMahasiswa) => {
+  const phoneNumber = '6289626188265@c.us'; // Gantilah dengan nomor tujuan yang sesuai
+
+  const student = await Data_Mahasiswa.get({
+    where: { id: recordMahasiswa.ID_Mahasiswa },
+});
+
+const kelas = await Data_Kelas.get({
+  where : {id: student.ID_Kelas}
+});
+  const message = `Assalamulaikum Pak/ Bu, Kami memberitahukan bahwa putra/ putri bapak / ibu telah melakukan pengajuan absen dengan data berikut :  
+  Nama mahasiswa : ${student.Nama}
+  NIM : ${student.NIM} 
+  kelas : ${kelas.Nama_Kelas}
+  Jenis Pengajuan : ${recordMahasiswa.Jenis_Izin}
+  Tanggal Pengajuan : ${recordMahasiswa.Tanggal_Pengajuan}`;
+  
+  try {
+    // Kirim pesan
+    const response = await client.sendMessage(phoneNumber, message);
+    console.log('Pesan berhasil dikirim:', response);
+    return response;
+  } catch (error) {
+    console.error('Error saat mengirim pesan:', error);
+    throw error; // Dilempar kembali untuk penanganan kesalahan di tingkat yang lebih tinggi
+  }
+};
+
+
+const sendWhatsAppMessageSiswa = async (recordMahasiswa) => {
+  const phoneNumber = '62881023849115@c.us'; // Gantilah dengan nomor tujuan yang sesuai
+
+  const student = await Data_Mahasiswa.get({
+    where: { id: recordMahasiswa.ID_Mahasiswa },
+});
+
+const kelas = await Data_Kelas.get({
+  where : {id: student.ID_Kelas}
+});
+  const message = ` Pengajuan  dengan  
+  nama pengirim : ${student.Nama}
+  NIM : ${student.NIM}
+  Jenis Pengajuan : ${recordMahasiswa.Jenis_Izin}
+  yang diajukan pada tanggal  ${recordMahasiswa.Tanggal_Pengajuan} telah di verifikasi oleh wali dosen
+`;
+  
+  try {
+    // Kirim pesan
+    const response = await client.sendMessage(phoneNumber, message);
+    console.log('Pesan berhasil dikirim:', response);
+    return response;
+  } catch (error) {
+    console.error('Error saat mengirim pesan:', error);
+    throw error; // Dilempar kembali untuk penanganan kesalahan di tingkat yang lebih tinggi
+  }
+};
+
+exports.kirimPesan = async (req, res) => {
+  const mahasiswaRecord = {
+    name: 'John Doe',
+    message: 'Halo, ini adalah pesan dari John Doe.'
+  };
+
+  sendWhatsAppMessage(mahasiswaRecord)
+  .then(() => {
+    console.log('Pesan terkirim');
+  })
+  .catch((error) => {
+    console.error('Gagal mengirim pesan:', error);
+  });
+}

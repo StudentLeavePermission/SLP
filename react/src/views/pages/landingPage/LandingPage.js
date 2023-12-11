@@ -7,7 +7,7 @@ import {
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilPhone, cilEnvelopeOpen } from '@coreui/icons';
-import '../../../scss/style.css';
+import './LandingPage.css'
 import Lingkaran from '../../../assets/images/lingkaran.png';
 import Student from '../../../assets/images/student.png';
 import { FaBars, FaTimes } from 'react-icons/fa'; 
@@ -60,7 +60,7 @@ const LandingPage = () => {
             </CContainer>
         </div>
 
-        <div ref={aboutUsRef} className='page'>
+        <div ref={aboutUsRef} className='pagepage'>
             <CContainer className="about-us-cont" data-aos="zoom-in" data-aos-duration="1000">
             <CCard className="card-judul" style={{ fontWeight: 'bold' }}> About Us </CCard>
             <CCard>
@@ -72,7 +72,7 @@ const LandingPage = () => {
                     persuratan ketidakhadiran kuliah dari mahasiswa, kemudian mahasiswa mengajukan
                     ketidakhadiran. Wali dosen akan menerima notifikasi ketidakhadiran, kemudian memroses
                     perizinan dengan memberikan persetujuan atau penolakan berdasarkan surat yang
-                    diajukan. Jika perizinan diseujui oleh wali dosen, maka sistem akan memberikan
+                    diajukan. Jika perizinan disetujui oleh wali dosen, maka sistem akan memberikan
                     pemberitahuan kepada pihak terkait. Aplikasi ini diharapkan dapat memroses pengajuan
                     surat izin atau sakit dari mahasiswa menjadi lebih efisien dan terorganisir, serta
                     mempermudah komunikasi antara mahasiswa, dosen, orang tua mahasiswa, dan pihak terkait
@@ -82,21 +82,18 @@ const LandingPage = () => {
             </CCard>
             </CContainer>
         </div>
-
-        <div ref={contactRef} className="page">
-            <div className="contact">
-                <div className="contact-content" data-aos="fade-right" data-aos-offset="400" data-aos-easing="ease-in-sine">
-                    <div className="lingkaran">
-                        <CIcon icon={cilPhone} size="xl" />
-                    </div>
-                    <div className="card-contact">087735580889</div>
+        <div ref={contactRef} className="pagepage">
+            <div className="contact-content" data-aos="fade-right">
+                <div className="lingkaran">
+                    <CIcon icon={cilPhone} size="xl" />
                 </div>
-                <div className="contact-content" data-aos="fade-left" data-aos-offset="400" data-aos-easing="ease-in-sine">
-                    <div className="lingkaran">
-                        <CIcon icon={cilEnvelopeOpen} size="xl" />
-                    </div>
-                    <div className="card-contact">fauza.naylassana.tif22@polban.ac.id</div>
+                <div className="card-contact">087735580889</div>
+            </div>
+            <div className="contact-content" data-aos="fade-left">
+                <div className="lingkaran">
+                    <CIcon icon={cilEnvelopeOpen} size="xl" />
                 </div>
+                <div className="card-contact">fauza.naylassana.tif22@polban.ac.id</div>
             </div>
         </div>
     </div>

@@ -39,6 +39,12 @@ const _nav = [
     to: '/admin/rekap',
     icon: cilFolderOpen,
   },
+  {
+    component: CNavItem,
+    name: 'WhatsApp QR',
+    to: '/admin/WhatsAppQR',
+    icon: cilFolderOpen,
+  },
   // {
   //   component: CNavItem,
   //   name: 'History Pengajuan',
