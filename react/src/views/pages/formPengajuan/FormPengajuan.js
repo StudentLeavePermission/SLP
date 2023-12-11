@@ -597,7 +597,7 @@ const CustomCheckboxTable = () => {
         <CFormFeedback valid>Lampiran sudah terisi!</CFormFeedback>
         <CFormFeedback invalid>Mohon untuk upload lampiran!</CFormFeedback>
       </div>
-      <CCol xs={12}>
+      {/* <CCol xs={12}>
         <CFormCheck
           type="checkbox"
           id="invalidCheck"
@@ -606,7 +606,7 @@ const CustomCheckboxTable = () => {
         />
         <CFormFeedback valid>Pernyataan sudah diceklis!</CFormFeedback>
         <CFormFeedback invalid>Mohon ceklis pernyataan ini!</CFormFeedback>
-      </CCol>
+      </CCol> */}
       <CCol xs={12}>
         <CButton color="primary" type="submit" onClick={createPost}>
           Kirim

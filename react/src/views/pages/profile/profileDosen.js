@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CCol, CRow, CButton } from '@coreui/react';
 import axios from 'axios';
-import '../../../../scss/style.css';
+import '../../../scss/style.css';
 
 const ProfileDosen = () => {
   const [dataDosen, setDosen] = useState({});
@@ -40,7 +40,7 @@ const ProfileDosen = () => {
         <CCol xs={12} sm={6} md={4} lg={3} className="img-container">
           <img
             className="img"
-            src={require(`../../../../assets/ProfilPic/${dataDosen.Foto_Profil || 'blank.jpeg'}`)}
+            src={require(`../../../assets/ProfilPic/${dataDosen.Foto_Profil || 'blank.jpeg'}`)}
             alt={`Foto ${dataDosen.Nama_Dosen}`}
           />
           <div className="nama">{dataDosen.Nama_Dosen}</div>
