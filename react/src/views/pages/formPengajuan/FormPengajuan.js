@@ -465,7 +465,7 @@ const CustomCheckboxTable = () => {
         </CFormLabel> */}
         <table className="custom-table table-bordered">
           <thead>
-            {selectedDates.length > -1 && (
+            {selectedDates.length < 2 && (
               <>
                 <tr>
                   <th><span></span></th>
