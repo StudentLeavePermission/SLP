@@ -224,7 +224,7 @@
 .tabel td {
   text-align: left;
   /* Rata kiri untuk sel header dan sel data */
-  padding: 8px;
+  padding: 20px;
   border: 1px solid #ddd;
 }
 
@@ -243,11 +243,6 @@
   user-select: none;
 }
 
-.tabel th:nth-child(4) {
-  /* Target the fourth column (Jenis) */
-  width: 8%;
-  /* Adjust the width as needed */
-}
 
 /* CSS untuk tombol aksi */
 .tabel .aksi button {
@@ -1021,6 +1016,9 @@ h2 {
   width: 100%;
 }
 
+.margin-profile{
+  margin-left: 300px;
+}
 .details {
   position: absolute;
   width: 852px;
@@ -1130,6 +1128,7 @@ h3 {
   background: rgba(90, 113, 157, 0.1);
   border-radius: 20px;
   margin: 10px;
+  text-align: left;
 }
 
 

@@ -219,7 +219,7 @@ const dashboardMahasiswa = () => {
                   <table className="tabel">
                   <thead>
                     <tr>
-                      <th className="header-cell rata table-font">Nomor</th>
+                      <th className="header-cell rata table-font">No</th>
                       <th className="header-cell rata table-font">
                         <div>
                           Mata Kuliah
@@ -234,6 +234,7 @@ const dashboardMahasiswa = () => {
                         <div>
                           Dosen
                         </div>
+                        
                       </th>
                     </tr>
                   </thead>
