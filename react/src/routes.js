@@ -83,8 +83,11 @@ const DetailKelas = React.lazy(() => import('./views/pages/crudKelas/detailKelas
 
 //dashboard
 const DashboardMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardSiswa/dashboard'))
-const DashboardDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/profileDosen'))
+const DashboardDosen = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/dashboard'))
 const DashboardAdmin = React.lazy(() => import('./views/pages/dashboard/dashboardAdmin/dashboard'))
+
+
+const ProfileDosen = React.lazy(() => import('./views/pages/profile/profileDosen'))
 
 const DaftarMahasiswa = React.lazy(() => import('./views/pages/dashboard/dashboardDosen/daftarMahasiswa'))
 
@@ -175,6 +178,7 @@ const routes = [
   // { path: '/admin/TabelEkspor', name: 'TabelEkspor', element: wrapComponent(TabelEkspor, true) },
   // { path: '/admin/ImporTabel', name: 'ImporTabel', element: wrapComponent(ImporTabel, true) },
   // { path: '/admin/EksporTabel', name: 'EksporTabel', element: wrapComponent(EksporTabel, true) },
+  { path: '/dosen/profile', name: 'DosenProfile', element: wrapComponent(ProfileDosen, true) },
   { path: '/admin/rekap', name: 'RekapPengajuan', element: wrapComponent(RekapPengajuan, true) },
   { path: '/admin/rekap/detail/:id', name: 'RekapPengajuanDetail', element: wrapComponent(RekapPengajuanDetail, true) },
   { path: '/admin/editDosen/:key', name: 'EditDosen', element: wrapComponent(EditDosen, true) },
