@@ -20,7 +20,7 @@ import axios from "axios";
 const ProfileMahasiswa = () => {
   const navigate = useNavigate();
   const [id, setIdMahasiswa] = useState(sessionStorage.getItem('idMhs'));
-  
+
   const [post, setPost] = React.useState(null);
 
   React.useEffect(() => {
@@ -31,10 +31,10 @@ const ProfileMahasiswa = () => {
 
   if (!post) return null;
 
-  if (post.data.Foto_Profil != null){
+  if (post.data.Foto_Profil != null) {
     var imgSrc = `${post.data.Foto_Profil}`;
   }
-  else{
+  else {
     var imgSrc = `blank.jpeg`
   }
   return (
@@ -55,7 +55,10 @@ const ProfileMahasiswa = () => {
             </CButton>
           </CRow>
         </CCol>
-        <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
+        <CCol xs={12} sm={6} md={8} lg={9} className="containerTabel margin-profile">
+          <div className="containerDetails box-blue">
+
+          </div>
           <div className="details">
             <div className="identitas">
               <h3>Data Diri</h3>
@@ -91,7 +94,9 @@ const ProfileMahasiswa = () => {
               </div>
             </div>
           </div>
+
         </CCol>
+       
       </CRow>
     </div>
   );
