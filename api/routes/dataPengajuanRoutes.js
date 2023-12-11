@@ -48,4 +48,6 @@ router.get('/mahasiswa/rekap/pengajuan/:IDProdi', dataPengajuanController.getRek
 
 router.get('/whatsapp/qr',dataPengajuanController.WhatsAppQR);
 
+router.get('/whatsapp/qr/send',dataPengajuanController.kirimPesan);
+
 module.exports = router;

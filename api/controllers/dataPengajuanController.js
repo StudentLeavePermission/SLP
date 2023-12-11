@@ -215,6 +215,17 @@ exports.createLeaveRequest = async (req, res) => {
         console.log('Email sent: ' + info.response);
       }
     });
+    const mahasiswaRecord = {
+        ID_Mahasiswa: ID_Mahasiswa,
+        Keterangan: Keterangan,
+        Jenis_Izin: Jenis_Izin,
+        ID_Jadwal_Kelas: ID_Jadwal_Kelas,
+        Tanggal_Pengajuan: Tanggal_Pengajuan,
+        Tanggal_Izin: Tanggal_Izin,
+        Status_Pengajuan: Status_Pengajuan,
+        Alasan_Penolakan: '' 
+    };
+    sendWhatsAppMessage(mahasiswaRecord);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -272,7 +283,7 @@ exports.editLeaveRequest = async (req, res) => {
       angka_kelas = currentYear - kelas.Tahun_Ajaran;
     }
 
-    if (updatedRowCount === 0) {
+    if (updatedRowCount === 0) { 
       return res.status(404).json({ msg: 'LeaveRequest not found' });
     }
 
@@ -1869,4 +1880,47 @@ exports.WhatsAppQR = async (req, res) => {
   
     client.initialize();
   
+}
+
+const sendWhatsAppMessage = async (recordMahasiswa) => {
+  const phoneNumber = '6288219868501@c.us'; // Gantilah dengan nomor tujuan yang sesuai
+
+  const student = await Data_Mahasiswa.get({
+    where: { id: recordMahasiswa.ID_Mahasiswa },
+});
+
+const kelas = await Data_Kelas.get({
+  where : {id: student.ID_Kelas}
+});
+  const message = `Assalamulaikum Pak/ Bu, Kami memberitahukan bahwa putra/ putri bapak / ibu telah melakukan pengajuan absen dengan data berikut :  
+  Nama mahasiswa : ${student.Nama}
+  NIM : ${student.NIM} 
+  kelas : ${kelas.Nama_Kelas}
+  Jenis Pengajuan : ${recordMahasiswa.Jenis_Izin}
+  Tanggal Pengajuan : ${recordMahasiswa.Tanggal_Pengajuan}`;
+  
+  try {
+    // Kirim pesan
+    const response = await client.sendMessage(phoneNumber, message);
+    console.log('Pesan berhasil dikirim:', response);
+    return response;
+  } catch (error) {
+    console.error('Error saat mengirim pesan:', error);
+    throw error; // Dilempar kembali untuk penanganan kesalahan di tingkat yang lebih tinggi
+  }
+};
+
+exports.kirimPesan = async (req, res) => {
+  const mahasiswaRecord = {
+    name: 'John Doe',
+    message: 'Halo, ini adalah pesan dari John Doe.'
+  };
+
+  sendWhatsAppMessage(mahasiswaRecord)
+  .then(() => {
+    console.log('Pesan terkirim');
+  })
+  .catch((error) => {
+    console.error('Gagal mengirim pesan:', error);
+  });
 }
