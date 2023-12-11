@@ -41,7 +41,7 @@ const TabelPengajuanMahasiswa = () => {
         console.log("ITEM.ID LOOP LIKELY STARTS HERE");
 
         const groupedLeaveRequests = pengajuanResponse.data.reduce((groups, item) => {
-          const key = `${item.Jenis}_${item.Keterangan}_${item.Tanggal_Pengajuan}_${item.Status_Pengajuan}`;
+          const key = `${item.id}`;
 
           console.log('item.id = ' + item.id)
           if (item.id < id_pengajuan_combined) {
@@ -50,7 +50,7 @@ const TabelPengajuanMahasiswa = () => {
 
           if (!groups[key]) {
             groups[key] = {
-              ID: id_pengajuan_combined,
+              ID: item.id,
               Jenis: item.Jenis_Izin,
               Keterangan: item.Keterangan,
               Tanggal: item.Tanggal_Pengajuan,

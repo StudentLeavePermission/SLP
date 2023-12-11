@@ -281,10 +281,8 @@ const CustomCheckboxTable = () => {
         <CFormTextarea
           id="suratContent"
           value={`Halo, saya ${formData.Nama} dengan NIM ${formData.NIM}, ingin mengajukan izin sebagai berikut:
-          Tanggal Pengajuan: ${formData.Tanggal_Pengajuan}
+          Tanggal Pengajuan: ${new Date(formData.Tanggal_Pengajuan).toLocaleString()}
           Jenis Surat: ${formData.Jenis_Izin}
-          Jadwal Absen yang Dipilih:
-          ${tableData.map((item) => ` - ${item.jamPelajaran}, ${item.namaMataKuliah}`).join('\n\t  ')}
           Alasan: ${formData.Keterangan}`}
           rows={15}
           readOnly
