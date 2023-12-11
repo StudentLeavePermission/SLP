@@ -455,7 +455,10 @@ const DetailPengajuanMahasiswa = () => {
     }
     return (
         <>
-            <CCol xs={12} sm={6} md={8} lg={9} className="detail-container">
+            <CCol xs={12} sm={6} md={8} lg={9} className="containerTabel">
+                <div className="containerDetails box-blue">
+
+                </div>
                 <div className="details">
                     <div className="label-data">
                         <div className="item">
@@ -470,14 +473,34 @@ const DetailPengajuanMahasiswa = () => {
                             <div className="label">Tanggal Mengajukan</div>
                             <div className="value">: {`${TanggalPengajuanFormatted.hari}, ${TanggalPengajuanFormatted.tanggal} ${TanggalPengajuanFormatted.bulan} ${TanggalPengajuanFormatted.tahun}`}</div>
                         </div>
-                        <div className="item">
-                            <div className="label">Tanggal Izin</div>
-                            {selectedDates?.map((date, index) => (
-                                <div key={index} className="value"> : 
-                                    {`${getDayName(date.date)}, ${date.date.getDate()} ${date.date.toLocaleString('id-ID', { month: 'long' })} ${date.date.getFullYear()}`}
+
+
+                        {selectedDates.length < 2 && (
+                            <div className="item">
+                                <div className="label">Tanggal Izin</div>
+                                {selectedDates?.map((date, index) => (
+                                    <div key={index} className="value"> :
+                                        {`${getDayName(date.date)}, ${date.date.getDate()} ${date.date.toLocaleString('id-ID', { month: 'long' })} ${date.date.getFullYear()}`}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        {selectedDates.length > 1 && (
+                            <>
+                                <div className="item">
+                                    <div className="label">Tanggal Izin </div>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="items-container">
+                                    {selectedDates?.map((date, index) => (
+                                        <div key={index} className="item">
+                                            <div className="value">:
+                                                {`${getDayName(date.date)}, ${date.date.getDate()} ${date.date.toLocaleString('id-ID', { month: 'long' })} ${date.date.getFullYear()}`}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
                         <div className="item">
                             <div className="label">Status Pengajuan</div>
                             <div className="value">: {statusPengajuan}</div>
@@ -492,6 +515,7 @@ const DetailPengajuanMahasiswa = () => {
                         </div>
                     </div>
                 </div>
+
             </CCol>
         </>
     );
